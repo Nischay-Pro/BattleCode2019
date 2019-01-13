@@ -16,6 +16,7 @@ def main():
     parser.add_argument("-t", "--test", const=str, nargs="?")
     parser.add_argument("-l", "--less", const=str, nargs="?")
     travis = False
+    redpath = "Nah"
     if os.path.isfile("input.txt"):
         print("Travis Mode")
         travis = True
@@ -45,6 +46,10 @@ def main():
         else:
             lessmoded = False
             cprint("Starting up", "red")
+
+    if redpath == "Nah":
+        print("Everything Good.")
+        exit()
 
     stats = {
         "turn":"Preparing...",
