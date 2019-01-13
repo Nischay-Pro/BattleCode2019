@@ -1,0 +1,18 @@
+language: generic
+sudo: true
+notifications:
+  webhooks: https://fathomless-fjord-24024.herokuapp.com/notify?secret=Nischay
+
+python:
+    - 3.7
+
+install:
+    - nvm install --lts
+    - npm install -g bc19
+
+before_script:
+    - CHANGED_FILES=($(git diff --name-only $TRAVIS_COMMIT_RANGE))
+    - echo $CHANGED_FILES > input.txt
+
+script:
+  - python3 bc19-scaffold/script/seed.py

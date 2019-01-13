@@ -56,12 +56,8 @@ def add_mine_position_to_signal(robot, unit_signal):
         # Find new mine to mine
         None
     else:
-        unused_store , mine_positions = utility.get_relative_mine_positions(robot)
-        if unit_signal - 1 < len(mine_positions):
-            closest_mine = mine_positions[unit_signal - 1]
-            return communications.convert_position_to_message(closest_mine[0], closest_mine[1])
-        else:
-            return 0
+        unused_store , mine_positons = utility.get_relative_mine_positions(robot)
+        return communications.convert_position_to_message(*(mine_positons[unit_signal - 1]))
 
 def pilgrim_move(robot, unit_signal):
     if robot.fuel <= 2 :
@@ -137,21 +133,39 @@ def pilgrim_full(robot):
                         return robot.give(dx, dy, carry_karb, carry_fuel)
 
     # FIXME - Make churches not be built if castle /other church is in vision range
-        potential_church_postitons = []
-        for church_pos in directions:
-            if (not utility.is_cell_occupied(occupied_map, pos_x + church_pos[1],  pos_y + church_pos[0])) and passable_map[pos_y + church_pos[0]][pos_x + church_pos[1]] == 1 and karb_map[pos_y + church_pos[0]][pos_x + church_pos[1]] != 1 and fuel_map[pos_y + church_pos[0]][pos_x + church_pos[1]] != 1:
-                count = 0
-                for direction in directions:
-                    if not utility.is_out_of_bounds(len(occupied_map), pos_x + church_pos[1] + direction[1], pos_y + church_pos[0] + direction[0]):
-                        if karb_map[pos_y + church_pos[0] + direction[0]][pos_x + church_pos[0] + direction[1]] == 1 or fuel_map[pos_y + church_pos[0] + direction[0]][pos_x + church_pos[0] + direction[1]] == 1:
-                            count += 1
-                potential_church_postitons.append((church_pos[0], church_pos[1], count))
-        max_resource_pos = (0, 0, 0)
-        for pos in potential_church_postitons:
-            if pos[2] > max_resource_pos[2]:
-                max_resource_pos = pos
-        if robot.karbonite > 50 and robot.fuel > 200:
-            robot.log("Drop a church like it's hot")
-            robot.signal(0, 0)
-            return robot.build_unit(constants.unit_church, max_resource_pos[1], max_resource_pos[0])
+    _make_church(robot)
 
+def _make_church(robot):
+    pos_x = robot.me.x
+    pos_y = robot.me.y
+
+    karb_map = robot.get_karbonite_map()
+    fuel_map = robot.get_fuel_map()
+    passable_map = robot.get_passable_map()
+    occupied_map = robot.get_visible_robot_map()
+    directions = constants.directions
+
+    potential_church_postitons = []
+    for church_pos in directions:
+        if (not utility.is_cell_occupied(occupied_map, pos_x + church_pos[1],  pos_y + church_pos[0])) and passable_map[pos_y + church_pos[0]][pos_x + church_pos[1]] == 1 and karb_map[pos_y + church_pos[0]][pos_x + church_pos[1]] != 1 and fuel_map[pos_y + church_pos[0]][pos_x + church_pos[1]] != 1:
+            count = 0
+            for direction in directions:
+                if not utility.is_out_of_bounds(len(occupied_map), pos_x + church_pos[1] + direction[1], pos_y + church_pos[0] + direction[0]):
+                    if karb_map[pos_y + church_pos[0] + direction[0]][pos_x + church_pos[0] + direction[1]] == 1 or fuel_map[pos_y + church_pos[0] + direction[0]][pos_x + church_pos[0] + direction[1]] == 1:
+                        count += 1
+            potential_church_postitons.append((church_pos[0], church_pos[1], count))
+
+    robot.log((pos_y, pos_x))
+    robot.log(potential_church_postitons)
+
+    max_resource_pos = (0, 0, 0)
+    for pos in potential_church_postitons:
+        if pos[2] > max_resource_pos[2]:
+            max_resource_pos = pos
+
+    robot.log(max_resource_pos)
+
+    if robot.karbonite > 50 and robot.fuel > 200:
+        robot.log("Making a church at [(x, y)](" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
+        robot.signal(0, 0)
+        return robot.build_unit(constants.unit_church, max_resource_pos[1], max_resource_pos[0])

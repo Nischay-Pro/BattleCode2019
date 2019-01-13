@@ -1,29 +1,55 @@
 import argparse
 import os
 import subprocess
-from multiprocessing import Pool, Process, Value, Manager
-from termcolor import cprint
+try:
+    from termcolor import cprint
+except:
+    None
 import time
 import sys
 import os
 import shutil
 
 def main():
-
+    badman = False
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--test", const=str, nargs="?")
     parser.add_argument("-l", "--less", const=str, nargs="?")
-    args = parser.parse_args()
-    redpath = str(args.test)
-    less = int(args.less)
-    bluepath = redpath
-    lessmoded = False
-    clearScreen()
-    if less == 1:
+    travis = False
+    redpath = "Nah"
+    if os.path.isfile("input.txt"):
+        print("Travis Mode")
+        travis = True
         lessmoded = True
+        fileman = open("input.txt", "r") 
+        dataman = fileman.read()
+        print(dataman)
+        frk = dataman.split("\n")
+        frk = frk[0]
+        frk = frk.split(" ")
+        for itm in frk:
+            dirman = os.path.split(itm)[0]
+            if "bc19-scaffold/bots" in dirman:
+                redpath = dirman
+                bluepath = redpath
+                break
     else:
+        print("Non Travis Mode")
+        args = parser.parse_args()
+        redpath = str(args.test)
+        less = int(args.less)
+        bluepath = redpath
         lessmoded = False
-        cprint("Starting up", "red")
+        clearScreen()
+        if less == 1:
+            lessmoded = True
+        else:
+            lessmoded = False
+            cprint("Starting up", "red")
+
+    if redpath == "Nah":
+        print("Everything Good.")
+        exit()
 
     stats = {
         "turn":"Preparing...",
@@ -37,14 +63,21 @@ def main():
     shutil.rmtree("seed_logs",ignore_errors=True,onerror=None)
     os.makedirs("seed_logs")
     for seed in range(1,1001):
-        stats["turn"] = "Preparing..."
+        if not lessmoded:
+            stats["turn"] = "Preparing..."
         pretty_print(stats, seed, lessmode=lessmoded)
+        antitravis = time.time()
         process = subprocess.Popen(["bc19run", "-b", bluepath, "-r", redpath, "-d", "false", "-s", str(seed)], stdout=subprocess.PIPE)
         # lprint("Testing on Seed %s" % seed, lessmoded)
-        stats["args"] = " ".join(process.args)
+        if not lessmoded:
+            stats["args"] = " ".join(process.args)
         verbose = []
+        errorman = []
         counter = 10
         for line in iter(process.stdout.readline, b''):
+            if antitravis - time.time() >= 300:
+                antitravis = time.time()
+                print("Travis Here is some log")
             data = line.decode(sys.stdout.encoding)
             data = data.encode('utf-8').decode('utf-8')
             data = str(data)
@@ -53,51 +86,65 @@ def main():
                 if currtime - checktime > 2:
                     data2 = data.split("\n")[0]
                     data2 = data.split("@")
-                    stats["turn"] = data2[1].strip()
+                    if not lessmoded:
+                        stats["turn"] = data2[1].strip()
                     pretty_print(stats, seed, lessmode=lessmoded)
                     checktime = time.time()
             verbose.append(data)
             if counter < 10:
+                errorman.append(data)
                 counter -= 1
                 if counter <= 0:
-                    stats["seed"][seed] = "Failed"
+                    if not lessmoded:
+                        stats["seed"][seed] = "Failed"
                     with open('seed_logs/seed_%s.txt' % seed, mode='wt', encoding='utf-8') as myfile:
                         myfile.write('\n'.join(verbose))
                     process.terminate()
+                    print(errorman)
                     break
             if "vm.js" in data:
-                stats["seed"][seed] = "Failed"
-                lprint("Seed %s Failed. Script Error" % seed, lessmoded)
+                if not lessmoded:
+                    stats["seed"][seed] = "Failed"
+                badman = True
+                errorman.append(data)
+                lprint("Seed %s Failed. Script Error" % seed, lessmoded, travis)
                 counter -= 1
             if "Robot is frozen due" in data:
-                stats["seed"][seed] = "Time Failed"
+                if not lessmoded:
+                    stats["seed"][seed] = "Time Failed"
             if "blue won" in data:
-                if stats["seed"][seed] == "Time Failed":
-                    stats["seed"][seed] = "Passed (Time Failed)"
-                lprint("Seed %s Passed (Time Failed)" % seed, lessmoded)
+                if not lessmoded:
+                    if stats["seed"][seed] == "Time Failed":
+                        stats["seed"][seed] = "Passed (Time Failed)"
+                lprint("Seed %s Passed" % seed, lessmoded, travis)
                 pretty_print(stats, seed, lessmode=lessmoded)
                 process.terminate()
                 break
             if "red won" in data:
-                if stats["seed"][seed] == "Time Failed":
-                    stats["seed"][seed] = "Passed (Time Failed)"
-                lprint("Seed %s Passed (Time Failed)" % seed, lessmoded)
+                if not lessmoded:
+                    if stats["seed"][seed] == "Time Failed":
+                        stats["seed"][seed] = "Passed (Time Failed)"
+                lprint("Seed %s Passed" % seed, lessmoded, travis)
                 pretty_print(stats, seed, lessmode=lessmoded)
                 process.terminate()
                 break
             if "failed to initialize" in data:
-                stats["seed"][seed] = data.strip()
+                if not lessmoded:    
+                    stats["seed"][seed] = data.strip()
                 pretty_print(stats, seed, lessmode=lessmoded)
-                lprint("Seed %s Failed. Initialization Error" % seed, lessmoded)
-            with open('seed_logs/seed_%s.txt' % seed, mode='wt', encoding='utf-8') as myfile:
-                myfile.write('\n'.join(verbose))
+                lprint("Seed %s Failed. Initialization Error" % seed, lessmoded, travis)
     pretty_print(stats, 1000, done=True, lessmode=lessmoded)
-    lprint("Done", lessmoded)
+    lprint("Done", lessmoded, travis)
+    if badman:
+        exit(100)
 
 
-def lprint(whattoprint, lessmode):
+def lprint(whattoprint, lessmode, travis):
     if lessmode:
         print(whattoprint)
+        with open('log.txt', mode='a+', encoding='utf-8') as myfile:
+            myfile.write('\n%s' % whattoprint)
+
 
 def pretty_print(stats, seed, done=False, lessmode=False):
     if lessmode == False:

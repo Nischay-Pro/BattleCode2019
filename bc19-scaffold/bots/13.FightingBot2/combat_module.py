@@ -81,15 +81,77 @@ def _prophet_combat(robot):
         return None
 
 
+<<<<<<< HEAD
+=======
+# TODO - Preacher check which direction the friendlies are in and see if it's safe to drop AOE attack
+# If Preacher between Friendly and Enemy, preacher should attack (?)
+def _preacher_attack(robot):
+    visible_friendly_list = []
+    visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
+    if friendlyfire():
+        visible_friendly_distance, visible_friendly_list = vision.sort_visible_friendlies_by_distance(robot)
+    if len(visible_enemy_list) == 0:
+        return None
+    else:
+        unit_attack_range_max = constants.preacher_max_attack_range
+        unit_attack_range_min = constants.preacher_min_attack_range
+        unit_attack_damage = constants.preacher_attack_damage
+        unit_current_pos = (robot.me.x, robot.me.y)
+
+        unit_will_attack_list = []
+        unit_will_attack_pilgrim_list = []
+        friendly_list = []
+        for i in range(len(visible_enemy_list)):
+            enemy = visible_enemy_list[i]
+            enemy_distance = visible_enemy_distance[i]
+            if enemy_distance <= unit_attack_range_max and enemy_distance >= unit_attack_range_min:
+                if enemy['unit'] == constants.unit_pilgrim:
+                    unit_will_attack_pilgrim_list.append(enemy)
+                else:
+                    unit_will_attack_list.append(enemy)
+
+        for i in range(len(visible_friendly_list)):
+            friendly = visible_friendly_list[i]
+            friendly_distance = visible_friendly_distance[i]
+            if friendly_distance <= unit_attack_range_max and friendly_distance >= unit_attack_range_min:
+                friendly_list.append(friendly)      
+
+        if len(friendly_list) != 0:
+            if friendlyfire():
+                if len(unit_will_attack_list) != 0:
+                    enemy = unit_will_attack_list[0]
+                    return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+                elif len(unit_will_attack_pilgrim_list) != 0:
+                    enemy = unit_will_attack_pilgrim_list[0]
+                    return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+                else:
+                    # Preachers should not be moving towards targets!
+                    None
+        else:
+            if len(unit_will_attack_list) != 0:
+                enemy = unit_will_attack_list[0]
+                return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+            elif len(unit_will_attack_pilgrim_list) != 0:
+                enemy = unit_will_attack_pilgrim_list[0]
+                return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+            else:
+                # Preachers should not be moving towards targets!
+                None
+        return None
+
+>>>>>>> 7d31fd445108c3ca58277691c4319d55ebc6186a
 def default_military_behaviour(robot):
     unit_type = robot.me.unit
 
     if unit_type == constants.unit_crusader:        
         return _crusader_combat(robot)
     elif unit_type == constants.unit_preacher:
-        return None
+        return _preacher_attack(robot)
     elif unit_type == constants.unit_prophet:
         return _prophet_combat(robot)
 
 def pilgrimpriority():
+    return False
+
+def friendlyfire():
     return False
