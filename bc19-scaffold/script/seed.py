@@ -21,9 +21,9 @@ def main():
     clearScreen()
     if less == 1:
         lessmoded = True
-        cprint("Starting up", "red")
     else:
         lessmoded = False
+        cprint("Starting up", "red")
 
     stats = {
         "turn":"Preparing...",
