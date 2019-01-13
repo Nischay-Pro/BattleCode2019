@@ -2,10 +2,10 @@ language: generic
 sudo: true
 
 python:
-    - 3.7
+    - 3.6
 
 install:
-    - pip3 install termcolor
+    - pip3.6 install termcolor
     - nvm install --lts
     - npm install -g bc19
 
@@ -15,4 +15,4 @@ before_script:
     - echo $CHANGED_FILES > input.txt
 
 script:
-  - python3 bc19-scaffold/script/seed.py
+  - python3.6 bc19-scaffold/script/seed.py
