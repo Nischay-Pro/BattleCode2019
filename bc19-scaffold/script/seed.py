@@ -18,13 +18,13 @@ def main():
     less = int(args.less)
     bluepath = redpath
     lessmoded = False
+    clearScreen()
     if less == 1:
         lessmoded = True
+        cprint("Starting up", "red")
     else:
         lessmoded = False
 
-    clearScreen()
-    cprint("Starting up", "red")
     stats = {
         "turn":"Preparing...",
         "bot": os.path.basename(os.path.normpath(redpath)),
