@@ -21,9 +21,11 @@ prophet_attack_damage = SPECS['UNITS'][SPECS["PROPHET"]]['ATTACK_DAMAGE']
 preacher_attack_damage = SPECS['UNITS'][SPECS["PREACHER"]]['ATTACK_DAMAGE']
 
 # Attack Range
+crusader_min_attack_range = SPECS['UNITS'][SPECS["CRUSADER"]]['ATTACK_RADIUS'][0]
 crusader_max_attack_range = SPECS['UNITS'][SPECS["CRUSADER"]]['ATTACK_RADIUS'][1]
 prophet_min_attack_range = SPECS['UNITS'][SPECS["PROPHET"]]['ATTACK_RADIUS'][0]
 prophet_max_attack_range = SPECS['UNITS'][SPECS["PROPHET"]]['ATTACK_RADIUS'][1]
+preacher_min_attack_range = SPECS['UNITS'][SPECS["PREACHER"]]['ATTACK_RADIUS'][0]
 preacher_max_attack_range = SPECS['UNITS'][SPECS["PREACHER"]]['ATTACK_RADIUS'][1]
 
 # Initial Health
