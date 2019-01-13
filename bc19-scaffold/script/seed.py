@@ -43,14 +43,14 @@ def main():
             lessmoded = False
             cprint("Starting up", "red")
 
-        stats = {
-            "turn":"Preparing...",
-            "bot": os.path.basename(os.path.normpath(redpath)),
-            "args": "Waiting",
-            "seed":{
-                1:"Checking..."
-            }
+    stats = {
+        "turn":"Preparing...",
+        "bot": os.path.basename(os.path.normpath(redpath)),
+        "args": "Waiting",
+        "seed":{
+            1:"Checking..."
         }
+    }
     checktime = time.time()
     shutil.rmtree("seed_logs",ignore_errors=True,onerror=None)
     os.makedirs("seed_logs")
