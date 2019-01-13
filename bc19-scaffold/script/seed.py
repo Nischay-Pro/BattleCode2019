@@ -11,7 +11,7 @@ import os
 import shutil
 
 def main():
-
+    badman = False
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--test", const=str, nargs="?")
     parser.add_argument("-l", "--less", const=str, nargs="?")
@@ -98,6 +98,7 @@ def main():
             if "vm.js" in data:
                 if not lessmoded:
                     stats["seed"][seed] = "Failed"
+                badman = True
                 lprint("Seed %s Failed. Script Error" % seed, lessmoded, travis)
                 counter -= 1
             if "Robot is frozen due" in data:
@@ -126,6 +127,8 @@ def main():
                 lprint("Seed %s Failed. Initialization Error" % seed, lessmoded, travis)
     pretty_print(stats, 1000, done=True, lessmode=lessmoded)
     lprint("Done", lessmoded, travis)
+    if badman:
+        exit(100)
 
 
 def lprint(whattoprint, lessmode, travis):
