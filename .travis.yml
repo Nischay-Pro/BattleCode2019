@@ -5,7 +5,7 @@ python:
     - 3.7
 
 install:
-    - pip install termcolor
+    - pip3 install termcolor
     - nvm install --lts
     - npm install -g bc19
 
