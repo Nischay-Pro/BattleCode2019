@@ -71,6 +71,7 @@ def main():
         if not lessmoded:
             stats["args"] = " ".join(process.args)
         verbose = []
+        errorman = []
         counter = 10
         for line in iter(process.stdout.readline, b''):
             data = line.decode(sys.stdout.encoding)
@@ -87,6 +88,7 @@ def main():
                     checktime = time.time()
             verbose.append(data)
             if counter < 10:
+                errorman.append(data)
                 counter -= 1
                 if counter <= 0:
                     if not lessmoded:
@@ -94,11 +96,13 @@ def main():
                     with open('seed_logs/seed_%s.txt' % seed, mode='wt', encoding='utf-8') as myfile:
                         myfile.write('\n'.join(verbose))
                     process.terminate()
+                    print(errorman)
                     break
             if "vm.js" in data:
                 if not lessmoded:
                     stats["seed"][seed] = "Failed"
                 badman = True
+                errorman.append(data)
                 lprint("Seed %s Failed. Script Error" % seed, lessmoded, travis)
                 counter -= 1
             if "Robot is frozen due" in data:
