@@ -8,6 +8,15 @@ fuel_modifier = .05
 
 directions = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
 
+enemy_unit_priority_for_prophet = [ 
+    2, # Castle
+    2, # Church
+    3, # Pilgrim
+    4, # Crusader
+    4, # Prophet
+    10, # Preacher
+]
+
 unit_castle = SPECS['CASTLE']
 unit_church = SPECS['CHURCH']
 unit_crusader = SPECS['CRUSADER']

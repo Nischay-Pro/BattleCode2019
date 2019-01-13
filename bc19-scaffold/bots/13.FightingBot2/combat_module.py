@@ -2,12 +2,13 @@ import constants
 import vision
 import pathfinding
 # TODO - Enemy analysis function
+# TODO - All archer formation functions
 
 def give_military_command(robot, recieved_message = 0, self_signal = 0):
     if recieved_message == 0 and self_signal == 0:
         return default_military_behaviour(robot)
 
-def _crusader_attack(robot):
+def _crusader_combat(robot):
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
     if len(visible_enemy_list) == 0:
         return None
@@ -47,7 +48,7 @@ def _crusader_attack(robot):
                 return robot.move(new_pos_x - unit_current_pos[0], new_pos_y - unit_current_pos[1])
         return None
 
-def _prophet_attack(robot):
+def _prophet_combat(robot):
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
     if len(visible_enemy_list) == 0:
         return None
@@ -79,15 +80,16 @@ def _prophet_attack(robot):
             None
         return None
 
+
 def default_military_behaviour(robot):
     unit_type = robot.me.unit
 
     if unit_type == constants.unit_crusader:        
-        return _crusader_attack(robot)
+        return _crusader_combat(robot)
     elif unit_type == constants.unit_preacher:
         return None
     elif unit_type == constants.unit_prophet:
-        return _prophet_attack(robot)
+        return _prophet_combat(robot)
 
 def pilgrimpriority():
     return False

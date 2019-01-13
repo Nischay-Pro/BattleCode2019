@@ -1,5 +1,6 @@
 import math
 import utility
+# from datetime import datetime
 
 # Since no collection
 def _is_higher_than(a, b):
@@ -127,11 +128,16 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
 
     insert_counter = add(nodes, pos_initial, 0, insert_counter)
 
-    a_1 = robot.me.time
+    # a1 = datetime.now()
+    # a1.microsecond
+    # robot.log("astar_time 1 " + str(a1))
     while len(nodes) > 1:
         current = pop(nodes)
         if str(current) == str(pos_final) or block_kicker > 40:
             # robot.log("=> * " + str(len(nodes)))
+            # a2 = datetime.now()
+            # a2.microsecond
+            # robot.log(" Time taken per " + len(came_from) + " node length is " + str(a2))
             return retrace_path(pos_initial, current, came_from)
         for iter_a in neighbours(current):
             new_cost = cost_so_far[current] + 1
@@ -144,6 +150,9 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
         block_kicker += 1
     # robot.log(came_from)
 
+    a2 = datetime.now()
+    a2.microsecond
+    robot.log(" Time taken per " + len(came_from) + " node length is based on" + str(a2))
     return retrace_path(pos_initial, pos_final, came_from)
 
 
