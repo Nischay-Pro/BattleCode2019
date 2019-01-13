@@ -81,8 +81,6 @@ def _prophet_combat(robot):
         return None
 
 
-<<<<<<< HEAD
-=======
 # TODO - Preacher check which direction the friendlies are in and see if it's safe to drop AOE attack
 # If Preacher between Friendly and Enemy, preacher should attack (?)
 def _preacher_attack(robot):
@@ -139,7 +137,6 @@ def _preacher_attack(robot):
                 None
         return None
 
->>>>>>> 7d31fd445108c3ca58277691c4319d55ebc6186a
 def default_military_behaviour(robot):
     unit_type = robot.me.unit
 

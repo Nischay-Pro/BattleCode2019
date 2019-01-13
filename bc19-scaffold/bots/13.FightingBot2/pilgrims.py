@@ -155,17 +155,17 @@ def _make_church(robot):
                         count += 1
             potential_church_postitons.append((church_pos[0], church_pos[1], count))
 
-    robot.log((pos_y, pos_x))
-    robot.log(potential_church_postitons)
+    # robot.log((pos_y, pos_x))
+    # robot.log(potential_church_postitons)
 
     max_resource_pos = (0, 0, 0)
     for pos in potential_church_postitons:
         if pos[2] > max_resource_pos[2]:
             max_resource_pos = pos
 
-    robot.log(max_resource_pos)
+    # robot.log(max_resource_pos)
 
     if robot.karbonite > 50 and robot.fuel > 200:
-        robot.log("Making a church at [(x, y)](" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
+        # robot.log("Making a church at [(x, y)](" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
         robot.signal(0, 0)
         return robot.build_unit(constants.unit_church, max_resource_pos[1], max_resource_pos[0])
