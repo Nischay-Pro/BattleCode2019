@@ -60,13 +60,13 @@ def main():
         }
     }
     checktime = time.time()
-    antitravis = time.time()
     shutil.rmtree("seed_logs",ignore_errors=True,onerror=None)
     os.makedirs("seed_logs")
     for seed in range(1,1001):
         if not lessmoded:
             stats["turn"] = "Preparing..."
         pretty_print(stats, seed, lessmode=lessmoded)
+        antitravis = time.time()
         process = subprocess.Popen(["bc19run", "-b", bluepath, "-r", redpath, "-d", "false", "-s", str(seed)], stdout=subprocess.PIPE)
         # lprint("Testing on Seed %s" % seed, lessmoded)
         if not lessmoded:
@@ -75,7 +75,8 @@ def main():
         errorman = []
         counter = 10
         for line in iter(process.stdout.readline, b''):
-            if antitravis - time.time() > 540:
+            if antitravis - time.time() >= 300:
+                antitravis = time.time()
                 print("Travis Here is some log")
             data = line.decode(sys.stdout.encoding)
             data = data.encode('utf-8').decode('utf-8')
