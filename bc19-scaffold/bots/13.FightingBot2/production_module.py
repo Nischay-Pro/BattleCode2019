@@ -18,12 +18,10 @@ def _build_manager_church(robot):
             return robot.build_unit(unit_type, direction[1], direction[0])
     robot.log("No space to build units anymore for churches")
     return None
-    
-
 
 def default_production_order(robot):
     unit_type = robot.me.unit
-    if unit_type == constants.unit_church:        
+    if unit_type == constants.unit_church:
         return _build_manager_church(robot)
-    if unit_type == constants.unit_castle:        
+    if unit_type == constants.unit_castle:
         return _build_manager_castle(robot)
