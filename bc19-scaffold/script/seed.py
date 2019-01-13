@@ -1,8 +1,10 @@
 import argparse
 import os
 import subprocess
-from multiprocessing import Pool, Process, Value, Manager
-from termcolor import cprint
+try:
+    from termcolor import cprint
+except:
+    None
 import time
 import sys
 import os

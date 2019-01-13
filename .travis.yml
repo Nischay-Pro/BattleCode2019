@@ -5,13 +5,10 @@ python:
     - 3.7
 
 install:
-    - pyenv shell 3.7
-    - pip3 install termcolor
     - nvm install --lts
     - npm install -g bc19
 
 before_script:
-    - pip install termcolor
     - CHANGED_FILES=($(git diff --name-only $TRAVIS_COMMIT_RANGE))
     - echo $CHANGED_FILES > input.txt
 
