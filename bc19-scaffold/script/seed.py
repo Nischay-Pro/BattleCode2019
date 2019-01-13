@@ -60,6 +60,7 @@ def main():
         }
     }
     checktime = time.time()
+    antitravis = time.time()
     shutil.rmtree("seed_logs",ignore_errors=True,onerror=None)
     os.makedirs("seed_logs")
     for seed in range(1,1001):
@@ -74,6 +75,8 @@ def main():
         errorman = []
         counter = 10
         for line in iter(process.stdout.readline, b''):
+            if antitravis - time.time() > 540:
+                print("Travis Here is some log")
             data = line.decode(sys.stdout.encoding)
             data = data.encode('utf-8').decode('utf-8')
             data = str(data)
