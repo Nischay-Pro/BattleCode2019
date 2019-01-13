@@ -17,10 +17,12 @@ def main():
     parser.add_argument("-l", "--less", const=str, nargs="?")
     travis = False
     if os.path.isfile("input.txt"):
+        print("Travis Mode")
         travis = True
         lessmoded = True
         fileman = open("input.txt", "r") 
         dataman = fileman.read()
+        print(dataman)
         frk = dataman.split("\n")
         frk = frk[0]
         frk = frk.split(" ")
@@ -31,6 +33,7 @@ def main():
                 bluepath = redpath
                 break
     else:
+        print("Non Travis Mode")
         args = parser.parse_args()
         redpath = str(args.test)
         less = int(args.less)
