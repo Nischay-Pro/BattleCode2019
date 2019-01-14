@@ -11,8 +11,6 @@ def _is_higher_than(a, b):
 # TODO - Add a fuel option and initialise the dirs vector, do stuff to it on the basis of that 
 def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
 
-    robot.log(robot.me.time)
-
     if unit_type_move == 2:
         dirs = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1), (0, 2), (0, -2), (2, 0), (-2, 0)]
     elif unit_type_move == 1:
