@@ -2,3 +2,4 @@
 !bc19-scaffold/replays/*.bc19
 bc19-scaffold/script/seed_logs/seed_1.txt
 bc19-scaffold/script/seed_logs
+bc19-scaffold/bots/compiled_bot.js
