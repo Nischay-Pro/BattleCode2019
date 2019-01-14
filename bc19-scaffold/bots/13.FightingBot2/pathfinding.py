@@ -1,6 +1,6 @@
 import math
 import utility
-# from datetime import datetime
+import constants
 
 # Since no collection
 def _is_higher_than(a, b):
@@ -8,10 +8,10 @@ def _is_higher_than(a, b):
         return True
     return a[1] > b[1] or (a[1] == b[1] and a[2] < b[2])
 
-# Move a node up until the parent is bigger
-
 # TODO - Add a fuel option and initialise the dirs vector, do stuff to it on the basis of that 
 def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
+
+    robot.log(robot.me.time)
 
     if unit_type_move == 2:
         dirs = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1), (0, 2), (0, -2), (2, 0), (-2, 0)]
@@ -84,13 +84,6 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
         _heapify(nodes, new_node_index)
         return insert_counter
 
-    # Return the top element
-    def peek(nodes):
-        if len(nodes) == 1:
-            return None
-        else:
-            return nodes[1][0]
-
     # Remove the top element and return it
     def pop(nodes):
         if len(nodes) == 1:
@@ -123,21 +116,16 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
         (x2, y2) = pos_final
         dx = abs(x1 - x2) 
         dy = abs(y1 - y2)
-        heuristic = (dx + dy) - min(dx, dy)
-        return heuristic * (1.0001)
+        heuristic = (dx + dy)
+        return heuristic * (constants.pathfinding_heuristic_multiplier)
 
     insert_counter = add(nodes, pos_initial, 0, insert_counter)
 
-    # a1 = datetime.now()
-    # a1.microsecond
-    # robot.log("astar_time 1 " + str(a1))
+
     while len(nodes) > 1:
         current = pop(nodes)
-        if str(current) == str(pos_final) or block_kicker > 40:
+        if str(current) == str(pos_final) or block_kicker > 45:
             # robot.log("=> * " + str(len(nodes)))
-            # a2 = datetime.now()
-            # a2.microsecond
-            # robot.log(" Time taken per " + len(came_from) + " node length is " + str(a2))
             return retrace_path(pos_initial, current, came_from)
         for iter_a in neighbours(current):
             new_cost = cost_so_far[current] + 1
@@ -150,9 +138,6 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
         block_kicker += 1
     # robot.log(came_from)
 
-    a2 = datetime.now()
-    a2.microsecond
-    robot.log(" Time taken per " + len(came_from) + " node length is based on" + str(a2))
     return retrace_path(pos_initial, pos_final, came_from)
 
 

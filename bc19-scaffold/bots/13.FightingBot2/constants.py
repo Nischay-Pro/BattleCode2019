@@ -1,5 +1,7 @@
 from battlecode import SPECS
 
+pathfinding_heuristic_multiplier = 1.1
+
 pilgrim_will_scavenge_closeby_mines_before_turns = 10
 pilgrim_will_scavenge_closeby_mines = 50
 chokepoint_modifier = .4
