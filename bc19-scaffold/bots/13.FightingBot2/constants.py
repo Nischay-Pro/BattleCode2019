@@ -63,3 +63,21 @@ pilgrim_will_scavenge_closeby_mines_after_turns = 50
 
 def get_required_constant():
     None
+
+# directions of pilgrim
+pilgrim_directions = [
+        None, # self signal is "0"
+        (0, 0), # 1: no step
+        (0, 1), # 2: one step east
+        (0, 2), # 3: two steps east
+        (0, -1), # 4: one step west
+        (0, -2), # 5: two steps west
+        (-1, 0), # 6: one step north
+        (-2, 0), # 7: two steps north
+        (1, 0), # 8: one step south
+        (2, 0), # 9: two steps south
+        (-1, 1), # 10: one step north-east
+        (-1, -1), # 11: one step north-west
+        (1, -1), # 12: one step south-west
+        (1, 1) # 13: one step south-east
+    ]

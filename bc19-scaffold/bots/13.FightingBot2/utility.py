@@ -1,6 +1,7 @@
 import random
 import constants
 
+
 def is_out_of_bounds(map_dim, pos_x, pos_y):
     return pos_x < 0 or pos_y < 0 or pos_x >= map_dim or pos_y >= map_dim
 
@@ -109,3 +110,67 @@ def fuel_less_check(robot):
     else:
         return False
 
+def _store_destination(dest_x: int, dest_y: int, bin_list: list) -> None:
+    '''
+    dest_x: abscissa of mine's location (decimal)
+    dest_y: ordinate of mine's location (decimal)
+    bin_list: self loop message of pilgrim as a list of string (binary
+    representation)
+
+    First 4 bits of bin_list are reserved for storing information about next
+    move.
+    '''
+    x_bin = convert_to_binary(dest_x)
+    y_bin = convert_to_binary(dest_y)
+    start = 4
+    # copy binary of x to self loop message
+    for i in range(10, 16):
+        bin_list[start] = x_bin[i]
+        start += 1
+    # copy binary of y to self loop message
+    for i in range(10, 16):
+        bin_list[start] = y_bin[i]
+        start += 1
+
+def _store_next_step(astar_path: list, bin_list: list, directions: list) -> None:
+    '''
+    The first 4 bits are used to store the next step
+    directions (list): 12 movements of pilgrim (check pilgrim_directions in
+    constant module)
+    '''
+    if len(astar_path) == 1:
+        bin_list[3] = '1'
+        for i in range(3):
+            bin_list[i] = '0'
+        return None
+
+    step = astar_path[0]
+    second_step = astar_path[1]
+    dx = second_step[0] - step[0]
+    dy = second_step[1] - step[1]
+    ans = None
+    for i in range(len(directions)):
+        direction = directions[i]
+        if (dx, dy) == direction:
+            ans = i
+            break
+    step_byte = convert_to_binary(ans)
+    iter_ = 0
+    for i in range(12, 16):
+        bin_list[iter_] = step_byte[i]
+        iter_ += 1
+
+def encode_self_loop_msg(dest_x: int, dest_y: int,
+        astar_path: list, directions: list) -> int:
+    bin_list = ['0' for i in range(16)]
+    _store_destination(dest_x, dest_y, bin_list)
+    _store_next_step(astar_path, bin_list, directions)
+    return convert_to_decimal("".join(bin_list))
+
+
+def decode_self_loop_msg(message: int, directions: list) -> tuple:
+    binary_str = convert_to_binary(message)
+    direction = convert_to_decimal(binary_str[0:4])
+    x_destination = convert_to_decimal(binary_str[4:10])
+    y_destination = convert_to_decimal(binary_str[10:16])
+    return (direction, x_destination, y_destination)
