@@ -3,6 +3,7 @@ import vision
 import communications
 import constants
 import pathfinding
+import movement
 
 def pilgrim(robot):
 
@@ -65,6 +66,10 @@ def pilgrim_move(robot):
     random_directions = utility.random_cells_around()
     # May change for impossible resources
 
+    if movement.is_completely_surrounded(robot):
+        robot.log("Completely surrounded pilgrim or attained Nirvana") 
+        return 0
+
     # Capture and start mining any resource if more than 50 turns since creation and no mine
     # TODO - Improve this code snippet to mine, if in visible region and empty
     if robot.me.turn > constants.pilgrim_will_scavenge_closeby_mines_after_turns and robot.me.turn < constants.pilgrim_will_scavenge_closeby_mines_before_turns:
@@ -72,11 +77,13 @@ def pilgrim_move(robot):
             if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and (karb_map[pos_y + direction[0]][pos_x + direction[1]] == 1 or fuel_map[pos_y + direction[0]][pos_x + direction[1]] == 1):
                 return robot.move(direction[1], direction[0])
     
+    # TODO - Make into scout if too old
     # If the mine is already occupied
-    if robot.current_move_destination != None:
+    if robot.current_move_destination != None and robot.step < robot.pilgrim_mine_age_limt:
         final_pos_x = robot.current_move_destination[0]
         final_pos_y = robot.current_move_destination[1]
         if utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
+            robot.pilgrim_mine_age_limt -= constants.pilgrim_fails_to_get_mine_aging # Time befells those who have mine impotency
             if robot.pilgrim_type != 2:
                 robot.pilgrim_type = 2 # Become a scavenger
                 unused_store, robot.pilgrim_scavenge_mine_location_list = utility.get_relative_mine_positions(robot)
@@ -86,11 +93,15 @@ def pilgrim_move(robot):
                     robot.pilgrim_scavenge_mine_occupancy_list[iter_i] = 0
                     if str(robot.current_move_destination) != str(robot.pilgrim_scavenge_mine_location_list[iter_i]):
                         robot.current_move_destination = robot.pilgrim_scavenge_mine_location_list[iter_i]
+                        # Check if new mine is in vision and occupied, then move to next. Counters aging by using good eyes.
+                        final_pos_x = robot.current_move_destination[0]
+                        final_pos_y = robot.current_move_destination[1]
                         robot.mov_path_between_base_and_mine = None
-                        break
+                        if utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
+                            break    
 
     # Just move
-    if robot.current_move_destination != None:
+    if robot.current_move_destination != None and robot.step < robot.pilgrim_mine_age_limt:
         # robot.log("Current mov destination is " + str(robot.current_move_destination))
         # robot.log("Current location is " + str((robot.me.x, robot.me.y)))
         # Initial search
@@ -122,6 +133,10 @@ def pilgrim_move(robot):
         # In middle of the list    
         else:
             robot.mov_path_index = robot.mov_path_index + 1
+            if len(robot.mov_path_between_base_and_mine[robot.mov_path_index]) == 0 or robot.mov_path_between_base_and_mine[robot.mov_path_index] == None:
+                robot.log("Recomputing")
+                robot.mov_path_between_base_and_mine == None
+                return 0
             new_pos_x, new_pos_y = robot.mov_path_between_base_and_mine[robot.mov_path_index]
             # robot.log("Fouth block , list " + str(robot.mov_path_between_base_and_mine) + " index " + str(robot.mov_path_index))
             # TODO -Try to add fuzzy jump or something (This is when some tile occupies the place you want to move to)

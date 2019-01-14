@@ -4,11 +4,21 @@ pathfinding_heuristic_multiplier = 1.1
 
 pilgrim_will_scavenge_closeby_mines_before_turns = 10
 pilgrim_will_scavenge_closeby_mines = 50
+pilgrim_aging_factor = .5 # Weight for the age of pilgrim after whihc it won't try to search for new mines
+pilgrim_fails_to_get_mine_aging = 25
 chokepoint_modifier = .4
 karbonite_modifier = .05
 fuel_modifier = .05
 
+
 directions = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
+
+crusader_move_directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1), 
+                (0, 2), (0, -2), (2, 0), (-2, 0), (-1, 2), (1, 2), (1, -2), (-1, -2),
+                (2, -1), (2, 1), (-2, 1), (-2, -1), (2, 2), (2, -2), (-2, 2), (-2, -2),
+                (0, 3), (0, -3), (3, 0), (-3, 0)]
+
+non_crusader_move_directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1), (0, 2), (0, -2), (2, 0), (-2, 0)]
 
 enemy_unit_priority_for_prophet = [ 
     2, # Castle
