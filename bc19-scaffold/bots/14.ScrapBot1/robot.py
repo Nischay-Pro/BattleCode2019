@@ -42,6 +42,14 @@ class MyRobot(BCAbstractRobot):
 
     # Castles
     castle_unit_build_log = [] # Maintain the ids of robots, pop and push every turn
+    fuel_mine_locations_from_this_castle = [] # Compute once and store forever
+    fuel_mine_occupancy_from_this_castle = [] # When you assign a unit to mine , make that element 1 else it is zero. TODO - Pilgrim retrun signal telling mine is occupied
+    karb_mine_locations_from_this_castle = [] 
+    karb_mine_occupancy_from_this_castle = []
+    castle_health = None
+    pilgrim_assign_to_mine = 0 # 0 for karbonite, 1 for fuel
+    castle_under_attack = 0 # Boolean, if for 5 turn no more decrease in health, 
+    castle_under_attack_turn = None # Change to turn number of attack
 
     # Church
     church_unit_build_log = [] # Maintains ids of nearby robots 

@@ -16,6 +16,8 @@ def castle(robot):
     # if robot.step % 10 == 0:
     #    robot.log("Turn Number" + str(robot.step))
 
+    castle_intial_check(robot)
+
     castle_count = 0
     church_count = 0
     crusader_count = 0
@@ -25,6 +27,7 @@ def castle(robot):
     friendly_units = castle_all_friendly_units(robot)
     total_karbonite = vision.all_karbonite(robot)
     total_fuel = vision.all_fuel(robot)
+
 
     # robot.log(mapping.analyze_map(robot.get_passable_map()))
 
@@ -42,9 +45,6 @@ def castle(robot):
         elif f_unit.castle_talk == constants.unit_prophet:
             prophet_count+=1
 
-    # robot.log(str([unit.id for unit in vision.sort_visible_friendlies_by_distance(robot)]))
-    # robot.log("=> " + str(robot.me.signal))
-    # If nothing else, replicate your own last message
     communications.self_communicate_loop(robot)
 
     """ Building units -
@@ -76,6 +76,26 @@ def castle(robot):
 
     # robot.log(str(robot.me.signal))
 
+def castle_intial_check(robot):
+    if len(robot.fuel_mine_location_from_this_castle) == 0:
+        robot.fuel_mine_locations_from_this_castle = utility.get_relative_fuel_mine_positions
+        robot.fuel_mine_occupancy_from_this_castle = [0 for i in range(len(robot.fuel_mine_locations_from_this_castle))]
+    if len(robot.karb_mine_location_from_this_castle) == 0:
+        robot.karb_mine_locations_from_this_castle = utility.get_relative_karbonite_mine_positions
+        robot.karb_mine_occupancy_from_this_castle = [0 for i in range(len(robot.karbonite_mine_locations_from_this_castle))]
+    
+    if robot.castle_health == None:
+        robot.castle_health = constants.castle_max_health
+    # Castle Damaged This Turn
+    elif robot.me.health < robot.castle_health:
+        robot.castle_health = robot.me.health
+        robot.castle_under_attack = 1
+        robot.castle_under_attack_turn = robot.step
+    elif robot.castle_under_attack and robot.castle_under_attack_turn + 5 < robot.step:
+        # No longer under attack
+        robot.castle_under_attack = 0
+
+
 def castle_build(robot, unit_type):
     pos_x = robot.me.x
     pos_y = robot.me.y
@@ -101,3 +121,4 @@ def castle_all_friendly_units(robot):
             friendly_units.append(unit)
 
     return friendly_units
+

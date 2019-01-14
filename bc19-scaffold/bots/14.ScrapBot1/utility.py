@@ -160,17 +160,27 @@ def _store_next_step(astar_path: list, bin_list: list, directions: list) -> None
         bin_list[iter_] = step_byte[i]
         iter_ += 1
 
-def encode_self_loop_msg(dest_x: int, dest_y: int,
+def encode_self_loop_msg_with_direction(dest_x: int, dest_y: int,
         astar_path: list, directions: list) -> int:
     bin_list = ['0' for i in range(16)]
     _store_destination(dest_x, dest_y, bin_list)
     _store_next_step(astar_path, bin_list, directions)
     return convert_to_decimal("".join(bin_list))
 
+def encode_self_loop_msg_without_direction(dest_x: int, dest_y: int) -> int:
+    bin_list = ['0' for i in range(16)]
+    _store_destination(dest_x, dest_y, bin_list)
+    return convert_to_decimal("".join(bin_list))
 
-def decode_self_loop_msg(message: int, directions: list) -> tuple:
+def decode_self_loop_msg_with_direction(message: int, directions: list) -> tuple:
     binary_str = convert_to_binary(message)
     direction = convert_to_decimal(binary_str[0:4])
     x_destination = convert_to_decimal(binary_str[4:10])
     y_destination = convert_to_decimal(binary_str[10:16])
     return (direction, x_destination, y_destination)
+
+def decode_self_loop_msg_without_direction(message: int) -> tuple:
+    binary_str = convert_to_binary(message)
+    x_destination = convert_to_decimal(binary_str[4:10])
+    y_destination = convert_to_decimal(binary_str[10:16])
+    return (x_destination, y_destination)

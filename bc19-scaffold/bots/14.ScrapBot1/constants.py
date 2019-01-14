@@ -40,6 +40,9 @@ preacher_min_attack_range = SPECS['UNITS'][SPECS["PREACHER"]]['ATTACK_RADIUS'][0
 preacher_max_attack_range = SPECS['UNITS'][SPECS["PREACHER"]]['ATTACK_RADIUS'][1]
 
 # Initial Health
+castle_max_health = SPECS['UNITS'][SPECS["CASTLE"]]['STARTING_HP']
+church_max_health = SPECS['UNITS'][SPECS["CHURCH"]]['STARTING_HP']
+pilgrim_max_health = SPECS['UNITS'][SPECS["PILGRIM"]]['STARTING_HP']
 crusader_max_health = SPECS['UNITS'][SPECS["CRUSADER"]]['STARTING_HP']
 prophet_max_health = SPECS['UNITS'][SPECS["PROPHET"]]['STARTING_HP']
 preacher_max_health = SPECS['UNITS'][SPECS["PREACHER"]]['STARTING_HP']
