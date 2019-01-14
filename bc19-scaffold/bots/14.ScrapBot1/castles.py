@@ -16,7 +16,7 @@ def castle(robot):
     # if robot.step % 10 == 0:
     #    robot.log("Turn Number" + str(robot.step))
 
-    castle_intial_check(robot)
+    _castle_initial_check(robot)
 
     castle_count = 0
     church_count = 0
@@ -27,7 +27,6 @@ def castle(robot):
     friendly_units = castle_all_friendly_units(robot)
     total_karbonite = vision.all_karbonite(robot)
     total_fuel = vision.all_fuel(robot)
-
 
     # robot.log(mapping.analyze_map(robot.get_passable_map()))
 
@@ -45,8 +44,6 @@ def castle(robot):
         elif f_unit.castle_talk == constants.unit_prophet:
             prophet_count+=1
 
-    communications.self_communicate_loop(robot)
-
     """ Building units -
         Start with 2 pilgrims per castle (as long as karbonite after building remains above 50).
         If sufficient resources(>100 karb, >200 fuel), build, in order -
@@ -57,7 +54,8 @@ def castle(robot):
     """
 
     if robot.step < 2 and robot.karbonite > 60:
-        robot.signal(robot.me.signal + 1, 2)
+        robot.pilgrim_build_number += 1
+        robot.signal(_castle_assign_mine_or_scout(robot), 2)
         return castle_build(robot, constants.unit_pilgrim)
     elif robot.karbonite > 100 and robot.fuel > 200:
         #  if (crusader_count * 3) < pilgrim_count:
@@ -69,20 +67,21 @@ def castle(robot):
         if prophet_count < pilgrim_count:
            return castle_build(robot, constants.unit_prophet)
         elif pilgrim_count < (total_fuel + total_karbonite) * .55:
-            robot.signal(robot.me.signal + 1, 2)
+            robot.pilgrim_build_number += 1
+            robot.signal(_castle_assign_mine_or_scout(robot), 2)
             return castle_build(robot,constants.unit_pilgrim)
         elif robot.step > 500 and robot.karbonite > 300 and robot.fuel > 300:
             return castle_build(robot, constants.unit_prophet)
 
     # robot.log(str(robot.me.signal))
 
-def castle_intial_check(robot):
+def _castle_initial_check(robot):
     if len(robot.fuel_mine_location_from_this_castle) == 0:
-        robot.fuel_mine_locations_from_this_castle = utility.get_relative_fuel_mine_positions
-        robot.fuel_mine_occupancy_from_this_castle = [0 for i in range(len(robot.fuel_mine_locations_from_this_castle))]
+        robot.fuel_mine_locations_from_this_castle = utility.get_relative_fuel_mine_positions(robot)
+        robot.fuel_mine_occupancy_from_this_castle = [-1 for i in range(len(robot.fuel_mine_locations_from_this_castle))]
     if len(robot.karb_mine_location_from_this_castle) == 0:
-        robot.karb_mine_locations_from_this_castle = utility.get_relative_karbonite_mine_positions
-        robot.karb_mine_occupancy_from_this_castle = [0 for i in range(len(robot.karbonite_mine_locations_from_this_castle))]
+        robot.karb_mine_locations_from_this_castle = utility.get_relative_karbonite_mine_positions(robot)
+        robot.karb_mine_occupancy_from_this_castle = [-1 for i in range(len(robot.karbonite_mine_locations_from_this_castle))]
     
     if robot.castle_health == None:
         robot.castle_health = constants.castle_max_health
@@ -95,6 +94,23 @@ def castle_intial_check(robot):
         # No longer under attack
         robot.castle_under_attack = 0
 
+def _castle_assign_mine_or_scout(robot):
+    # TODO - Change as per our requirements of fuel or karbonite
+    # TODO - Change occupancy to robot id when reached mine
+    # TODO - Add scouts
+    # Build a mine
+    if robot.pilgrim_build_number % 2 == 0:
+        for iter_i in range(len(robot.karb_mine_occupancy_from_this_castle)):
+            if robot.karb_mine_occupancy_from_this_castle[iter_i] == -1:
+                robot.karb_mine_occupancy_from_this_castle[iter_i] = 0
+                mine_pos = robot.karb_mine_locations_from_this_castle[iter_i]
+                return communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
+    elif robot.pilgrim_build_number % 2 == 1:
+        for iter_i in range(len(robot.fuel_mine_occupancy_from_this_castle)):
+            if robot.fuel_mine_occupancy_from_this_castle[iter_i] == -1:
+                robot.fuel_mine_occupancy_from_this_castle[iter_i] = 0
+                mine_pos = robot.fuel_mine_locations_from_this_castle[iter_i]
+                return communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
 
 def castle_build(robot, unit_type):
     pos_x = robot.me.x
