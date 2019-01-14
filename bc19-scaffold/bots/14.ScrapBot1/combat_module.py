@@ -48,7 +48,10 @@ def _crusader_combat(robot):
                 return robot.move(new_pos_x - unit_current_pos[0], new_pos_y - unit_current_pos[1])
         return None
 
+
 def _prophet_combat(robot):
+    # TODO : store the health of enemy assuming that it has full health
+    # TODO : remove from dictionary if the health of an enemy becomes zero
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
     if len(visible_enemy_list) == 0:
         return None
@@ -60,24 +63,39 @@ def _prophet_combat(robot):
 
         unit_will_attack_list = []
         unit_will_attack_pilgrim_list = []
+        unit_will_attack_id = []
         for i in range(len(visible_enemy_list)):
             enemy = visible_enemy_list[i]
             enemy_distance = visible_enemy_distance[i]
             if enemy_distance <= unit_attack_range_max and enemy_distance >= unit_attack_range_min:
+                if enemy['id'] not in robot.has_enemy_target_dict:
+                    robot.has_enemy_target_dict[enemy['id']] = enemy
                 if enemy['unit'] == constants.unit_pilgrim:
                     unit_will_attack_pilgrim_list.append(enemy)
                 else:
                     unit_will_attack_list.append(enemy)
+                unit_will_attack_id.append(enemy['id'])
 
+        target_robot_id = robot.is_targeting_robot_with_id
+        enemy = None
         if len(unit_will_attack_list) != 0:
             enemy = unit_will_attack_list[0]
-            return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+            robot.is_targeting_robot_with_id = enemy['id']
+            # return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
         elif len(unit_will_attack_pilgrim_list) != 0:
             enemy = unit_will_attack_pilgrim_list[0]
-            return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+            robot.is_targeting_robot_with_id = enemy['id']
+            # return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
         else:
             # Archers should not be moving towards targets!
             None
+
+        if target_robot_id in unit_will_attack_id:
+            old_enemy = robot.has_enemy_target_dict[target_robot_id]
+            return robot.attack(old_enemy['x'] - unit_current_pos[0], old_enemy['y'] - unit_current_pos[1])
+        if enemy:
+            robot.is_targeting_robot_with_id = enemy['id']
+            return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
         return None
 
 
@@ -140,7 +158,7 @@ def _preacher_attack(robot):
 def default_military_behaviour(robot):
     unit_type = robot.me.unit
 
-    if unit_type == constants.unit_crusader:        
+    if unit_type == constants.unit_crusader:
         return _crusader_combat(robot)
     elif unit_type == constants.unit_preacher:
         return _preacher_attack(robot)
