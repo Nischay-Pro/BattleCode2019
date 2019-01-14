@@ -72,11 +72,30 @@ def pilgrim_move(robot):
             if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and (karb_map[pos_y + direction[0]][pos_x + direction[1]] == 1 or fuel_map[pos_y + direction[0]][pos_x + direction[1]] == 1):
                 return robot.move(direction[1], direction[0])
     
+    # If the mine is already occupied
+    if robot.current_move_destination != None:
+        final_pos_x = robot.current_move_destination[0]
+        final_pos_y = robot.current_move_destination[1]
+        if utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
+            if robot.pilgrim_type != 2:
+                robot.pilgrim_type = 2 # Become a scavenger
+                unused_store, robot.pilgrim_scavenge_mine_location_list = utility.get_relative_mine_positions(robot)
+                robot.pilgrim_scavenge_mine_occupancy_list = [-1 for i in range(len(robot.pilgrim_scavenge_mine_location_list))]
+            for iter_i in range(len(robot.pilgrim_scavenge_mine_location_list)):
+                if robot.pilgrim_scavenge_mine_occupancy_list[iter_i] == -1:
+                    robot.pilgrim_scavenge_mine_occupancy_list[iter_i] = 0
+                    if str(robot.current_move_destination) != str(robot.pilgrim_scavenge_mine_location_list[iter_i]):
+                        robot.current_move_destination = robot.pilgrim_scavenge_mine_location_list[iter_i]
+                        robot.mov_path_between_base_and_mine = None
+                        break
+
     # Just move
     if robot.current_move_destination != None:
         # robot.log("Current mov destination is " + str(robot.current_move_destination))
+        # robot.log("Current location is " + str((robot.me.x, robot.me.y)))
         # Initial search
-        if robot.mov_path_between_base_and_mine == None:
+        if robot.mov_path_between_base_and_mine == None or robot.has_made_random_movement != 0:
+            robot.has_made_random_movement = 0
             robot.mov_path_between_base_and_mine = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
             if robot.mov_path_between_base_and_mine != None:
                 robot.mov_path_index = 0
@@ -89,9 +108,11 @@ def pilgrim_move(robot):
             if str(robot.mov_path_between_base_and_mine[robot.mov_path_index]) == str(robot.current_move_destination):
                 new_pos_x, new_pos_y = robot.mov_path_between_base_and_mine[robot.mov_path_index]
                 # robot.log("Second block , list " + str(robot.mov_path_between_base_and_mine) + " index " + str(robot.mov_path_index))
-                robot.mov_path_index = 0
-                robot.current_move_destination = None
-                return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
+                if not utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y):
+                    robot.pilgrim_mine_ownership = robot.current_move_destination
+                    robot.current_move_destination = None
+                    robot.mov_path_index = 0
+                    return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
             else:
                 robot.mov_path_between_base_and_mine = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
                 robot.mov_path_index = 0
@@ -101,14 +122,20 @@ def pilgrim_move(robot):
         # In middle of the list    
         else:
             robot.mov_path_index = robot.mov_path_index + 1
-            # robot.log(robot.mov_path_between_base_and_mine[robot.mov_path_index])
             new_pos_x, new_pos_y = robot.mov_path_between_base_and_mine[robot.mov_path_index]
-            # robot.log("Fourth block , list " + str(robot.mov_path_between_base_and_mine) + " index " + str(robot.mov_path_index))
+            # robot.log("Fouth block , list " + str(robot.mov_path_between_base_and_mine) + " index " + str(robot.mov_path_index))
+            # TODO -Try to add fuzzy jump or something (This is when some tile occupies the place you want to move to)
+            if utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y):
+                robot.mov_path_between_base_and_mine = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
+                robot.mov_path_index = 0
+                new_pos_x, new_pos_y = robot.mov_path_between_base_and_mine[robot.mov_path_index]
+                # robot.log("Fifth block , list " + str(robot.mov_path_between_base_and_mine) + " index " + str(robot.mov_path_index))
             return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
 
     # Random Movement when not enough time
     for direction in random_directions:
         if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
+            robot.has_made_random_movement = 1
             return robot.move(direction[1], direction[0])
 
     return 0

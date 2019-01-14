@@ -1,4 +1,4 @@
-// Transcrypt'ed from Python, 2019-01-14 13:05:46
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var __name__ = 'org.transcrypt.__runtime__';
 
 function __nest__ (headObject, tailNames, value) {
@@ -1295,7 +1295,7 @@ var __terminal__ = __Terminal__ ();
 var print = __terminal__.print;
 var input = __terminal__.input;
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var __name__$1 = 'battlecode';
 var SPECS = dict ({'COMMUNICATION_BITS': 16, 'CASTLE_TALK_BITS': 8, 'MAX_ROUNDS': 1000, 'TRICKLE_FUEL': 25, 'INITIAL_KARBONITE': 100, 'INITIAL_FUEL': 500, 'MINE_FUEL_COST': 1, 'KARBONITE_YIELD': 2, 'FUEL_YIELD': 10, 'MAX_TRADE': 1024, 'MAX_BOARD_SIZE': 64, 'MAX_ID': 4096, 'CASTLE': 0, 'CHURCH': 1, 'PILGRIM': 2, 'CRUSADER': 3, 'PROPHET': 4, 'PREACHER': 5, 'RED': 0, 'BLUE': 1, 'CHESS_INITIAL': 100, 'CHESS_EXTRA': 20, 'TURN_MAX_TIME': 200, 'MAX_MEMORY': 50000000, 'UNITS': [dict ({'CONSTRUCTION_KARBONITE': null, 'CONSTRUCTION_FUEL': null, 'KARBONITE_CAPACITY': null, 'FUEL_CAPACITY': null, 'SPEED': 0, 'FUEL_PER_MOVE': null, 'STARTING_HP': 100, 'VISION_RADIUS': 100, 'ATTACK_DAMAGE': null, 'ATTACK_RADIUS': null, 'ATTACK_FUEL_COST': null, 'DAMAGE_SPREAD': null}), dict ({'CONSTRUCTION_KARBONITE': 50, 'CONSTRUCTION_FUEL': 200, 'KARBONITE_CAPACITY': null, 'FUEL_CAPACITY': null, 'SPEED': 0, 'FUEL_PER_MOVE': null, 'STARTING_HP': 50, 'VISION_RADIUS': 100, 'ATTACK_DAMAGE': null, 'ATTACK_RADIUS': null, 'ATTACK_FUEL_COST': null, 'DAMAGE_SPREAD': null}), dict ({'CONSTRUCTION_KARBONITE': 10, 'CONSTRUCTION_FUEL': 50, 'KARBONITE_CAPACITY': 20, 'FUEL_CAPACITY': 100, 'SPEED': 4, 'FUEL_PER_MOVE': 1, 'STARTING_HP': 10, 'VISION_RADIUS': 100, 'ATTACK_DAMAGE': null, 'ATTACK_RADIUS': null, 'ATTACK_FUEL_COST': null, 'DAMAGE_SPREAD': null}), dict ({'CONSTRUCTION_KARBONITE': 20, 'CONSTRUCTION_FUEL': 50, 'KARBONITE_CAPACITY': 20, 'FUEL_CAPACITY': 100, 'SPEED': 9, 'FUEL_PER_MOVE': 1, 'STARTING_HP': 40, 'VISION_RADIUS': 36, 'ATTACK_DAMAGE': 10, 'ATTACK_RADIUS': [1, 16], 'ATTACK_FUEL_COST': 10, 'DAMAGE_SPREAD': 0}), dict ({'CONSTRUCTION_KARBONITE': 25, 'CONSTRUCTION_FUEL': 50, 'KARBONITE_CAPACITY': 20, 'FUEL_CAPACITY': 100, 'SPEED': 4, 'FUEL_PER_MOVE': 2, 'STARTING_HP': 20, 'VISION_RADIUS': 64, 'ATTACK_DAMAGE': 10, 'ATTACK_RADIUS': [16, 64], 'ATTACK_FUEL_COST': 25, 'DAMAGE_SPREAD': 0}), dict ({'CONSTRUCTION_KARBONITE': 30, 'CONSTRUCTION_FUEL': 50, 'KARBONITE_CAPACITY': 20, 'FUEL_CAPACITY': 100, 'SPEED': 4, 'FUEL_PER_MOVE': 3, 'STARTING_HP': 60, 'VISION_RADIUS': 16, 'ATTACK_DAMAGE': 20, 'ATTACK_RADIUS': [1, 16], 'ATTACK_FUEL_COST': 15, 'DAMAGE_SPREAD': 3})]});
 var BCAbstractRobot =  __class__ ('BCAbstractRobot', [object], {
@@ -1624,7 +1624,7 @@ var BCAbstractRobot =  __class__ ('BCAbstractRobot', [object], {
 	});}
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:46
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var pathfinding_heuristic_multiplier = 1.1;
 var pilgrim_will_scavenge_closeby_mines_before_turns = 10;
 var pilgrim_will_scavenge_closeby_mines = 50;
@@ -1694,7 +1694,7 @@ var __module_constants__ = /*#__PURE__*/Object.freeze({
     pilgrim_directions: pilgrim_directions
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var pi = Math.PI;
 var e = Math.E;
 var exp = Math.exp;
@@ -1785,7 +1785,7 @@ var __module_math__ = /*#__PURE__*/Object.freeze({
     modf: modf
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var math = {};
 __nest__ (math, '', __module_math__);
 var _array = (function () {
@@ -1861,7 +1861,7 @@ var __module_random__ = /*#__PURE__*/Object.freeze({
     shuffle: shuffle
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var constants = {};
 var random$1 = {};
 __nest__ (constants, '', __module_constants__);
@@ -2008,7 +2008,7 @@ var __module_utility__ = /*#__PURE__*/Object.freeze({
     fuel_less_check: fuel_less_check
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:46
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var constants$1 = {};
 var math$1 = {};
 var utility = {};
@@ -2158,7 +2158,7 @@ var __module_pathfinding__ = /*#__PURE__*/Object.freeze({
     astar_search: astar_search
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var utility$1 = {};
 __nest__ (utility$1, '', __module_utility__);
 var sort_visible_units_by_distance = function (robot) {
@@ -2253,7 +2253,7 @@ var __module_vision__ = /*#__PURE__*/Object.freeze({
     all_fuel: all_fuel
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:46
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var constants$2 = {};
 var pathfinding = {};
 var vision = {};
@@ -2440,7 +2440,7 @@ var __module_combat_module__ = /*#__PURE__*/Object.freeze({
     friendlyfire: friendlyfire
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:46
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var combat_module = {};
 var utility$2 = {};
 __nest__ (combat_module, '', __module_combat_module__);
@@ -2473,7 +2473,7 @@ var __module_prophets__ = /*#__PURE__*/Object.freeze({
     prophet_move: prophet_move
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var combat_module$1 = {};
 var utility$3 = {};
 __nest__ (combat_module$1, '', __module_combat_module__);
@@ -2506,7 +2506,7 @@ var __module_preachers__ = /*#__PURE__*/Object.freeze({
     preacher_move: preacher_move
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:17
 var utility$4 = {};
 __nest__ (utility$4, '', __module_utility__);
 var message_to_castles = function (robot, mesg_type) {
@@ -2631,7 +2631,7 @@ var __module_communications__ = /*#__PURE__*/Object.freeze({
     decode_msg_without_direction: decode_msg_without_direction
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var communications = {};
 var constants$3 = {};
 var pathfinding$1 = {};
@@ -2697,9 +2697,8 @@ var pilgrim_move = function (robot) {
 		}
 	}
 	if (robot.current_move_destination != null) {
-		var __left0__ = robot.current_move_destination;
-		var final_pos_x = __left0__ [0];
-		var final_pos_y = __left0__ [1];
+		var final_pos_x = robot.current_move_destination [0];
+		var final_pos_y = robot.current_move_destination [1];
 		if (utility$5.is_cell_occupied (occupied_map, final_pos_x, final_pos_y)) {
 			if (robot.pilgrim_type != 2) {
 				robot.pilgrim_type = 2;
@@ -2716,9 +2715,10 @@ var pilgrim_move = function (robot) {
 			}
 			for (var iter_i = 0; iter_i < len (robot.pilgrim_scavenge_mine_location_list); iter_i++) {
 				if (robot.pilgrim_scavenge_mine_occupancy_list [iter_i] == -(1)) {
-					robot.pilgrim_scavenge_mine_occupancy_list [iter_i] == 0;
-					if (str (robot.current_move_destination) != robot.pilgrim_scavenge_mine_location_list [iter_i]) {
+					robot.pilgrim_scavenge_mine_occupancy_list [iter_i] = 0;
+					if (str (robot.current_move_destination) != str (robot.pilgrim_scavenge_mine_location_list [iter_i])) {
 						robot.current_move_destination = robot.pilgrim_scavenge_mine_location_list [iter_i];
+						robot.mov_path_between_base_and_mine = null;
 						break;
 					}
 				}
@@ -2726,8 +2726,6 @@ var pilgrim_move = function (robot) {
 		}
 	}
 	if (robot.current_move_destination != null) {
-		robot.log ('Current mov destination is ' + str (robot.current_move_destination));
-		robot.log ('Current location is ' + str (tuple ([robot.me.x, robot.me.y])));
 		if (robot.mov_path_between_base_and_mine == null || robot.has_made_random_movement != 0) {
 			robot.has_made_random_movement = 0;
 			robot.mov_path_between_base_and_mine = pathfinding$1.astar_search (robot, tuple ([robot.me.x, robot.me.y]), robot.current_move_destination, 2);
@@ -2736,7 +2734,6 @@ var pilgrim_move = function (robot) {
 				var __left0__ = robot.mov_path_between_base_and_mine [robot.mov_path_index];
 				var new_pos_x = __left0__ [0];
 				var new_pos_y = __left0__ [1];
-				robot.log ((('First block , list ' + str (robot.mov_path_between_base_and_mine)) + ' index ') + str (robot.mov_path_index));
 				return robot.move (new_pos_x - pos_x, new_pos_y - pos_y);
 			}
 		}
@@ -2746,7 +2743,6 @@ var pilgrim_move = function (robot) {
 				var __left0__ = robot.mov_path_between_base_and_mine [robot.mov_path_index];
 				var new_pos_x = __left0__ [0];
 				var new_pos_y = __left0__ [1];
-				robot.log ((('Second block , list ' + str (robot.mov_path_between_base_and_mine)) + ' index ') + str (robot.mov_path_index));
 				if (!(utility$5.is_cell_occupied (occupied_map, new_pos_x, new_pos_y))) {
 					robot.pilgrim_mine_ownership = robot.current_move_destination;
 					robot.current_move_destination = null;
@@ -2760,7 +2756,6 @@ var pilgrim_move = function (robot) {
 				var __left0__ = robot.mov_path_between_base_and_mine [robot.mov_path_index];
 				var new_pos_x = __left0__ [0];
 				var new_pos_y = __left0__ [1];
-				robot.log ((('Third block , list ' + str (robot.mov_path_between_base_and_mine)) + ' index ') + str (robot.mov_path_index));
 				return robot.move (new_pos_x - pos_x, new_pos_y - pos_y);
 			}
 		}
@@ -2769,14 +2764,12 @@ var pilgrim_move = function (robot) {
 			var __left0__ = robot.mov_path_between_base_and_mine [robot.mov_path_index];
 			var new_pos_x = __left0__ [0];
 			var new_pos_y = __left0__ [1];
-			robot.log ((('Fouth block , list ' + str (robot.mov_path_between_base_and_mine)) + ' index ') + str (robot.mov_path_index));
 			if (utility$5.is_cell_occupied (occupied_map, new_pos_x, new_pos_y)) {
 				robot.mov_path_between_base_and_mine = pathfinding$1.astar_search (robot, tuple ([robot.me.x, robot.me.y]), robot.current_move_destination, 2);
 				robot.mov_path_index = 0;
 				var __left0__ = robot.mov_path_between_base_and_mine [robot.mov_path_index];
 				var new_pos_x = __left0__ [0];
 				var new_pos_y = __left0__ [1];
-				robot.log ((('Fifth block , list ' + str (robot.mov_path_between_base_and_mine)) + ' index ') + str (robot.mov_path_index));
 			}
 			return robot.move (new_pos_x - pos_x, new_pos_y - pos_y);
 		}
@@ -2877,7 +2870,7 @@ var __module_pilgrims__ = /*#__PURE__*/Object.freeze({
     _make_church: _make_church
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:17
 var combat_module$2 = {};
 var utility$6 = {};
 __nest__ (combat_module$2, '', __module_combat_module__);
@@ -2907,7 +2900,7 @@ var __module_crusaders__ = /*#__PURE__*/Object.freeze({
     crusader_move: crusader_move
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:17
 var constants$4 = {};
 var utility$7 = {};
 __nest__ (utility$7, '', __module_utility__);
@@ -2945,7 +2938,7 @@ var __module_production_module__ = /*#__PURE__*/Object.freeze({
     default_production_order: default_production_order
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:17
 var constants$5 = {};
 var production_module = {};
 var utility$8 = {};
@@ -2960,7 +2953,7 @@ var __module_churches__ = /*#__PURE__*/Object.freeze({
     church: church
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:17
 var constants$6 = {};
 __nest__ (constants$6, '', __module_constants__);
 var get_nearby_map = function (x, y, given_map, grid_radius) {
@@ -3108,7 +3101,7 @@ var __module_mapping__ = /*#__PURE__*/Object.freeze({
     find_resource_rich: find_resource_rich
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:47
+// Transcrypt'ed from Python, 2019-01-14 13:31:17
 var communications$1 = {};
 var constants$7 = {};
 var mapping = {};
@@ -3195,7 +3188,7 @@ var _castle_initial_check = function (robot) {
 	}
 };
 var _castle_assign_mine_or_scout = function (robot) {
-	if (__mod__ (robot.pilgrim_build_number, 2) == 0) {
+	if (__mod__ (robot.pilgrim_build_number, 2) == 1) {
 		for (var iter_i = 0; iter_i < len (robot.karb_mine_occupancy_from_this_castle); iter_i++) {
 			if (robot.karb_mine_occupancy_from_this_castle [iter_i] == -(1)) {
 				robot.karb_mine_occupancy_from_this_castle [iter_i] = 0;
@@ -3205,7 +3198,7 @@ var _castle_assign_mine_or_scout = function (robot) {
 			}
 		}
 	}
-	else if (__mod__ (robot.pilgrim_build_number, 2) == 1) {
+	else if (__mod__ (robot.pilgrim_build_number, 2) == 0) {
 		for (var iter_i = 0; iter_i < len (robot.fuel_mine_occupancy_from_this_castle); iter_i++) {
 			if (robot.fuel_mine_occupancy_from_this_castle [iter_i] == -(1)) {
 				robot.fuel_mine_occupancy_from_this_castle [iter_i] = 0;
@@ -3252,7 +3245,7 @@ var __module_castles__ = /*#__PURE__*/Object.freeze({
     castle_all_friendly_units: castle_all_friendly_units
 });
 
-// Transcrypt'ed from Python, 2019-01-14 13:05:46
+// Transcrypt'ed from Python, 2019-01-14 13:31:16
 var castles = {};
 var churches = {};
 var communications$2 = {};

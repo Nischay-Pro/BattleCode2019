@@ -14,7 +14,7 @@ def castle(robot):
     #     robot.log("Script Helper Turn@" + str(robot.step))
 
     # if robot.step % 10 == 0:
-    #    robot.log("Turn Number" + str(robot.step))
+        # robot.log("Turn Number" + str(robot.step))
 
     _castle_initial_check(robot)
 
@@ -76,13 +76,14 @@ def castle(robot):
     # robot.log(str(robot.me.signal))
 
 def _castle_initial_check(robot):
-    if len(robot.fuel_mine_location_from_this_castle) == 0:
-        robot.fuel_mine_locations_from_this_castle = utility.get_relative_fuel_mine_positions(robot)
+    if len(robot.fuel_mine_locations_from_this_castle) == 0:
+        unused_store, robot.fuel_mine_locations_from_this_castle = utility.get_relative_fuel_mine_positions(robot)
         robot.fuel_mine_occupancy_from_this_castle = [-1 for i in range(len(robot.fuel_mine_locations_from_this_castle))]
-    if len(robot.karb_mine_location_from_this_castle) == 0:
-        robot.karb_mine_locations_from_this_castle = utility.get_relative_karbonite_mine_positions(robot)
-        robot.karb_mine_occupancy_from_this_castle = [-1 for i in range(len(robot.karbonite_mine_locations_from_this_castle))]
-    
+
+    if len(robot.karb_mine_locations_from_this_castle) == 0:
+        unused_store, robot.karb_mine_locations_from_this_castle = utility.get_relative_karbonite_mine_positions(robot)
+        robot.karb_mine_occupancy_from_this_castle = [-1 for i in range(len(robot.karb_mine_locations_from_this_castle))]
+
     if robot.castle_health == None:
         robot.castle_health = constants.castle_max_health
     # Castle Damaged This Turn
@@ -99,18 +100,20 @@ def _castle_assign_mine_or_scout(robot):
     # TODO - Change occupancy to robot id when reached mine
     # TODO - Add scouts
     # Build a mine
-    if robot.pilgrim_build_number % 2 == 0:
+    if robot.pilgrim_build_number % 2 == 1:
         for iter_i in range(len(robot.karb_mine_occupancy_from_this_castle)):
             if robot.karb_mine_occupancy_from_this_castle[iter_i] == -1:
                 robot.karb_mine_occupancy_from_this_castle[iter_i] = 0
                 mine_pos = robot.karb_mine_locations_from_this_castle[iter_i]
-                return communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
-    elif robot.pilgrim_build_number % 2 == 1:
+                comms = communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
+                return comms
+    elif robot.pilgrim_build_number % 2 == 0:
         for iter_i in range(len(robot.fuel_mine_occupancy_from_this_castle)):
             if robot.fuel_mine_occupancy_from_this_castle[iter_i] == -1:
                 robot.fuel_mine_occupancy_from_this_castle[iter_i] = 0
                 mine_pos = robot.fuel_mine_locations_from_this_castle[iter_i]
-                return communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
+                comms = communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
+                return comms
 
 def castle_build(robot, unit_type):
     pos_x = robot.me.x

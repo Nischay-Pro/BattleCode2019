@@ -77,7 +77,7 @@ def _prophet_combat(robot):
             return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
         else:
             # Archers should not be moving towards targets!
-            None
+            return None
         return None
 
 

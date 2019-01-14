@@ -25,6 +25,7 @@ def find_unit_type(self, map):
 
 # TODO - Add condition that team has fuel before making it move
 # TODO - Before final turn, make sure that as much resources has been consumed
+# TODO - Symmetry variable use
 class MyRobot(BCAbstractRobot):
 
     step = -1
@@ -37,10 +38,14 @@ class MyRobot(BCAbstractRobot):
     our_original_castle_location = None # Equivalent to `our_castle_or_church_base` if built by castle, otherwise given by church
 
     # Pilgrims
-    pilgrim_mine_ownership = None # Does pilgrim own a mine or is traversing back and forth -> 0 or 1
+    pilgrim_type = 0 # 0 for miner, 1 for transporter, 2 for scavenger and 3 for scout
+    pilgrim_mine_ownership = None # Does pilgrim own a mine or is traversing back and forth -> Tuple denotes mine position
     mov_path_between_base_and_mine = None # So we can go back and forth by reversing list
     mov_path_index = 0 # to keep track of movement in the above index
     pilgrim_in_danger = 0 # Boolean, true if it has seen enemy unit and no friendly combat units in vision
+    has_made_random_movement = 0
+    pilgrim_scavenge_mine_location_list = []
+    pilgrim_scavenge_mine_occupancy_list = []
 
     # Castles
     castle_unit_build_log = [] # Maintain the ids of robots, pop and push every turn
@@ -89,10 +94,10 @@ class MyRobot(BCAbstractRobot):
             return castles.castle(self)
         # elif unit_type == unit_church:
         #     return churches.church(self)
-        elif unit_type == constants.unit_crusader:
-            return crusaders.crusader(self)
-        elif unit_type == constants.unit_preacher:
-            return preachers.preacher(self)
+        # elif unit_type == constants.unit_crusader:
+        #     return crusaders.crusader(self)
+        # elif unit_type == constants.unit_preacher:
+        #     return preachers.preacher(self)
         elif unit_type == constants.unit_prophet:
             return prophets.prophet(self)
         elif unit_type == constants.unit_pilgrim:
