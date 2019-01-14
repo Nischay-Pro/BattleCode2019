@@ -37,7 +37,8 @@ class MyRobot(BCAbstractRobot):
 
     # Pilgrims
     pilgrim_mine_ownership = None # Does pilgrim own a mine or is traversing back and forth -> 0 or 1
-    mov_path_between_base_and_mine = None # So we can go back and forth by reversing list
+    mov_path_between_base_and_mine = [] # So we can go back and forth by reversing list
+    mov_path_index = 0 # to keep track of movement in the above index
     pilgrim_in_danger = 0 # Boolean, true if it has seen enemy unit and no friendly combat units in vision
 
     # Castles
@@ -49,7 +50,7 @@ class MyRobot(BCAbstractRobot):
 
     # Combat Units
     is_targeting_robot_with_id = None # Remember robot to kill, after current turn
-    has_enemy_target_list = [] # Pop and 
+    has_enemy_target_dict = {} # Pop and 
     is_fleeing_to_home_base = 0 # Boolean, switch to one if routed
     has_unit_value = 1 # Decreases if less health or too much danger
 
