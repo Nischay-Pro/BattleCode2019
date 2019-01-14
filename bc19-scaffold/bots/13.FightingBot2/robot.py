@@ -31,20 +31,14 @@ def find_unit_type(self, map):
 class MyRobot(BCAbstractRobot):
 
     step = -1
-    unit_spawn_loc = None
 
     def turn(self):
-        
         self.step += 1
         unit_type = self.me['unit']
         
         # DEBUG
         # self.log("START TURN " + self.step)
         # self.log("Running pathfinding")
-
-        if self.unit_spawn_loc is None:
-            # first turn!
-            self.unit_spawn_loc = (self.me['x'], self.me['y'])
 
         self.castle_talk(self.me.unit)
 

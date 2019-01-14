@@ -19,10 +19,6 @@ __pragma__('tconv')
 
 # Helper Function
 
-def go_home(self):
-    unit_map = self.getVisibleRobotMap()
-    # unit_type  = SPECS['CASTLE']
-
 def find_unit_type(self, map):
     None
 
@@ -31,7 +27,31 @@ def find_unit_type(self, map):
 class MyRobot(BCAbstractRobot):
 
     step = -1
-    unit_spawn_loc = None
+    
+    unit_spawn_loc = None # Give location of unit spwaned -> Tuple
+    current_move_destination = None # Give the current destination to move to -> Tuple
+    built_by_a_castle = 0 # Boolean
+    built_by_a_church = 0 # Boolean
+    our_castle_or_church_base = None # Give location of initial castles-> Tuple
+    our_original_castle_location = None # Equivalent to `our_castle_or_church_base` if built by castle, otherwise given by church
+
+    # Pilgrims
+    pilgrim_mine_ownership = None # Does pilgrim own a mine or is traversing back and forth -> 0 or 1
+    mov_path_between_base_and_mine = None # So we can go back and forth by reversing list
+    pilgrim_in_danger = 0 # Boolean, true if it has seen enemy unit and no friendly combat units in vision
+
+    # Castles
+    castle_unit_build_log = [] # Maintain the ids of robots, pop and push every turn
+
+    # Church
+    church_unit_build_log = [] # Maintains ids of nearby robots 
+    home_castle_location = None # TODO - Given by pilgrim that built church
+
+    # Combat Units
+    is_targeting_robot_with_id = None # Remember robot to kill, after current turn
+    has_enemy_target_list = [] # Pop and 
+    is_fleeing_to_home_base = 0 # Boolean, switch to one if routed
+    has_unit_value = 1 # Decreases if less health or too much danger
 
     def turn(self):
         
@@ -42,11 +62,13 @@ class MyRobot(BCAbstractRobot):
         # self.log("START TURN " + self.step)
         # self.log("Running pathfinding")
 
+        # Get spawn location
         if self.unit_spawn_loc is None:
             # first turn!
             self.unit_spawn_loc = (self.me['x'], self.me['y'])
 
         self.castle_talk(self.me.unit)
+
 
         if self.step % 200 == 3 and unit_type == constants.unit_castle:
             # robot.log(str(self.me))

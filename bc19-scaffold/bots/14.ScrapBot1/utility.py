@@ -1,6 +1,8 @@
 import random
 import constants
 
+# TODO - Build a pop and push function for list
+
 def is_out_of_bounds(map_dim, pos_x, pos_y):
     return pos_x < 0 or pos_y < 0 or pos_x >= map_dim or pos_y >= map_dim
 
