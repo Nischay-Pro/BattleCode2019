@@ -13,6 +13,26 @@ def is_cell_occupied(occupied_map, pos_x, pos_y):
     else:
         return True
 
+def is_cell_resourceful(karb_map, fuel_map, pos_x, pos_y):
+    if is_out_of_bounds(len(karb_map), pos_x, pos_y):
+        return False
+    elif karb_map[pos_y][pos_x] == 1:
+        return True
+    elif fuel_map[pos_y][pos_x] == 1:
+        return True
+    else:
+        return False
+
+def is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x, pos_y):
+    if is_cell_occupied(occupied_map, pos_x, pos_y):
+        return False
+    elif passable_map[pos_y][pos_x] != 1:
+        return False
+    elif is_cell_resourceful(karb_map, fuel_map, pos_x, pos_y):
+        return False
+    else:
+        return True
+
 def random_cells_around():
     dirs = constants.directions
     random.shuffle(dirs, random.random)

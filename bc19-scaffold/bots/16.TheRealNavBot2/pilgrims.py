@@ -78,7 +78,7 @@ def pilgrim_move(robot):
     # TODO - Improve this code snippet to mine, if in visible region and empty
     if robot.me.turn > constants.pilgrim_will_scavenge_closeby_mines_after_turns and robot.me.turn < constants.pilgrim_will_scavenge_closeby_mines_before_turns:
         for direction in random_directions:
-            if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and (karb_map[pos_y + direction[0]][pos_x + direction[1]] == 1 or fuel_map[pos_y + direction[0]][pos_x + direction[1]] == 1):
+            if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and utility.is_cell_resourceful(karb_map, fuel_map, pos_x + direction[1],  pos_y + direction[0]):
                 return robot.move(direction[1], direction[0])
 
     # TODO - Make into scout if too old
@@ -144,7 +144,7 @@ def pilgrim_mine(robot):
     karb_map = robot.get_karbonite_map()
     fuel_map = robot.get_fuel_map()
 
-    if karb_map[pos_y][pos_x] == 1 or fuel_map[pos_y][pos_x] == 1:
+    if utility.is_cell_resourceful(karb_map, fuel_map, pos_x, pos_y):
         robot.signal(0, 0)
         return robot.mine()
     else:
@@ -162,7 +162,7 @@ def pilgrim_full(robot):
     occupied_map = robot.get_visible_robot_map()
     directions = constants.directions
 
-    if karb_map[pos_y][pos_x] == 1 or fuel_map[pos_y][pos_x] == 1:
+    if utility.is_cell_resourceful(karb_map, fuel_map, pos_x, pos_y):
         unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)
         if friendly_units != None or len(friendly_units) != 0:
             for f_unit in friendly_units:
@@ -191,11 +191,11 @@ def _make_church(robot):
     # FIXME - Don't build churches next to each other
     potential_church_postitons = []
     for p_church_pos in directions:
-        if not utility.is_cell_occupied(occupied_map, pos_x + p_church_pos[1], pos_y + p_church_pos[0]) and passable_map[pos_y + p_church_pos[0]][pos_x + p_church_pos[1]] == 1 and karb_map[pos_y + p_church_pos[0]][pos_x + p_church_pos[1]] != 1 and fuel_map[pos_y + p_church_pos[0]][pos_x + p_church_pos[1]] != 1:
+        if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x + p_church_pos[1], pos_y + p_church_pos[0]):
             count = 0
             for direction in directions:
                 if not utility.is_out_of_bounds(len(occupied_map), pos_x + p_church_pos[1] + direction[1], pos_y + p_church_pos[0] + direction[0]):
-                    if karb_map[pos_y + p_church_pos[0] + direction[0]][pos_x + p_church_pos[1] + direction[1]] == 1 or fuel_map[pos_y + p_church_pos[0] + direction[0]][pos_x + p_church_pos[1] + direction[1]] == 1:
+                    if utility.is_cell_resourceful(karb_map, fuel_map, pos_x + p_church_pos[1] + direction[1], pos_y + p_church_pos[0] + direction[0]):
                         count += 1
             potential_church_postitons.append((p_church_pos[0], p_church_pos[1], count))
 
