@@ -158,7 +158,7 @@ def _choose_bug_walk_direction(des_x, des_y, pos_x, pos_y):
         else:
             return (2 * dir_x, 0)
 
-def bug_walk(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, robot):
+def bug_walk(passable_map, occupied_map, des_x, des_y, pos_x, pos_y):
     direction = _choose_bug_walk_direction(des_x, des_y, pos_x, pos_y)
 
     diff_x = des_x - pos_x
@@ -175,7 +175,7 @@ def bug_walk(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, robot):
                 return (0, direction[1] * 2)
         elif not utility.is_cell_occupied(occupied_map, pos_x + direction[0] * 2, pos_y):
             if passable_map[pos_y][pos_x + direction[0] * 2] == 1:
-                return (direction[1] * 2, 0)
+                return (direction[0] * 2, 0)
     elif direction[0] == 0:
         if not utility.is_cell_occupied(occupied_map, pos_x + dir_x, pos_y + dir_y):
             if passable_map[pos_y + dir_y][pos_x + dir_x] == 1:

@@ -1,3 +1,5 @@
+.vscode
+
 *.bc19
 !bc19-scaffold/replays/*.bc19
 bc19-scaffold/script/seed_logs/seed_1.txt
