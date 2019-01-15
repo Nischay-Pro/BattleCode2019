@@ -4,6 +4,7 @@ import communications
 import constants
 import pathfinding
 import movement
+import mapping
 
 def pilgrim(robot):
 
@@ -24,11 +25,13 @@ def pilgrim(robot):
     if pilgrim_is_mining !=0:
         return pilgrim_is_mining
 
-    # Recieve signal from castle on which mine to go to and start self broadcasting
-    if robot.me.signal == 0 and robot.current_move_destination == None:
+    # Recieve signal from castle on which mine to go to
+    if robot.step == 0:
         unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)
         for friendly_unit in friendly_units:
             if friendly_unit.unit == 0 and friendly_unit.signal > 0:
+                robot.built_by_a_castle = 1
+                robot.built_by_a_church = 0
                 _pilgrims_initial_check(robot, friendly_unit)
                 break
 
@@ -36,21 +39,22 @@ def pilgrim(robot):
         return None
 
     # TODO - Add code to make pilgrim move to church or castle rather just building a new church
-    
     # Move Section
-
     pilgrim_is_moving = pilgrim_move(robot)
     if pilgrim_is_moving !=0:
         return pilgrim_is_moving
 
-# 
+#
 def _pilgrims_initial_check(robot, friendly_unit):
-    robot.built_by_a_castle = 1
     robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
     robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
-    robot.our_original_castle_location = robot.our_castle_or_church_base
-
     robot.pilgrim_mine_ownership = 1
+
+    if robot.map_symmetry == None:
+        mapping.return_map_symmetry(robot)
+
+    if len(robot.enemy_castles) == 0 and robot.built_by_a_castle == 1:
+        robot.enemy_castles.append(mapping.find_symmetrical_point(robot, friendly_unit['x'], friendly_unit['y'], robot.map_symmetry))
 
 def pilgrim_move(robot):
     # Emergency case, allows pilgrims to mine
@@ -67,7 +71,7 @@ def pilgrim_move(robot):
     # May change for impossible resources
 
     if movement.is_completely_surrounded(robot):
-        robot.log("Completely surrounded pilgrim or attained Nirvana") 
+        robot.log("Completely surrounded pilgrim or attained Nirvana")
         return 0
 
     # Capture and start mining any resource if more than 50 turns since creation and no mine
@@ -76,7 +80,7 @@ def pilgrim_move(robot):
         for direction in random_directions:
             if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and (karb_map[pos_y + direction[0]][pos_x + direction[1]] == 1 or fuel_map[pos_y + direction[0]][pos_x + direction[1]] == 1):
                 return robot.move(direction[1], direction[0])
-    
+
     # TODO - Make into scout if too old
     # If the mine is already occupied
     if robot.current_move_destination != None and robot.step < robot.pilgrim_mine_age_limt:
@@ -96,56 +100,15 @@ def pilgrim_move(robot):
                         # Check if new mine is in vision and occupied, then move to next. Counters aging by using good eyes.
                         final_pos_x = robot.current_move_destination[0]
                         final_pos_y = robot.current_move_destination[1]
-                        robot.mov_path_between_base_and_mine = None
+                        robot.mov_path_between_location_and_destination = None
                         if utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
-                            break    
+                            break
 
     # Just move
-    if robot.current_move_destination != None and robot.step < robot.pilgrim_mine_age_limt:
-        # robot.log("Current mov destination is " + str(robot.current_move_destination))
-        # robot.log("Current location is " + str((robot.me.x, robot.me.y)))
-        # Initial search
-        if robot.mov_path_between_base_and_mine == None or robot.has_made_random_movement != 0:
-            robot.has_made_random_movement = 0
-            robot.mov_path_between_base_and_mine = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
-            if robot.mov_path_between_base_and_mine != None:
-                robot.mov_path_index = 0
-                new_pos_x, new_pos_y = robot.mov_path_between_base_and_mine[robot.mov_path_index]
-                # robot.log("First block , list " + str(robot.mov_path_between_base_and_mine) + " index " + str(robot.mov_path_index))
-                return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
-        # Reached end of move list
-        elif len(robot.mov_path_between_base_and_mine) - 1 == robot.mov_path_index + 1:
-            robot.mov_path_index = robot.mov_path_index + 1
-            if str(robot.mov_path_between_base_and_mine[robot.mov_path_index]) == str(robot.current_move_destination):
-                new_pos_x, new_pos_y = robot.mov_path_between_base_and_mine[robot.mov_path_index]
-                # robot.log("Second block , list " + str(robot.mov_path_between_base_and_mine) + " index " + str(robot.mov_path_index))
-                if not utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y):
-                    robot.pilgrim_mine_ownership = robot.current_move_destination
-                    robot.current_move_destination = None
-                    robot.mov_path_index = 0
-                    return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
-            else:
-                robot.mov_path_between_base_and_mine = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
-                robot.mov_path_index = 0
-                new_pos_x, new_pos_y = robot.mov_path_between_base_and_mine[robot.mov_path_index]
-                # robot.log("Third block , list " + str(robot.mov_path_between_base_and_mine) + " index " + str(robot.mov_path_index))
-                return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
-        # In middle of the list    
-        else:
-            robot.mov_path_index = robot.mov_path_index + 1
-            if len(robot.mov_path_between_base_and_mine[robot.mov_path_index]) == 0 or robot.mov_path_between_base_and_mine[robot.mov_path_index] == None:
-                robot.log("Recomputing")
-                robot.mov_path_between_base_and_mine == None
-                return 0
-            new_pos_x, new_pos_y = robot.mov_path_between_base_and_mine[robot.mov_path_index]
-            # robot.log("Fouth block , list " + str(robot.mov_path_between_base_and_mine) + " index " + str(robot.mov_path_index))
-            # TODO -Try to add fuzzy jump or something (This is when some tile occupies the place you want to move to)
-            if utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y):
-                robot.mov_path_between_base_and_mine = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
-                robot.mov_path_index = 0
-                new_pos_x, new_pos_y = robot.mov_path_between_base_and_mine[robot.mov_path_index]
-                # robot.log("Fifth block , list " + str(robot.mov_path_between_base_and_mine) + " index " + str(robot.mov_path_index))
-            return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
+    if robot.step < robot.pilgrim_mine_age_limt:
+        move_command = movement.move_to_destination(robot)
+        if move_command != None:
+            return move_command
 
     # Random Movement when not enough time
     for direction in random_directions:

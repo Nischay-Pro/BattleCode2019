@@ -130,7 +130,7 @@ def _preacher_attack(robot):
             friendly = visible_friendly_list[i]
             friendly_distance = visible_friendly_distance[i]
             if friendly_distance <= unit_attack_range_max and friendly_distance >= unit_attack_range_min:
-                friendly_list.append(friendly)      
+                friendly_list.append(friendly)
 
         if len(friendly_list) != 0:
             if friendlyfire():

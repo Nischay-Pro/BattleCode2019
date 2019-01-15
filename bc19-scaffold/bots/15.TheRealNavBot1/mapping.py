@@ -37,6 +37,22 @@ def analyze_map(given_map, grid_radius = 2):
 
     return results
 
+def find_symmetrical_point(robot, pos_x, pos_y, is_hoz_symmetry):    
+    map_length = len(robot.get_passable_map())
+    if is_hoz_symmetry == 0:
+        return (pos_x, map_length - 1 - pos_y)
+    else:
+        return (map_length - 1 - pos_x, pos_y)
+
+def return_map_symmetry(robot):
+    passable_map = robot.get_passable_map()
+    if check_hoz_symmetry(passable_map):
+        # robot.log("Is horizontal")
+        robot.map_symmetry = 0
+    else:
+        # robot.log("Is vertical")
+        robot.map_symmetry = 1
+    
 def check_hoz_symmetry(given_map):
     start = 0
     end = len(given_map) - 1

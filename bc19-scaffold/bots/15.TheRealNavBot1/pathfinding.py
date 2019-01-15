@@ -8,7 +8,7 @@ def _is_higher_than(a, b):
         return True
     return a[1] > b[1] or (a[1] == b[1] and a[2] < b[2])
 
-# TODO - Add a fuel option and initialise the dirs vector, do stuff to it on the basis of that 
+# TODO - Add a fuel option and initialise the dirs vector, do stuff to it on the basis of that
 def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
 
     if unit_type_move == 2:
@@ -16,7 +16,7 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
     elif unit_type_move == 1:
         dirs = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1)]
     elif unit_type_move == 3:
-        dirs = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1), 
+        dirs = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1),
                 (0, 2), (0, -2), (2, 0), (-2, 0), (-1, 2), (1, 2), (1, -2), (-1, -2),
                 (2, -1), (2, 1), (-2, 1), (-2, -1), (2, 2), (2, -2), (-2, 2), (-2, -2),
                 (0, 3), (0, -3), (3, 0), (-3, 0)]
@@ -35,12 +35,12 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
         return None
 
     def retrace_path(pos_initial, pos_final, came_from):
-        current = pos_final 
+        current = pos_final
         path = []
-        while current != pos_initial: 
+        while current != pos_initial:
            path.append(current)
            current = came_from[current]
-        # path.append(pos_initial) 
+        # path.append(pos_initial)
         path.reverse()
         return path
 
@@ -112,7 +112,7 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
     def astar_heuristic(pos_intermediate, pos_final):
         (x1, y1) = pos_intermediate
         (x2, y2) = pos_final
-        dx = abs(x1 - x2) 
+        dx = abs(x1 - x2)
         dy = abs(y1 - y2)
         heuristic = (dx + dy)
         return heuristic * (constants.pathfinding_heuristic_multiplier)

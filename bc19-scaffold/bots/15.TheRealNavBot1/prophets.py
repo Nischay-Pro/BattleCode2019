@@ -15,7 +15,7 @@ def prophet_move(robot):
     prophet_attack_aggr_mode = combat_module.give_military_command(robot)
     if prophet_attack_aggr_mode != None:
         return prophet_attack_aggr_mode
-    
+
     if utility.fuel_less_check(robot):
         return None
 
