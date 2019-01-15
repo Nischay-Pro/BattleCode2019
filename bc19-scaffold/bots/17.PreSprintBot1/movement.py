@@ -110,6 +110,7 @@ def find_dockspots(robot, depot):
 
     depot_x = depot.x
     depot_y = depot.y
+
     dockspots = []
 
     for direction in directions:
