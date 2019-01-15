@@ -83,6 +83,25 @@ def pilgrim_move(robot):
 
     # TODO - Make into scout if too old
     # If the mine is already occupied
+    _is_pilgrim_scavenging(robot)
+
+    # Just move
+    if robot.step < robot.pilgrim_mine_age_limt:
+        move_command = movement.move_to_destination(robot)
+        if move_command != None:
+            return move_command
+
+    # Random Movement when not enough time
+    for direction in random_directions:
+        if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
+            robot.has_made_random_movement = 1
+            return robot.move(direction[1], direction[0])
+
+    return 0
+
+def _is_pilgrim_scavenging(robot):
+    occupied_map = robot.get_visible_robot_map()
+
     if robot.current_move_destination != None and robot.step < robot.pilgrim_mine_age_limt:
         final_pos_x = robot.current_move_destination[0]
         final_pos_y = robot.current_move_destination[1]
@@ -101,22 +120,8 @@ def pilgrim_move(robot):
                         final_pos_x = robot.current_move_destination[0]
                         final_pos_y = robot.current_move_destination[1]
                         robot.mov_path_between_location_and_destination = None
-                        if utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
+                        if not utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
                             break
-
-    # Just move
-    if robot.step < robot.pilgrim_mine_age_limt:
-        move_command = movement.move_to_destination(robot)
-        if move_command != None:
-            return move_command
-
-    # Random Movement when not enough time
-    for direction in random_directions:
-        if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
-            robot.has_made_random_movement = 1
-            return robot.move(direction[1], direction[0])
-
-    return 0
 
 def pilgrim_mine(robot):
     pos_x = robot.me.x
