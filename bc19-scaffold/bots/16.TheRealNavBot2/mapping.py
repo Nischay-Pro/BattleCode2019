@@ -37,7 +37,7 @@ def analyze_map(given_map, grid_radius = 2):
 
     return results
 
-def find_symmetrical_point(robot, pos_x, pos_y, is_hoz_symmetry):    
+def find_symmetrical_point(robot, pos_x, pos_y, is_hoz_symmetry):
     map_length = len(robot.get_passable_map())
     if is_hoz_symmetry == 0:
         return (pos_x, map_length - 1 - pos_y)
@@ -52,7 +52,7 @@ def return_map_symmetry(robot):
     else:
         # robot.log("Is vertical")
         robot.map_symmetry = 1
-    
+
 def check_hoz_symmetry(given_map):
     start = 0
     end = len(given_map) - 1
@@ -134,3 +134,62 @@ def find_resource_rich(robot, grid_radius = 2):
         y += sub_side
 
     return results
+
+def get_friendly_influence(robot):
+    visible_map = robot.get_visible_robot_map()
+    pos_x = robot.me.x
+    pos_y = robot.me.y
+    side = len(visible_map)
+
+    visible_area = 0
+    visible_friendlies = 0
+
+    for i in range(side):
+        for j in range(side):
+            if visible_map[i][j] > -1:
+                visible_area += 1
+                if visible_map[i][j] > 0:
+                    if robot.get_robot(visible_map[i][j]).team == robot.me.team:
+                        visible_friendlies += 1
+
+    return visible_friendlies / visible_area
+
+def get_enemy_influence(robot):
+    visible_map = robot.get_visible_robot_map()
+    pos_x = robot.me.x
+    pos_y = robot.me.y
+    side = len(visible_map)
+
+    visible_area = 0
+    visible_enemies = 0
+
+    for i in range(side):
+        for j in range(side):
+            if visible_map[i][j] > -1:
+                visible_area += 1
+                if visible_map[i][j] > 0:
+                    if robot.get_robot(visible_map[i][j]).team != robot.me.team:
+                        visible_enemies += 1
+
+    return visible_enemies / visible_area
+
+def get_tension(robot):
+    visible_map = robot.get_visible_robot_map()
+    pos_x = robot.me.x
+    pos_y = robot.me.y
+    side = len(visible_map)
+
+    visible_area = 0
+    visible_friendlies = 0
+
+    for i in range(side):
+        for j in range(side):
+            if visible_map[i][j] > -1:
+                visible_area += 1
+                if visible_map[i][j] > 0:
+                    if robot.get_robot(visible_map[i][j]).team == robot.me.team:
+                        visible_friendlies += 1
+                    else:
+                        visible_friendlies -= 1
+
+    return visible_friendlies / visible_area
