@@ -77,6 +77,16 @@ class MyRobot(BCAbstractRobot):
     is_fleeing_to_home_base = 0 # Boolean, switch to one if routed
     has_unit_value = 1 # Decreases if less health or too much danger
 
+    # Crusader
+
+    # Prophet
+
+    prophet_health = None
+    prophet_under_attack = None
+    prophet_under_attack_turn = None
+
+    # Mages
+
     # Misc
 
     def turn(self):

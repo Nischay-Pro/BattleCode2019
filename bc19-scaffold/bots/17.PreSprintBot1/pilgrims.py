@@ -89,7 +89,7 @@ def pilgrim_move(robot):
             if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and utility.is_cell_resourceful(karb_map, fuel_map, pos_x + direction[1],  pos_y + direction[0]):
                 return robot.move(direction[1], direction[0])
 
-    # TODO - Make into scout if too old
+    # TODO - Make into scout if too old, which will scout enemy bases
     # If the mine is already occupied
     _is_pilgrim_scavenging(robot)
 
