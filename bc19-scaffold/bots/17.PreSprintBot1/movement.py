@@ -114,7 +114,7 @@ def find_dockspots(robot, depot):
     dockspots = []
 
     for direction in directions:
-        if not utility.is_cell_resourceful(karb_map, fuel_map, depot_x + direction[0], depot_y + direction[1]) and passable_map[depot_y + direction[1]][depot_x + direction[0]] == 1:
+        if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, depot_x + direction[0], depot_y + direction[1]):
             dockspots.append((depot_x + direction[0], depot_y + direction[1]))
 
     return dockspots
