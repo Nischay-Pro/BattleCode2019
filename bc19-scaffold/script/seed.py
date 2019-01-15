@@ -75,7 +75,7 @@ def main():
         errorman = []
         counter = 10
         for line in iter(process.stdout.readline, b''):
-            if time.time() - antitravis >= 800:
+            if time.time() - antitravis >= 100:
                 antitravis = time.time()
                 print("Travis Here is some log")
             data = line.decode(sys.stdout.encoding)
