@@ -128,3 +128,77 @@ def fuel_less_check(robot):
         return True
     else:
         return False
+
+def get_closest_coordinate(main_position, list_position):
+    least_curr = []
+    least_dist = 100000
+    for index in range(len(list_position)):
+        main_x = main_position[0]
+        main_y = main_position[1]
+        pt_x = list_position[index][0]
+        pt_y = list_position[index][1]
+
+        dist = (((main_x - pt_x) ** 2 ) + ((main_y - pt_y) ** 2 )) ** 0.5
+        if dist < least_dist:
+            least_curr = list_position[index]
+            least_dist = dist
+        
+    return least_curr
+
+def get_closest_distance(main_position, list_position):
+    least_dist = 100000
+    for index in range(len(list_position)):
+        main_x = main_position[0]
+        main_y = main_position[1]
+        pt_x = list_position[index][0]
+        pt_y = list_position[index][1]
+
+        dist = (((main_x - pt_x) ** 2 ) + ((main_y - pt_y) ** 2 )) ** 0.5
+        if dist < least_dist:
+            least_dist = dist
+    return least_dist
+
+def dict_list_duplicate_count(source_list):
+    result_dict = {}
+    for index in range(len(source_list)):
+        result_dict[source_list[index]] += 1
+    return result_dict
+
+def get_least(distance_array):
+    minimum = 10000
+    for index in range(len(distance_array)):
+        if distance_array[index] < minimum:
+            minimum = distance_array[index]
+    return minimum
+
+def castle_danger_level(robot):
+    robot.castle_talk(robot.nearest_enemy_castle_distance)
+    distance_array = []
+    signal_response = robot.get_visible_robots()
+    robot.log(signal_response) 
+    count_signal_response = len(signal_response)
+    if count_signal_response == 1:
+        distance_array.append(robot.nearest_enemy_castle_distance)
+    else:
+        for index in range(count_signal_response):
+            # talking_unit_index = signal_response[index]["id"]
+            talking_unit_team = signal_response[index]["team"]
+            if (talking_unit_team == robot.me.team and signal_response[index]["castle_talk"] > 0):
+                distance = signal_response[index]["castle_talk"]
+                distance_array.append(distance)
+    distance_dict = dict_list_duplicate_count(distance_array)
+    smallest_dist = get_least(distance_array)
+    # robot.log(distance_array)
+    # robot.log(smallest_dist)
+    # robot.log(robot.nearest_enemy_castle_distance)
+    if robot.nearest_enemy_castle_distance > smallest_dist:
+        robot.early_danger_level = 0
+    elif robot.nearest_enemy_castle_distance == smallest_dist:
+        if distance_dict[robot.nearest_enemy_castle_distance] > 1:
+            robot.early_danger_level = 2
+        else:
+            robot.early_danger_level = 1
+    elif robot.nearest_enemy_castle_distance < smallest_dist:
+        robot.log("This shouldn't happen")
+
+            

@@ -72,6 +72,9 @@ class MyRobot(BCAbstractRobot):
     castle_under_attack = 0 # Boolean, if for 5 turn no more decrease in health,
     castle_under_attack_turn = None # Change to turn number of attack
     pilgrim_build_number = 0
+    nearest_enemy_castle_distance = 0
+    early_danger_level = 0
+    early_army_build_queue = []
 
     # Church
     church_unit_build_log = [] # Maintains unit type of nearby robots
@@ -115,7 +118,8 @@ class MyRobot(BCAbstractRobot):
         self.delta_fuel_per_turn = self.fuel - self.delta_fuel_per_turn
         self.delta_time_consumed = self.me.time - self.delta_time_consumed
 
-        self.castle_talk(self.me.unit)
+        if self.me.type != constants.unit_castle:
+            self.castle_talk(self.me.unit)
 
 
         if self.step % 200 == 3 and unit_type == constants.unit_castle:

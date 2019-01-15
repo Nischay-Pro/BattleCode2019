@@ -3,6 +3,7 @@ import communications
 import vision
 import mapping
 import constants
+import production_module
 
 # Add code for locked castles
 
@@ -25,6 +26,7 @@ def castle(robot):
     pilgrim_count = 0
     preacher_count = 0
     prophet_count = 0
+
     friendly_units, enemy_units = castle_all_friendly_units(robot)
     total_karbonite = vision.all_karbonite(robot)
     total_fuel = vision.all_fuel(robot)
@@ -60,12 +62,6 @@ def castle(robot):
     """
 
     if robot.step < 2 and robot.karbonite > 60:
-        robot.pilgrim_build_number += 1
-        temp_store = _castle_assign_mine_or_scout(robot)
-        if temp_store != 0:
-            robot.signal(temp_store, 2)
-        else:
-            robot.signal(65534, 2)
         return _castle_build(robot, constants.unit_pilgrim)
     elif robot.karbonite > 100 and robot.fuel > 200:
         #  if (crusader_count * 3) < pilgrim_count:
@@ -78,12 +74,6 @@ def castle(robot):
             robot.signal(1,2)
             return _castle_build(robot, constants.unit_prophet)
         elif pilgrim_count < (total_fuel + total_karbonite) * .55:
-            robot.pilgrim_build_number += 1
-            temp_store = _castle_assign_mine_or_scout(robot)
-            if temp_store != 0:
-                robot.signal(temp_store, 2)
-            else:
-                robot.signal(65534, 2)
             return _castle_build(robot,constants.unit_pilgrim)
         elif robot.step > 500 and robot.karbonite > 300 and robot.fuel > 300:
             robot.signal(1, 2)
@@ -120,37 +110,6 @@ def _is_castle_under_attack(robot, enemy_units):
         # No longer under attack
         robot.castle_under_attack = 0
 
-def _castle_assign_mine_or_scout(robot):
-    # TODO - Change as per our requirements of fuel or karbonite
-    # TODO - Change occupancy to robot id when reached mine
-    # TODO - Add scouts
-    # Build a karb mine
-    karb_mine_assigned = -1
-    fuel_mine_assigned = -1
-
-    for iter_i in range(len(robot.karb_mine_occupancy_from_this_castle)):
-        if robot.karb_mine_occupancy_from_this_castle[iter_i] == -1:
-            karb_mine_assigned = iter_i
-            break
-
-    for iter_j in range(len(robot.fuel_mine_occupancy_from_this_castle)):
-        if robot.fuel_mine_occupancy_from_this_castle[iter_j] == -1:
-            fuel_mine_assigned = iter_j
-            break
-
-    if (robot.pilgrim_build_number % 2 == 1 or fuel_mine_assigned == -1) and karb_mine_assigned != -1:
-        robot.karb_mine_occupancy_from_this_castle[karb_mine_assigned] = 0
-        mine_pos = robot.karb_mine_locations_from_this_castle[karb_mine_assigned]
-        comms = communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
-        return comms
-    # Build a fuel mine
-    elif (robot.pilgrim_build_number % 2 == 0 or karb_mine_assigned == -1) and fuel_mine_assigned !=-1:
-        robot.fuel_mine_occupancy_from_this_castle[fuel_mine_assigned] = 0
-        mine_pos = robot.fuel_mine_locations_from_this_castle[fuel_mine_assigned]
-        comms = communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
-        return comms
-
-    return 0
 def _castle_build(robot, unit_type):
     pos_x = robot.me.x
     pos_y = robot.me.y
@@ -158,12 +117,14 @@ def _castle_build(robot, unit_type):
     passable_map = robot.get_passable_map()
     directions = utility.random_cells_around()
 
-    for direction in directions:
-        if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
-            # robot.log("Building unit of type " + str(unit_type) + " at " + str(direction))
-            return robot.build_unit(unit_type, direction[1], direction[0])
-    robot.log("No space to build units anymore for castles")
-    return None
+    return production_module.default_production_order(robot, unit_type)
+
+    # for direction in directions:
+    #     if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
+    #         # robot.log("Building unit of type " + str(unit_type) + " at " + str(direction))
+    #         return robot.build_unit(unit_type, direction[1], direction[0])
+    # robot.log("No space to build units anymore for castles")
+    # return None
 
 def castle_all_friendly_units(robot):
     all_units = robot.get_visible_robots()
