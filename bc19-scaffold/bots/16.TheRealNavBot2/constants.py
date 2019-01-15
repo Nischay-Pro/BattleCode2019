@@ -2,23 +2,16 @@ from battlecode import SPECS
 
 pathfinding_heuristic_multiplier = 1.1
 
-pilgrim_will_scavenge_closeby_mines_before_turns = 10
-pilgrim_will_scavenge_closeby_mines = 50
-pilgrim_aging_factor = .5 # Weight for the age of pilgrim after whihc it won't try to search for new mines
+pilgrim_aging_factor = .3 # Weight for the age of pilgrim after whihc it won't try to search for new mines
+pilgrim_will_scavenge_closeby_mines_after_turns = 30
+pilgrim_will_scavenge_closeby_mines_before_turns = 150
+pilgrim_will_scavenge_closeby_mines = pilgrim_aging_factor * 500
 pilgrim_fails_to_get_mine_aging = 25
+pilgrim_revitalise = 50
 chokepoint_modifier = .4
 karbonite_modifier = .05
 fuel_modifier = .05
 
-
-directions = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
-
-crusader_move_directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1), 
-                (0, 2), (0, -2), (2, 0), (-2, 0), (-1, 2), (1, 2), (1, -2), (-1, -2),
-                (2, -1), (2, 1), (-2, 1), (-2, -1), (2, 2), (2, -2), (-2, 2), (-2, -2),
-                (0, 3), (0, -3), (3, 0), (-3, 0)]
-
-non_crusader_move_directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1), (0, 2), (0, -2), (2, 0), (-2, 0)]
 
 enemy_unit_priority_for_prophet = [ 
     2, # Castle
@@ -28,6 +21,21 @@ enemy_unit_priority_for_prophet = [
     4, # Prophet
     10, # Preacher
 ]
+
+# MAYBE TRY CHANGING THIS
+pathfinding_power = 60 
+
+# DO NOT CHANGE THIS
+ 
+directions = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
+
+crusader_move_directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1), 
+                (0, 2), (0, -2), (2, 0), (-2, 0), (-1, 2), (1, 2), (1, -2), (-1, -2),
+                (2, -1), (2, 1), (-2, 1), (-2, -1), (2, 2), (2, -2), (-2, 2), (-2, -2),
+                (0, 3), (0, -3), (3, 0), (-3, 0)]
+
+non_crusader_move_directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1), (0, 2), (0, -2), (2, 0), (-2, 0)]
+
 
 unit_castle = SPECS['CASTLE']
 unit_church = SPECS['CHURCH']
@@ -57,7 +65,6 @@ crusader_max_health = SPECS['UNITS'][SPECS["CRUSADER"]]['STARTING_HP']
 prophet_max_health = SPECS['UNITS'][SPECS["PROPHET"]]['STARTING_HP']
 preacher_max_health = SPECS['UNITS'][SPECS["PREACHER"]]['STARTING_HP']
 
-pilgrim_will_scavenge_closeby_mines_after_turns = 50
 
 
 # SPEC API
@@ -74,8 +81,6 @@ pilgrim_will_scavenge_closeby_mines_after_turns = 50
 # public int ATTACK_FUEL_COST;
 # public int DAMAGE_SPREAD;
 
-def get_required_constant():
-    None
 
 # directions of pilgrim
 pilgrim_directions = [

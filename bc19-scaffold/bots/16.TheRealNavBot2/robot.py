@@ -46,13 +46,14 @@ class MyRobot(BCAbstractRobot):
 
 
     # Pilgrims
-    pilgrim_type = 0 # 0 for miner, 1 for transporter, 2 for scavenger and 3 for scout
+    pilgrim_type = 0 # 0 for miner, 1 for transporter, 2 for scavenger and 3 for scout, 4 for attained nirvana
     pilgrim_mine_ownership = None # Does pilgrim own a mine or is traversing back and forth -> Tuple denotes mine position
     pilgrim_in_danger = 0 # Boolean, true if it has seen enemy unit and no friendly combat units in vision
     has_made_random_movement = 0
     pilgrim_scavenge_mine_location_list = []
     pilgrim_scavenge_mine_occupancy_list = []
-    pilgrim_mine_age_limt = constants.pilgrim_aging_factor * 300
+    pilgrim_mine_age_limt = constants.pilgrim_aging_factor * 500
+    pilgrim_has_been_revitalised = 0
 
     # Castles
     castle_unit_build_log = [] # Maintain the ids of robots, pop and push every turn
@@ -67,7 +68,7 @@ class MyRobot(BCAbstractRobot):
     pilgrim_build_number = 0
 
     # Church
-    church_unit_build_log = [] # Maintains ids of nearby robots
+    church_unit_build_log = [] # Maintains unit type of nearby robots
     home_castle_location = None # TODO - Given by pilgrim that built church
 
     # Combat Units

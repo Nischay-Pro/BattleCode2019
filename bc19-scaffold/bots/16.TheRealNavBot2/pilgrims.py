@@ -90,6 +90,7 @@ def pilgrim_move(robot):
         move_command = movement.move_to_destination(robot)
         if move_command != None:
             return move_command
+    
 
     # Random Movement when not enough time
     for direction in random_directions:
@@ -105,6 +106,7 @@ def _is_pilgrim_scavenging(robot):
     if robot.current_move_destination != None and robot.step < robot.pilgrim_mine_age_limt:
         final_pos_x = robot.current_move_destination[0]
         final_pos_y = robot.current_move_destination[1]
+        # TODO - Occupied by pilgrim condition
         if utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
             robot.pilgrim_mine_age_limt -= constants.pilgrim_fails_to_get_mine_aging # Time befells those who have mine impotency
             if robot.pilgrim_type != 2:
@@ -121,7 +123,19 @@ def _is_pilgrim_scavenging(robot):
                         final_pos_y = robot.current_move_destination[1]
                         robot.mov_path_between_location_and_destination = None
                         if not utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
+                            # robot.log("Scavenger -> " + str(robot.pilgrim_scavenge_mine_occupancy_list))
                             break
+    # One more try old man
+    if robot.step > robot.pilgrim_mine_age_limt and robot.pilgrim_has_been_revitalised == 0:
+        robot.pilgrim_has_been_revitalised = 1
+        robot.pilgrim_mine_age_limt += constants.pilgrim_revitalise
+        midway_point = len(robot.pilgrim_scavenge_mine_location_list) // 2
+        if robot.pilgrim_scavenge_mine_occupancy_list[midway_point] != -1:
+            for iter_i in range(midway_point):
+                robot.pilgrim_scavenge_mine_occupancy_list[iter_i] = 0
+            robot.current_move_destination = robot.pilgrim_scavenge_mine_location_list[midway_point]
+            robot.mov_path_between_location_and_destination = None
+
 
 def pilgrim_mine(robot):
     pos_x = robot.me.x
@@ -189,6 +203,8 @@ def _make_church(robot):
     for pos in potential_church_postitons:
         if pos[2] > max_resource_pos[2]:
             max_resource_pos = pos
+
+    # TODO - Build a church at a chokepoint so that enemy pilgrim cannot get into a research rich area
 
     robot.log("Making a church at (" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
     robot.signal(0, 0)

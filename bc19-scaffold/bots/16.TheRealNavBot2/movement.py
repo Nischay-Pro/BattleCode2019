@@ -83,6 +83,7 @@ def move_to_destination(robot):
                 return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
         # In middle of the list
         else:
+            #TODO - Improve this
             robot.mov_path_index = robot.mov_path_index + 1
             if len(robot.mov_path_between_location_and_destination[robot.mov_path_index]) == 0 or robot.mov_path_between_location_and_destination[robot.mov_path_index] == None:
                 robot.log("Recomputing")
