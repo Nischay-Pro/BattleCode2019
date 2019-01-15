@@ -201,7 +201,7 @@ def pilgrim_full(robot):
                         if fin_dir[0] != 0 and fin_dir[1] != 0:
                             return robot.move(fin_dir[0], fin_dir[1])
 
-                        fin_dir = pathfinding.bug_walk(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y)
+                        fin_dir = pathfinding.bug_walk(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y, robot)
                         return robot.move(fin_dir[0], fin_dir[1])
 
     else:
@@ -221,7 +221,7 @@ def pilgrim_full(robot):
         if fin_dir[0] != 0 and fin_dir[1] != 0:
             return robot.move(fin_dir[0], fin_dir[1])
 
-        fin_dir = pathfinding.bug_walk(passable_map, robot.get_visible_robot_map(), robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y)
+        fin_dir = pathfinding.bug_walk(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y, robot)
         return robot.move(fin_dir[0], fin_dir[1])
 
     # FIXME - Make churches not be built if castle /other church is in reasonable travel range
