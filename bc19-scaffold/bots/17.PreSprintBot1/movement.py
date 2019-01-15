@@ -44,19 +44,22 @@ def move_to_destination(robot):
 
     # robot.log("Current mov destination is " + str(robot.current_move_destination))
     # robot.log("Current location is " + str((robot.me.x, robot.me.y)))
-    # Initial search
-    # If no path list from location to destination or random movement happened
-    if robot.current_move_destination != None and (robot.mov_path_between_location_and_destination == None or robot.has_made_random_movement != 0):
+
+    if robot.current_move_destination != None:
         final_pos_x = robot.current_move_destination[0]
         final_pos_y = robot.current_move_destination[1]
         if utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
             return None # Can't apply pathfinding if final location is visible and occupied
 
-        robot.has_made_random_movement = 0
-        robot.mov_path_between_location_and_destination = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
+        if robot.mov_path_between_location_and_destination != None or len(robot.mov_path_between_location_and_destination) != 0:
+            assumed_pos_x = robot.mov_path_between_location_and_destination[robot.mov_path_index][0]
+            assumed_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index][1]
+            if assumed_pos_x != pos_x or assumed_pos_y != pos_y:
+                robot.mov_path_between_location_and_destination = None
 
         # Initialise path
-        if robot.mov_path_between_location_and_destination != None:
+        if robot.mov_path_between_location_and_destination == None:
+            robot.mov_path_between_location_and_destination = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
             robot.mov_path_index = 0
             new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
             # robot.log("First block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
@@ -83,12 +86,7 @@ def move_to_destination(robot):
                 return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
         # In middle of the list
         else:
-            #TODO - Improve this
             robot.mov_path_index = robot.mov_path_index + 1
-            if len(robot.mov_path_between_location_and_destination[robot.mov_path_index]) == 0 or robot.mov_path_between_location_and_destination[robot.mov_path_index] == None:
-                robot.log("Recomputing")
-                robot.mov_path_between_location_and_destination == None
-                return 0
             new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
             # robot.log("Fouth block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
             # TODO -Try to add fuzzy jump or something (This is when some tile occupies the place you want to move to)

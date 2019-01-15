@@ -1,6 +1,11 @@
 import random
 import constants
 
+def distance(robot, start: tuple, end: tuple) -> int:
+    ans = (start[0]-end[0])**2 + (start[1]-end[1])**2
+    robot.log("Distance function: " + str(ans))
+    return ans
+
 def is_out_of_bounds(map_dim, pos_x, pos_y):
     return pos_x < 0 or pos_y < 0 or pos_x >= map_dim or pos_y >= map_dim
 
@@ -128,3 +133,17 @@ def fuel_less_check(robot):
         return True
     else:
         return False
+
+def distance_ratio(robot, destination: tuple,
+        expected_ratio: float, delta: float) -> bool:
+    pos_x, pos_y = robot.me.x, robot.me.y
+    robot.log("Current position: " + str((pos_x, pos_y)))
+    start_to_cur = distance(robot, (pos_x, pos_y), robot.our_castle_or_church_base)
+    destination_to_cur = distance(robot, (pos_x, pos_y), destination)
+    ratio = start_to_cur/(destination_to_cur + start_to_cur)
+    robot.log("Ratio is: " + str(ratio) + ", diff: " + str(ratio-expected_ratio))
+    # robot.log("Ratios are: %d, %d"%(start_to_cur, destination_to_cur))
+    # robot.log("Diff and abs(diff): %d, %d"%(diff, abs(diff)))
+    ans = True if abs(ratio-expected_ratio) <= delta else False
+    robot.log("Outcome: " + str(ans))
+    return ans
