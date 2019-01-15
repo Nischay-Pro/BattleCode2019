@@ -53,6 +53,9 @@ def _prophet_initial_check(robot, friendly_unit):
     else:
         robot.friendly_churches.append(robot.our_castle_or_church_base)
     
+    if robot.prophet_health == None:
+        robot.prophet_health = constants.prophet_max_health
+
     if robot.map_symmetry == None:
         mapping.return_map_symmetry(robot)
 

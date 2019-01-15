@@ -39,12 +39,17 @@ class MyRobot(BCAbstractRobot):
     friendly_churches = []
     enemy_castles = []
     enemy_churches = []
+    
+    delta_karbonite_per_turn = 0
+    delta_fuel_per_turn = 0 
+    delta_time_consumed = 0
 
     mov_path_between_location_and_destination = None # So we can go back and forth by reversing list
     mov_path_index = 0 # to keep track of movement in the above index
     map_symmetry = None # 0 - Horizontal, 1 is vertical
     attained_nirvana_on_turn = -1
-
+    burned_out = 0
+    
     # Pilgrims
     pilgrim_type = 0 # 0 for miner, 1 for transporter, 2 for scavenger and 3 for scout, 4 for attained nirvana
     pilgrim_mine_ownership = None # Does pilgrim own a mine or is traversing back and forth -> Tuple denotes mine position
@@ -73,6 +78,8 @@ class MyRobot(BCAbstractRobot):
 
     # Combat Units
     is_targeting_robot_with_id = None # Remember robot to kill, after current turn
+    current_combat_move_destination = None
+    last_attacked_location = None
     has_enemy_target_dict = {} # Pop and
     is_fleeing_to_home_base = 0 # Boolean, switch to one if routed
     has_unit_value = 1 # Decreases if less health or too much danger
@@ -102,6 +109,10 @@ class MyRobot(BCAbstractRobot):
         if self.unit_spawn_loc is None:
             # first turn!
             self.unit_spawn_loc = (self.me['x'], self.me['y'])
+
+        self.delta_karbonite_per_turn = self.karbonite - self.delta_karbonite_per_turn
+        self.delta_fuel_per_turn = self.fuel - self.delta_fuel_per_turn
+        self.delta_time_consumed = self.me.time - self.delta_time_consumed
 
         self.castle_talk(self.me.unit)
 

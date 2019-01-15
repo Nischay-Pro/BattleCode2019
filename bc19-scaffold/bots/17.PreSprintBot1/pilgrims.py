@@ -73,9 +73,13 @@ def pilgrim_move(robot):
     random_directions = utility.random_cells_around()
     # May change for impossible resources
 
+    if robot.burned_out > 2:
+        robot.current_move_destination = None
+
     if movement.is_completely_surrounded(robot):
         robot.attained_nirvana_on_turn = robot.step
-        robot.log("Completely surrounded pilgrim or attained Nirvana")
+        robot.burned_out += 1
+        # robot.log("Completely surrounded pilgrim or attained Nirvana")
         return 0
     elif robot.attained_nirvana_on_turn + constants.pilgrim_nirvana_age > robot.step:
         return 0
