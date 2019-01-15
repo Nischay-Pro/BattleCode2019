@@ -46,10 +46,13 @@ def pilgrim(robot):
 
 #
 def _pilgrims_initial_check(robot, friendly_unit):
-    robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
+    if friendly_unit.signal == 65534:
+        robot.current_move_destination = None
+    else:
+        robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
+        robot.pilgrim_mine_ownership = 1
+    
     robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
-    robot.pilgrim_mine_ownership = 1
-
     if robot.map_symmetry == None:
         mapping.return_map_symmetry(robot)
 
