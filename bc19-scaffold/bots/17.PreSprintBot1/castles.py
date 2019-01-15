@@ -14,7 +14,7 @@ def castle(robot):
     #     robot.log("Script Helper Turn@" + str(robot.step))
 
     # if robot.step % 10 == 0:
-        # robot.log("Turn Number" + str(robot.step))
+    #     robot.log("Turn Number" + str(robot.step))
 
     if robot.step < 1:
         _castle_initial_check(robot)
@@ -82,7 +82,7 @@ def castle(robot):
             temp_store = _castle_assign_mine_or_scout(robot)
             if temp_store != 0:
                 robot.signal(temp_store, 2)
-            else: 
+            else:
                 robot.signal(65534, 2)
             return _castle_build(robot,constants.unit_pilgrim)
         elif robot.step > 500 and robot.karbonite > 300 and robot.fuel > 300:
@@ -126,7 +126,7 @@ def _castle_assign_mine_or_scout(robot):
     # TODO - Add scouts
     # Build a karb mine
     karb_mine_assigned = -1
-    fuel_mine_assigned = -1 
+    fuel_mine_assigned = -1
 
     for iter_i in range(len(robot.karb_mine_occupancy_from_this_castle)):
         if robot.karb_mine_occupancy_from_this_castle[iter_i] == -1:

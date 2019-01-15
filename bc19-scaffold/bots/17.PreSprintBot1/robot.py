@@ -54,6 +54,7 @@ class MyRobot(BCAbstractRobot):
     pilgrim_scavenge_mine_occupancy_list = []
     pilgrim_mine_age_limt = constants.pilgrim_aging_factor * 500
     pilgrim_has_been_revitalised = 0
+    resource_depot = None
 
     # Castles
     castle_unit_build_log = [] # Maintain the ids of robots, pop and push every turn

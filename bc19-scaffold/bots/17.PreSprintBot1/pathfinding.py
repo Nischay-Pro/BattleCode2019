@@ -1,6 +1,7 @@
 import math
 import utility
 import constants
+import random
 
 # Since no collection
 def _is_higher_than(a, b):
@@ -138,4 +139,66 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
 
     return retrace_path(pos_initial, pos_final, came_from)
 
+def _choose_bug_walk_direction(des_x, des_y, pos_x, pos_y):
+    diff_x = des_x - pos_x
+    diff_y = des_y - pos_y
+    dir_x = diff_x/abs(diff_x)
+    dir_y = diff_y/abs(diff_y)
 
+    if diff_x != 0 and diff_y != 0:
+        return (dir_x, dir_y)
+    elif diff_x == 0 and diff_y != 0:
+        if abs(diff_y) == 2:
+            return (0, dir_y)
+        else:
+            return (0, 2 * dir_y)
+    elif diff_x != 0 and diff_y == 0:
+        if abs(diff_x) == 2:
+            return (dir_x, 0)
+        else:
+            return (2 * dir_x, 0)
+
+def bug_walk(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, robot):
+    direction = _choose_bug_walk_direction(des_x, des_y, pos_x, pos_y)
+
+    diff_x = des_x - pos_x
+    diff_y = des_y - pos_y
+    dir_x = diff_x/abs(diff_x)
+    dir_y = diff_y/abs(diff_y)
+
+    if not utility.is_cell_occupied(occupied_map, pos_x + direction[0], pos_y + direction[1]):
+        if passable_map[pos_y + direction[1]][pos_x + direction[0]] == 1:
+            return (direction[0], direction[1])
+    elif abs(direction[0]) == 1 and abs(direction[1]) == 1:
+        if not utility.is_cell_occupied(occupied_map, pos_x, pos_y + direction[1] * 2):
+            if passable_map[pos_y + direction[1] * 2][pos_x] == 1:
+                return (0, direction[1] * 2)
+        elif not utility.is_cell_occupied(occupied_map, pos_x + direction[0] * 2, pos_y):
+            if passable_map[pos_y][pos_x + direction[0] * 2] == 1:
+                return (direction[1] * 2, 0)
+    elif direction[0] == 0:
+        if not utility.is_cell_occupied(occupied_map, pos_x + dir_x, pos_y + dir_y):
+            if passable_map[pos_y + dir_y][pos_x + dir_x] == 1:
+                return (dir_x, dir_y)
+        elif not utility.is_cell_occupied(occupied_map, pos_x + dir_x * 2, pos_y):
+            if passable_map[pos_y][pos_x + dir_x * 2] == 1:
+                return (dir_x * 2, 0)
+        elif not utility.is_cell_occupied(occupied_map, pos_x + dir_x, pos_y):
+            if passable_map[pos_y][pos_x + dir_x] == 1:
+                return (dir_x, 0)
+    elif direction[1] == 0:
+        if not utility.is_cell_occupied(occupied_map, pos_x + dir_x, pos_y + dir_y):
+            if passable_map[pos_y + dir_y][pos_x + dir_x] == 1:
+                return (dir_x, dir_y)
+        elif not utility.is_cell_occupied(occupied_map, pos_x, pos_y + dir_y * 2):
+            if passable_map[pos_y + dir_y * 2][pos_x ] == 1:
+                return (0, dir_y * 2)
+        elif not utility.is_cell_occupied(occupied_map, pos_x, pos_y + dir_y):
+            if passable_map[pos_y + dir_y][pos_x ] == 1:
+                return (0, dir_y)
+    random_movements = list(constants.non_crusader_move_directions)
+    random.shuffle(random_movements, random.random)
+    for movement in random_movements:
+        if not utility.is_cell_occupied(occupied_map, pos_x + movement[0], pos_y + movement[1]):
+            if passable_map[pos_y + movement[1]][pos_x + movement[0]] == 1:
+                return (movement[0], movement[1])

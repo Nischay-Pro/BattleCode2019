@@ -101,7 +101,7 @@ def move_to_destination(robot):
     # Conditions not satisfied
     return None
 
-def find_dockspot(robot, depot):
+def find_dockspots(robot, depot):
     karb_map = robot.get_karbonite_map()
     fuel_map = robot.get_fuel_map()
     passable_map = robot.get_passable_map()
@@ -110,7 +110,10 @@ def find_dockspot(robot, depot):
 
     depot_x = depot.x
     depot_y = depot.y
+    dockspots = []
 
     for direction in directions:
-        if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, depot_x + direction[1], depot_y + direction[1]):
-            return (depot_y + direction[0], depot_x + direction[1])
+        if not utility.is_cell_resourceful(karb_map, fuel_map, depot_x + direction[0], depot_y + direction[1]) and passable_map[depot_y + direction[1]][depot_x + direction[0]] == 1:
+            dockspots.append((depot_x + direction[0], depot_y + direction[1]))
+
+    return dockspots

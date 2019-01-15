@@ -51,7 +51,7 @@ def _pilgrims_initial_check(robot, friendly_unit):
     else:
         robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
         robot.pilgrim_mine_ownership = 1
-    
+
     robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
     if robot.map_symmetry == None:
         mapping.return_map_symmetry(robot)
@@ -98,7 +98,7 @@ def pilgrim_move(robot):
         move_command = movement.move_to_destination(robot)
         if move_command != None:
             return move_command
-    
+
 
     # Random Movement when not enough time
     for direction in random_directions:
@@ -182,7 +182,42 @@ def pilgrim_full(robot):
                             robot.signal(0, 0)
                             return robot.give(dx, dy, carry_karb, carry_fuel)
 
-    # FIXME - Make churches not be built if castle /other church is in vision range
+                    if robot.step < 50:
+                        robot.resource_depot = f_unit
+                        dockspots = movement.find_dockspots(robot, robot.resource_depot)
+                        fin_dir = (0, 0)
+                        for direction in constants.non_crusader_move_directions:
+                            for pos in dockspots:
+                                if pos[0] == pos_x + direction[0] and pos[1] == pos_y + direction[1]:
+                                    if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x, pos_y):
+                                        fin_dir = direction
+                                    else:
+                                        return None
+
+                        if fin_dir[0] != 0 and fin_dir[1] != 0:
+                            return robot.move(fin_dir[0], fin_dir[1])
+
+                        fin_dir = pathfinding.bug_walk(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y, robot)
+                        return robot.move(fin_dir[0], fin_dir[1])
+
+    else:
+        for direction in directions:
+            if pos_x == robot.resource_depot.x + direction[0] and pos_y == robot.resource_depot.y + direction[1]:
+                return robot.give(-direction[0], -direction[1], carry_karb, carry_fuel)
+        dockspots = movement.find_dockspots(robot, robot.resource_depot)
+        fin_dir = (0, 0)
+        for direction in constants.non_crusader_move_directions:
+            for pos in dockspots:
+                if pos[0] == pos_x + direction[0] and pos[1] == pos_y + direction[1]:
+                    fin_dir = direction
+
+        if fin_dir[0] != 0 and fin_dir[1] != 0:
+            return robot.move(fin_dir[0], fin_dir[1])
+
+        fin_dir = pathfinding.bug_walk(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y, robot)
+        return robot.move(fin_dir[0], fin_dir[1])
+
+    # FIXME - Make churches not be built if castle /other church is in reasonable travel range
     if robot.karbonite > 50 and robot.fuel > 200:
         return _make_church(robot)
 
