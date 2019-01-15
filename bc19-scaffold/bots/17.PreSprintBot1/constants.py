@@ -8,6 +8,7 @@ pilgrim_will_scavenge_closeby_mines_before_turns = 150
 pilgrim_will_scavenge_closeby_mines = pilgrim_aging_factor * 500
 pilgrim_fails_to_get_mine_aging = 25
 pilgrim_revitalise = 50
+pilgrim_nirvana_age = 5
 chokepoint_modifier = .4
 karbonite_modifier = .05
 fuel_modifier = .05
