@@ -123,7 +123,7 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
 
     while len(nodes) > 1:
         current = pop(nodes)
-        if str(current) == str(pos_final) or block_kicker > constants.pathfinding_power:
+        if str(current) == str(pos_final) or block_kicker > constants.pathfinding_power or insert_counter > 1.5 * constants.pathfinding_power:
             # robot.log("=> * " + str(len(nodes)))
             return retrace_path(pos_initial, current, came_from)
         for iter_a in neighbours(current):
