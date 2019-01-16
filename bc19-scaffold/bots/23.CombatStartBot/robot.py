@@ -120,6 +120,9 @@ class MyRobot(BCAbstractRobot):
 
         self.castle_talk(self.me.unit)
 
+        if self.delta_time_consumed > 100:
+            self.burned_out = 1
+
 
         if self.step % 200 == 3 and unit_type == constants.unit_castle:
             # robot.log(str(self.me))

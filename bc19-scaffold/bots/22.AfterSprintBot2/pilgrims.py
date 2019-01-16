@@ -54,7 +54,7 @@ def pilgrim_move(robot):
     # TODO - Improve this code snippet to mine, if in visible region and empty
     if robot.me.turn > constants.pilgrim_will_scavenge_closeby_mines_after_turns and robot.me.turn < constants.pilgrim_will_scavenge_closeby_mines_before_turns:
         for direction in random_directions:
-            if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and utility.is_cell_resourceful(karb_map, fuel_map, pos_x + direction[1],  pos_y + direction[0]):
+            if not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0]) and utility.is_cell_resourceful(karb_map, fuel_map, pos_x + direction[1],  pos_y + direction[0]):
                 robot.current_move_destination = None
                 robot.mov_path_between_location_and_destination = None
                 return robot.move(direction[1], direction[0])

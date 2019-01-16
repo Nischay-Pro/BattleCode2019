@@ -32,7 +32,7 @@ def pilgrim(robot):
     # TODO - Add code to make pilgrim move to church or castle rather just building a new church
     # Move Section
     pilgrim_is_moving = pilgrim_move(robot)
-    if pilgrim_is_moving !=0 and robot.fuel > 30:
+    if pilgrim_is_moving !=0 and robot.fuel > 30 and not movement.is_completely_surrounded(robot):
         # robot.log(pilgrim_is_moving)
         return pilgrim_is_moving
 
