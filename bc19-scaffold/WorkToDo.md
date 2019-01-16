@@ -5,3 +5,4 @@ TODO - Manage special cases like seed 30
 TODO - Make combat units not step on mines by default
 TODO - Production module should take k=note of map initial karb/initial fuel ratio
 TODO - Since we can now store change in karbonite/fuel, use this for decision making
+TODO - The enemies strategy can be read by using the step number of the enemy
