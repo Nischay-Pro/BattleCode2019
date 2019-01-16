@@ -35,6 +35,7 @@ def is_completely_surrounded(robot):
 def move_to_destination(robot):
     pos_x = robot.me.x
     pos_y = robot.me.y
+    passable_map = robot.get_passable_map()
     occupied_map = robot.get_visible_robot_map()
 
     # robot.log("Current mov destination is " + str(robot.current_move_destination))
@@ -58,11 +59,16 @@ def move_to_destination(robot):
 
         # Initialise path
         if robot.mov_path_between_location_and_destination == None:
-            robot.mov_path_between_location_and_destination = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
-            robot.mov_path_index = 0
-            new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
-            # robot.log("First block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
-            return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
+            if robot.burned_out_on_turn != -1:
+                robot.mov_path_between_location_and_destination = None
+                fin_dir = pathfinding.bug_walk(passable_map, occupied_map, final_pos_x, final_pos_y, pos_x, pos_y)
+                return robot.move(fin_dir[0], fin_dir[1])
+            else:
+                robot.mov_path_between_location_and_destination, robot.burned_out = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
+                robot.mov_path_index = 0
+                new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
+                # robot.log("First block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
+                return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
 
         # Reached end of move list
         elif len(robot.mov_path_between_location_and_destination) - 1 == robot.mov_path_index + 1:
@@ -78,11 +84,16 @@ def move_to_destination(robot):
                     return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
             # Computed list ended
             else:
-                robot.mov_path_between_location_and_destination = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
-                robot.mov_path_index = 0
-                new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
-                # robot.log("Third block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
-                return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
+                if robot.burned_out_on_turn != -1:
+                    robot.mov_path_between_location_and_destination = None
+                    fin_dir = pathfinding.bug_walk(passable_map, occupied_map, final_pos_x, final_pos_y, pos_x, pos_y)
+                    return robot.move(fin_dir[0], fin_dir[1])
+                else:
+                    robot.mov_path_between_location_and_destination, robot.burned_out = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
+                    robot.mov_path_index = 0
+                    new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
+                    # robot.log("Third block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
+                    return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
         # In middle of the list
         else:
             robot.mov_path_index = robot.mov_path_index + 1
@@ -94,10 +105,15 @@ def move_to_destination(robot):
                 # robot.log("Fouth block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
                 # TODO -Try to add fuzzy jump or something (This is when some tile occupies the place you want to move to)
                 if utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y):
-                    robot.mov_path_between_location_and_destination = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
-                    robot.mov_path_index = 0
-                    new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
-                    # robot.log("Fifth block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
+                    if robot.burned_out_on_turn != -1:
+                        robot.mov_path_between_location_and_destination = None
+                        fin_dir = pathfinding.bug_walk(passable_map, occupied_map, final_pos_x, final_pos_y, pos_x, pos_y)
+                        return robot.move(fin_dir[0], fin_dir[1])
+                    else:
+                        robot.mov_path_between_location_and_destination, robot.burned_out = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
+                        robot.mov_path_index = 0
+                        new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
+                        # robot.log("Fifth block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
                 return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
     # Conditions not satisfied
     return None

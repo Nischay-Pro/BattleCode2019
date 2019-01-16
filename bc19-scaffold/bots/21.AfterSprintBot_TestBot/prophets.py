@@ -29,14 +29,14 @@ def prophet_move(robot):
         robot.current_move_destination = None
     
     if movement.is_completely_surrounded(robot):
-        robot.attained_nirvana_on_turn = robot.step
+        robot.burned_out_on_turn = robot.step
         robot.burned_out += 1
         # robot.log("Completely surrounded pilgrim or attained Nirvana")
         return 0
-    elif robot.attained_nirvana_on_turn + constants.pilgrim_nirvana_age > robot.step:
+    elif robot.burned_out_on_turn + constants.prophet_burnout_period > robot.step:
         return 0
     else:
-        robot.attained_nirvana_on_turn = -1
+        robot.burned_out_on_turn = -1
 
     if utility.fuel_less_check(robot):
         return None

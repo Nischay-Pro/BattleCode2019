@@ -47,7 +47,7 @@ class MyRobot(BCAbstractRobot):
     mov_path_between_location_and_destination = None # So we can go back and forth by reversing list
     mov_path_index = 0 # to keep track of movement in the above index
     map_symmetry = None # 0 - Horizontal, 1 is vertical
-    attained_nirvana_on_turn = -1
+    burned_out_on_turn = -1
     burned_out = 0
     
     # Pilgrims

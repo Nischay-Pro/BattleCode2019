@@ -102,7 +102,7 @@ def _crusader_combat(robot):
             enemy = visible_enemy_list[0]
             # robot.log(enemy)
             # robot.log(unit_current_pos)
-            move_to = pathfinding.astar_search(robot, unit_current_pos, (enemy['x'], enemy['y']), 3)[0]
+            move_to, robot.burned_out = pathfinding.astar_search(robot, unit_current_pos, (enemy['x'], enemy['y']), 3)[0]
             if move_to != None and len(move_to) != 0:
                 # robot.log("Moving to " + str(move_to))
                 new_pos_x, new_pos_y = move_to

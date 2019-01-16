@@ -119,14 +119,13 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
 
     insert_counter = add(nodes, pos_initial, 0, insert_counter)
 
-
     while len(nodes) > 1:
         current = pop(nodes)
-        if str(current) == str(pos_final) or block_kicker > constants.pathfinding_power or insert_counter > 1.5 * constants.pathfinding_power:
-            if len(nodes) > 50:
+        if str(current) == str(pos_final) or block_kicker > constants.pathfinding_power or insert_counter > 1.3 * constants.pathfinding_power:
+            if len(nodes) > 60:
                 robot.log("Kicking out " + len(nodes))
             # robot.log("=> * " + str(len(nodes)))
-            return retrace_path(pos_initial, current, came_from)
+            return retrace_path(pos_initial, current, came_from), 1
         for iter_a in neighbours(current):
             new_cost = cost_so_far[current] + 1
             if len(iter_a) != 0 and (iter_a not in cost_so_far or new_cost < cost_so_far[iter_a]):
@@ -139,7 +138,7 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
     # robot.log(came_from)
     if len(nodes) > 50:
         robot.log("Normal completion " + len(nodes))
-    return retrace_path(pos_initial, pos_final, came_from)
+    return retrace_path(pos_initial, pos_final, came_from), 0
 
 def _choose_bug_walk_direction(des_x, des_y, pos_x, pos_y):
     diff_x = des_x - pos_x
