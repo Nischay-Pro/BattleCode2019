@@ -95,13 +95,14 @@ def is_pilgrim_scavenging(robot):
     if robot.current_move_destination != None and robot.step < robot.pilgrim_mine_age_limt:
         # TODO - Occupied by pilgrim condition
         if utility.is_cell_occupied(occupied_map, robot.current_move_destination[0], robot.current_move_destination[1]):
-            robot.pilgrim_mine_age_limt -= constants.pilgrim_fails_to_get_mine_aging # Time befells those who have mine impotency
-            # One time event that makes pilgrim a scavenger
-            if robot.pilgrim_type != 2:
-                robot.pilgrim_type = 2 # Become a scavenger
-                unused_store, robot.pilgrim_scavenge_mine_location_list = utility.get_relative_mine_positions(robot)
-                robot.pilgrim_scavenge_mine_occupancy_list = [-1 for i in range(len(robot.pilgrim_scavenge_mine_location_list))]
-            _update_scavenge_list(robot)
+            if occupied_map[robot.current_move_destination[1]][robot.current_move_destination[0]]['unit'] == constants.unit_pilgrim or robot.step > 5:
+                robot.pilgrim_mine_age_limt -= constants.pilgrim_fails_to_get_mine_aging # Time befells those who have mine impotency
+                # One time event that makes pilgrim a scavenger
+                if robot.pilgrim_type != 2:
+                    robot.pilgrim_type = 2 # Become a scavenger
+                    unused_store, robot.pilgrim_scavenge_mine_location_list = utility.get_relative_mine_positions(robot)
+                    robot.pilgrim_scavenge_mine_occupancy_list = [-1 for i in range(len(robot.pilgrim_scavenge_mine_location_list))]
+                _update_scavenge_list(robot)
     # One more try old man
     if robot.step > robot.pilgrim_mine_age_limt and robot.pilgrim_has_been_revitalised == 0:
         _revitalise_scavanger_pilgrim(robot)
@@ -135,24 +136,26 @@ def make_church(robot):
     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
     directions = constants.directions
 
-    # FIXME - Don't build churches next to each other
-    potential_church_postitons = []
-    for p_church_pos in directions:
-        if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x + p_church_pos[1], pos_y + p_church_pos[0]):
-            count = 0
-            for direction in directions:
-                if not utility.is_out_of_bounds(len(occupied_map), pos_x + p_church_pos[1] + direction[1], pos_y + p_church_pos[0] + direction[0]):
-                    if utility.is_cell_resourceful(karb_map, fuel_map, pos_x + p_church_pos[1] + direction[1], pos_y + p_church_pos[0] + direction[0]):
-                        count += 1
-            potential_church_postitons.append((p_church_pos[0], p_church_pos[1], count))
-    max_resource_pos = (0, 0, 0)
-    for pos in potential_church_postitons:
-        if pos[2] > max_resource_pos[2]:
-            max_resource_pos = pos
-    # TODO - Build a church at a chokepoint so that enemy pilgrim cannot get into a research rich area
-    robot.log("Making a church at (" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
-    robot.signal(0, 0)
-    return robot.build_unit(constants.unit_church, max_resource_pos[1], max_resource_pos[0])
+    if robot.pilgrim_has_built_a_church != 1:
+        # FIXME - Don't build churches next to each other
+        potential_church_postitons = []
+        for p_church_pos in directions:
+            if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x + p_church_pos[1], pos_y + p_church_pos[0]):
+                count = 0
+                for direction in directions:
+                    if not utility.is_out_of_bounds(len(occupied_map), pos_x + p_church_pos[1] + direction[1], pos_y + p_church_pos[0] + direction[0]):
+                        if utility.is_cell_resourceful(karb_map, fuel_map, pos_x + p_church_pos[1] + direction[1], pos_y + p_church_pos[0] + direction[0]):
+                            count += 1
+                potential_church_postitons.append((p_church_pos[0], p_church_pos[1], count))
+        max_resource_pos = (0, 0, 0)
+        for pos in potential_church_postitons:
+            if pos[2] > max_resource_pos[2]:
+                max_resource_pos = pos
+        # TODO - Build a church at a chokepoint so that enemy pilgrim cannot get into a research rich area
+        robot.log("Making a church at (" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
+        robot.signal(0, 0)
+        robot.pilgrim_has_built_a_church = 1
+        return robot.build_unit(constants.unit_church, max_resource_pos[1], max_resource_pos[0])
 
 def did_pilgrim_burn_out(robot):
     # Can't move around, don't do astar

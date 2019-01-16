@@ -59,14 +59,21 @@ def castle(robot):
             1 prophet per 2 resources on map
     """
 
-    if robot.step < 3: #and robot.karbonite > 60:
-        robot.pilgrim_build_number += 1
-        temp_store = _castle_assign_mine_or_scout(robot)
-        if temp_store != 0:
-            robot.signal(temp_store, 2)
+    if prophet_count < 2 and robot.karbonite >= 25 and robot.step < 10:
+        robot.signal(1, 2)
+        return _castle_build(robot, constants.unit_prophet)
+    elif robot.karbonite >= 15 and robot.fuel > 200 and pilgrim_count < (total_fuel + total_karbonite) * .35 and robot.step < 60:
+        if prophet_count < pilgrim_count/2:
+            robot.signal(1, 2)
+            return _castle_build(robot, constants.unit_prophet)
         else:
-            robot.signal(65534, 2)
-        return _castle_build(robot, constants.unit_pilgrim)
+            robot.pilgrim_build_number += 1
+            temp_store = _castle_assign_mine_or_scout(robot)
+            if temp_store != 0:
+                robot.signal(temp_store, 2)
+            else:
+                robot.signal(65534, 2)
+            return _castle_build(robot,constants.unit_pilgrim)
     elif robot.karbonite > 100 and robot.fuel > 200:
         #  if (crusader_count * 3) < pilgrim_count:
             #  # robot.signal(robot.me.signal + 1, 2)
@@ -74,7 +81,7 @@ def castle(robot):
         # elif (preacher_count * 2) < crusader_count:
         #     # robot.signal(robot.me.signal + 1, 2)
         #     return castle_build(robot, constants.unit_preacher)
-        if prophet_count < pilgrim_count:
+        if prophet_count < pilgrim_count and robot.step > 60:
             robot.signal(1, 2)
             return _castle_build(robot, constants.unit_prophet)
         if pilgrim_count < (total_fuel + total_karbonite) * .55:
@@ -157,12 +164,16 @@ def _castle_assign_mine_or_scout(robot):
 def _castle_build(robot, unit_type):
     pos_x = robot.me.x
     pos_y = robot.me.y
-    occupied_map = robot.get_visible_robot_map()
-    passable_map = robot.get_passable_map()
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
     directions = utility.random_cells_around()
 
     for direction in directions:
-        if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
+        if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x + direction[1],  pos_y + direction[0]) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
+            # robot.log("Building unit of type " + str(unit_type) + " at " + str(direction))
+            return robot.build_unit(unit_type, direction[1], direction[0])
+
+    for direction in directions:
+        if not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0]) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
             # robot.log("Building unit of type " + str(unit_type) + " at " + str(direction))
             return robot.build_unit(unit_type, direction[1], direction[0])
     robot.log("No space to build units anymore for castles")

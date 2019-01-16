@@ -19,7 +19,7 @@ def pilgrim(robot):
 
     # The pilgrim checks if it has a mine on it's current position
     pilgrim_is_mining = pilgrim_mine(robot)
-    if pilgrim_is_mining !=0 and robot.fuel > 5:
+    if pilgrim_is_mining !=0 and robot.fuel > 1 and robot.step > 1:
         return pilgrim_is_mining
 
     # Receive signal from castle on which mine to go to
@@ -52,12 +52,12 @@ def pilgrim_move(robot):
 
     # Capture and start mining any resource if more than 50 turns since creation and no mine
     # TODO - Improve this code snippet to mine, if in visible region and empty
-    if robot.me.turn > constants.pilgrim_will_scavenge_closeby_mines_after_turns and robot.me.turn < constants.pilgrim_will_scavenge_closeby_mines_before_turns:
-        for direction in random_directions:
-            if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and utility.is_cell_resourceful(karb_map, fuel_map, pos_x + direction[1],  pos_y + direction[0]):
-                robot.current_move_destination = None
-                robot.mov_path_between_location_and_destination = None
-                return robot.move(direction[1], direction[0])
+    # if robot.me.turn > constants.pilgrim_will_scavenge_closeby_mines_after_turns and robot.me.turn < constants.pilgrim_will_scavenge_closeby_mines_before_turns:
+    for direction in random_directions:
+        if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and utility.is_cell_resourceful(karb_map, fuel_map, pos_x + direction[1],  pos_y + direction[0]):
+            robot.current_move_destination = None
+            robot.mov_path_between_location_and_destination = None
+            return robot.move(direction[1], direction[0])
 
     # TODO - Make into scout if too old, which will scout enemy bases
     # If the mine is already occupied

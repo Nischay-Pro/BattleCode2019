@@ -59,6 +59,7 @@ class MyRobot(BCAbstractRobot):
     pilgrim_scavenge_mine_occupancy_list = []
     pilgrim_mine_age_limt = constants.pilgrim_aging_factor * 500
     pilgrim_has_been_revitalised = 0
+    pilgrim_has_built_a_church = 0
     resource_depot = None
 
     # Castles
