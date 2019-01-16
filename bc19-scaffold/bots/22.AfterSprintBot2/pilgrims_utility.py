@@ -150,7 +150,7 @@ def make_church(robot):
         if pos[2] > max_resource_pos[2]:
             max_resource_pos = pos
     # TODO - Build a church at a chokepoint so that enemy pilgrim cannot get into a research rich area
-    robot.log("Making a church at (" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
+    # robot.log("Making a church at (" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
     robot.signal(0, 0)
     return robot.build_unit(constants.unit_church, max_resource_pos[1], max_resource_pos[0])
 
@@ -160,10 +160,10 @@ def did_pilgrim_burn_out(robot):
         robot.burned_out = 1
 
     if robot.burned_out == 1:
+        robot.burned_out = 0
         if robot.burned_out_on_turn == -1:
             robot.burned_out_on_turn = 0
         elif robot.burned_out_on_turn == 0:
             robot.burned_out_on_turn = robot.step
-        robot.burned_out = 0
     elif robot.burned_out_on_turn + constants.pilgrim_burnout_period <= robot.step:
         robot.burned_out_on_turn = -1

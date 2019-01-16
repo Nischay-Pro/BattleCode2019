@@ -20,5 +20,5 @@ def prophet_move(robot):
         march_increment = (robot.step - 200) // 100
 
     if robot.current_move_destination != None: #and tactics.should_combat_unit_be_at_battle_front(robot):
-        return tactics.send_combat_unit_to_battle_front(robot, 0.5 + march_increment/10 , 0.08)
+        return tactics.send_combat_unit_to_battle_front(robot, 0.5 + march_increment/ 20, 0.08)
     return 0

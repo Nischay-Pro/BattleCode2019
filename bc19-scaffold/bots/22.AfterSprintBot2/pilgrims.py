@@ -1,6 +1,6 @@
+import constants
 import utility
 import pilgrims_utility
-import constants
 import movement
 
 def pilgrim(robot):
@@ -33,7 +33,9 @@ def pilgrim(robot):
     # Move Section
     pilgrim_is_moving = pilgrim_move(robot)
     if pilgrim_is_moving !=0:
+        # robot.log(pilgrim_is_moving)
         return pilgrim_is_moving
+
 
 def pilgrim_move(robot):
     # Emergency case, allows pilgrims to mine
@@ -53,6 +55,8 @@ def pilgrim_move(robot):
     if robot.me.turn > constants.pilgrim_will_scavenge_closeby_mines_after_turns and robot.me.turn < constants.pilgrim_will_scavenge_closeby_mines_before_turns:
         for direction in random_directions:
             if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and utility.is_cell_resourceful(karb_map, fuel_map, pos_x + direction[1],  pos_y + direction[0]):
+                robot.current_move_destination = None
+                robot.mov_path_between_location_and_destination = None
                 return robot.move(direction[1], direction[0])
 
     # TODO - Make into scout if too old, which will scout enemy bases
@@ -60,16 +64,16 @@ def pilgrim_move(robot):
     pilgrims_utility.is_pilgrim_scavenging(robot)
 
     # Just move
-    if robot.step < robot.pilgrim_mine_age_limt:
+    if robot.step < robot.pilgrim_mine_age_limt and not movement.is_completely_surrounded(robot):
         move_command = movement.move_to_destination(robot)
         if move_command != None:
             return move_command
 
-    # Random Movement when not enough time
-    for direction in random_directions:
-        if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
-            robot.has_made_random_movement = 1
-            return robot.move(direction[1], direction[0])
+        # Random Movement when not enough time
+        for direction in random_directions:
+            if not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0]) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
+                robot.mov_path_between_location_and_destination = None
+                return robot.move(direction[1], direction[0])
 
     return 0
 

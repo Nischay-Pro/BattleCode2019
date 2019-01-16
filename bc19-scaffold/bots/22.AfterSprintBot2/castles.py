@@ -74,9 +74,9 @@ def castle(robot):
         # elif (preacher_count * 2) < crusader_count:
         #     # robot.signal(robot.me.signal + 1, 2)
         #     return castle_build(robot, constants.unit_preacher)
-        if prophet_count < pilgrim_count:
-            robot.signal(1, 2)
-            return _castle_build(robot, constants.unit_prophet)
+        # if prophet_count < pilgrim_count:
+        #     robot.signal(1, 2)
+        #     return _castle_build(robot, constants.unit_prophet)
         if pilgrim_count < (total_fuel + total_karbonite) * .55:
             robot.pilgrim_build_number += 1
             temp_store = _castle_assign_mine_or_scout(robot)

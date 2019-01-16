@@ -1,7 +1,6 @@
 import math
 import utility
 import constants
-import random
 
 # Since no collection
 def _is_higher_than(a, b):
@@ -142,7 +141,7 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
 def _choose_bug_walk_direction(des_x, des_y, pos_x, pos_y):
     diff_x = des_x - pos_x
     diff_y = des_y - pos_y
-
+    # Normalise
     dir_x = 0
     dir_y = 0
     if diff_x != 0:
@@ -206,15 +205,9 @@ def bug_walk(passable_map, occupied_map, des_x, des_y, pos_x, pos_y):
             if passable_map[pos_y + dir_y][pos_x + dir_x] == 1:
                 return (dir_x, dir_y)
         elif not utility.is_cell_occupied(occupied_map, pos_x, pos_y + dir_y * 2):
-            if passable_map[pos_y + dir_y * 2][pos_x ] == 1:
+            if passable_map[pos_y + dir_y * 2][pos_x] == 1:
                 return (0, dir_y * 2)
         elif not utility.is_cell_occupied(occupied_map, pos_x, pos_y + dir_y):
-            if passable_map[pos_y + dir_y][pos_x ] == 1:
+            if passable_map[pos_y + dir_y][pos_x] == 1:
                 return (0, dir_y)
-    random_movements = list(constants.non_crusader_move_directions)
-    random.shuffle(random_movements, random.random)
-    for movement in random_movements:
-        if not utility.is_cell_occupied(occupied_map, pos_x + movement[0], pos_y + movement[1]):
-            if passable_map[pos_y + movement[1]][pos_x + movement[0]] == 1:
-                return (movement[0], movement[1])
     return 0

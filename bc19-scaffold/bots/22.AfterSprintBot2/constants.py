@@ -49,6 +49,10 @@ unit_pilgrim = SPECS['PILGRIM']
 unit_preacher = SPECS['PREACHER']
 unit_prophet = SPECS['PROPHET']
 
+# Speed Check
+pilgrim_speed = SPECS['UNITS'][SPECS["PILGRIM"]]['SPEED']
+prophet_speed = SPECS['UNITS'][SPECS["PROPHET"]]['SPEED']
+
 # Attack Damage
 crusader_attack_damage = SPECS['UNITS'][SPECS["CRUSADER"]]['ATTACK_DAMAGE']
 prophet_attack_damage = SPECS['UNITS'][SPECS["PROPHET"]]['ATTACK_DAMAGE']

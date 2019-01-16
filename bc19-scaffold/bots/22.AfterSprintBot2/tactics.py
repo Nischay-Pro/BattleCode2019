@@ -79,12 +79,17 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
     dest = robot.current_move_destination
     origin = robot.our_castle_or_church_base
     pos_x, pos_y = robot.me.x, robot.me.y
+
+    # Safety check
+    if ratio + delta >= 1:
+        ratio = ratio - delta
+    if robot.fuel <= 4:
+        return None
     is_combat_unit_at_front = utility.distance_ratio(robot, dest, ratio, delta)
     if is_combat_unit_at_front:
         # robot.log("Inside if")
         robot.current_move_destination = None
         robot.mov_path_between_location_and_destination = None
-        robot.mov_path_index = 0
         return None # we have reached to battle front, don't move
     else:
         # robot.log("Inside else")
