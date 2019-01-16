@@ -66,7 +66,10 @@ def give_or_mine(robot):
                             return robot.move(fin_dir[0], fin_dir[1])
                         # Not near vicinity, do bug search
                         fin_dir = pathfinding.bug_walk(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y)
-                        return robot.move(fin_dir[0], fin_dir[1])
+                        if fin_dir != 0:
+                            return robot.move(fin_dir[0], fin_dir[1])
+                        else:
+                            return None
     else:
         for direction in directions:
             if pos_x == robot.resource_depot.x + direction[0] and pos_y == robot.resource_depot.y + direction[1]:
@@ -81,8 +84,10 @@ def give_or_mine(robot):
         if fin_dir[0] != 0 and fin_dir[1] != 0:
             return robot.move(fin_dir[0], fin_dir[1])
         fin_dir = pathfinding.bug_walk(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y)
-        return robot.move(fin_dir[0], fin_dir[1])
-
+        if fin_dir != 0:
+            return robot.move(fin_dir[0], fin_dir[1])
+        else:
+            return None
     return 0
 
 def is_pilgrim_scavenging(robot):

@@ -56,7 +56,10 @@ def move_to_destination(robot):
                 robot.mov_path_between_location_and_destination = None
                 robot.mov_path_index = 0
                 fin_dir = pathfinding.bug_walk(passable_map, occupied_map, final_pos_x, final_pos_y, pos_x, pos_y)
-                return robot.move(fin_dir[0], fin_dir[1])
+                if fin_dir != 0:
+                    return robot.move(fin_dir[0], fin_dir[1])
+                else:
+                    return None
             else:
                 robot.mov_path_between_location_and_destination, robot.burned_out = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
                 robot.mov_path_index = 0
@@ -82,7 +85,10 @@ def move_to_destination(robot):
                     robot.mov_path_between_location_and_destination = None
                     robot.mov_path_index = 0
                     fin_dir = pathfinding.bug_walk(passable_map, occupied_map, final_pos_x, final_pos_y, pos_x, pos_y)
-                    return robot.move(fin_dir[0], fin_dir[1])
+                    if fin_dir != 0:
+                        return robot.move(fin_dir[0], fin_dir[1])
+                    else:
+                        return None
                 else:
                     robot.mov_path_between_location_and_destination, robot.burned_out = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
                     robot.mov_path_index = 0
@@ -108,7 +114,10 @@ def move_to_destination(robot):
                         robot.mov_path_between_location_and_destination = None
                         robot.mov_path_index = 0
                         fin_dir = pathfinding.bug_walk(passable_map, occupied_map, final_pos_x, final_pos_y, pos_x, pos_y)
-                        return robot.move(fin_dir[0], fin_dir[1])
+                        if fin_dir != 0:
+                            return robot.move(fin_dir[0], fin_dir[1])
+                        else:
+                            return None
                     else:
                         robot.mov_path_between_location_and_destination, robot.burned_out = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
                         robot.mov_path_index = 0

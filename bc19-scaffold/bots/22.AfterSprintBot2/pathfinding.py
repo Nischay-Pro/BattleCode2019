@@ -217,3 +217,4 @@ def bug_walk(passable_map, occupied_map, des_x, des_y, pos_x, pos_y):
         if not utility.is_cell_occupied(occupied_map, pos_x + movement[0], pos_y + movement[1]):
             if passable_map[pos_y + movement[1]][pos_x + movement[0]] == 1:
                 return (movement[0], movement[1])
+    return 0
