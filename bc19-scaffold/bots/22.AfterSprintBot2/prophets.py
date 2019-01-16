@@ -9,11 +9,11 @@ def prophet(robot):
     prophet_attack_aggr_mode = combat_module.give_military_command(robot)
     if prophet_attack_aggr_mode != None:
         return prophet_attack_aggr_mode
-    
+
     return prophet_move(robot)
 
 def prophet_move(robot):
-    
+
     prophet_utility.did_prophet_burn_out(robot)
 
     if robot.step > 300:
