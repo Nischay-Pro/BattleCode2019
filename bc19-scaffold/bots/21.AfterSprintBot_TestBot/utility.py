@@ -6,6 +6,14 @@ def distance(robot, start: tuple, end: tuple) -> int:
     # robot.log("Distance function: " + str(ans))
     return ans
 
+def get_all_maps(robot):
+    passable_map = robot.get_passable_map()
+    occupied_map = robot.get_visible_robot_map()
+    karb_map = robot.get_karbonite_map()
+    fuel_map = robot.get_fuel_map()
+    
+    return passable_map, occupied_map, karb_map, fuel_map
+
 def is_out_of_bounds(map_dim, pos_x, pos_y):
     return pos_x < 0 or pos_y < 0 or pos_x >= map_dim or pos_y >= map_dim
 

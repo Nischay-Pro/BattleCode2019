@@ -5,8 +5,8 @@ import utility
 # from datetime import datetime
 
 def is_relatively_surrounded(robot):
-    passable_map = robot.get_passable_map()
-    occupied_map = robot.get_visible_robot_map()
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
+
     pos_x = robot.me.x
     pos_y = robot.me.y
     locked_spaces = 0
@@ -103,12 +103,8 @@ def move_to_destination(robot):
     return None
 
 def find_dockspots(robot, depot):
-    karb_map = robot.get_karbonite_map()
-    fuel_map = robot.get_fuel_map()
-    passable_map = robot.get_passable_map()
-    occupied_map = robot.get_visible_robot_map()
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
     directions = constants.directions
-
     depot_x = depot.x
     depot_y = depot.y
 

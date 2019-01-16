@@ -68,10 +68,7 @@ def pilgrim_move(robot):
     pos_x = robot.me.x
     pos_y = robot.me.y
 
-    passable_map = robot.get_passable_map()
-    karb_map = robot.get_karbonite_map()
-    fuel_map = robot.get_fuel_map()
-    occupied_map = robot.get_visible_robot_map()
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
     random_directions = utility.random_cells_around()
     # May change for impossible resources
 
@@ -171,10 +168,7 @@ def pilgrim_full(robot):
     carry_karb = robot.me.karbonite
     carry_fuel = robot.me.fuel
 
-    karb_map = robot.get_karbonite_map()
-    fuel_map = robot.get_fuel_map()
-    passable_map = robot.get_passable_map()
-    occupied_map = robot.get_visible_robot_map()
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
     directions = constants.directions
 
     if utility.is_cell_resourceful(karb_map, fuel_map, pos_x, pos_y):
@@ -238,10 +232,7 @@ def _make_church(robot):
     pos_x = robot.me.x
     pos_y = robot.me.y
 
-    karb_map = robot.get_karbonite_map()
-    fuel_map = robot.get_fuel_map()
-    passable_map = robot.get_passable_map()
-    occupied_map = robot.get_visible_robot_map()
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
     directions = constants.directions
 
     # FIXME - Don't build churches next to each other

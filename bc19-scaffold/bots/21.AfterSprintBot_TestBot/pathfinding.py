@@ -29,8 +29,7 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
     cost_so_far = {}
     came_from[pos_initial] = None
     cost_so_far[pos_initial] = 0
-    occupied_map = robot.get_visible_robot_map()
-    passable_map = robot.get_passable_map()
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
 
     if utility.is_out_of_bounds(occupied_map, pos_final[0], pos_final[1]) or not passable_map[pos_final[1]][pos_final[0]]:
         return None

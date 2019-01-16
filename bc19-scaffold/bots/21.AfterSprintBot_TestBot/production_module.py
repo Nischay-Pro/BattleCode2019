@@ -10,8 +10,7 @@ def _build_manager_church(robot):
     unit_type = constants.unit_prophet
     pos_x = robot.me.x
     pos_y = robot.me.y
-    occupied_map = robot.get_visible_robot_map()
-    passable_map = robot.get_passable_map()
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
     directions = utility.random_cells_around()
     for direction in directions:
         if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
