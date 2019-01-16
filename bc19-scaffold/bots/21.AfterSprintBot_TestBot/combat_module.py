@@ -5,8 +5,8 @@ import tactics
 # TODO - Enemy analysis function
 # TODO - All archer formation functions
 
-def give_military_command(robot, recieved_message = 0, self_signal = 0):
-    if recieved_message == 0 and self_signal == 0:
+def give_military_command(robot, received_message = 0, self_signal = 0):
+    if received_message == 0 and self_signal == 0:
         return default_military_behaviour(robot)
 
 def _prophet_combat(robot):

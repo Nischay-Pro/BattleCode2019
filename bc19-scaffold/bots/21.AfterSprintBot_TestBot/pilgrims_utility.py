@@ -6,7 +6,7 @@ import pathfinding
 import utility
 import vision
 
-def recieve_initial_siganl(robot):
+def receive_initial_siganl(robot):
     unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)
     for friendly_unit in friendly_units:
         if friendly_unit.unit == 0 and friendly_unit.signal > 0:

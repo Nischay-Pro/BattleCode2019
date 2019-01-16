@@ -122,9 +122,8 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
     while len(nodes) > 1:
         current = pop(nodes)
         if str(current) == str(pos_final) or block_kicker > constants.pathfinding_power or insert_counter > 1.3 * constants.pathfinding_power:
-            if len(nodes) > 60:
-                robot.log("Kicking out " + len(nodes))
-            # robot.log("=> * " + str(len(nodes)))
+            # if len(nodes) > 60:
+            #     robot.log("Kicking out " + len(nodes))
             return retrace_path(pos_initial, current, came_from), 1
         for iter_a in neighbours(current):
             new_cost = cost_so_far[current] + 1
@@ -136,8 +135,8 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
                 came_from[iter_a] = current
         block_kicker += 1
     # robot.log(came_from)
-    if len(nodes) > 50:
-        robot.log("Normal completion " + len(nodes))
+    # if len(nodes) > 50:
+    #     robot.log("Normal completion " + len(nodes))
     return retrace_path(pos_initial, pos_final, came_from), 0
 
 def _choose_bug_walk_direction(des_x, des_y, pos_x, pos_y):

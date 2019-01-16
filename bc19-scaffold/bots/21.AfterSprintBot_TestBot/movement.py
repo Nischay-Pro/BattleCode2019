@@ -46,21 +46,15 @@ def move_to_destination(robot):
         final_pos_y = robot.current_move_destination[1]
         if utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
             return None # Can't apply pathfinding if final location is visible and occupied
-
-        if robot.mov_path_between_location_and_destination != None or len(robot.mov_path_between_location_and_destination) != 0:
-            if len(robot.mov_path_between_location_and_destination[robot.mov_path_index]) == 2:
-                assumed_pos_x = robot.mov_path_between_location_and_destination[robot.mov_path_index][0]
-                assumed_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index][1]
-                if assumed_pos_x != pos_x or assumed_pos_y != pos_y:
-                    robot.mov_path_between_location_and_destination = None
-            else:
-                robot.log("This are the problem values in move_to_destination " + str(robot.mov_path_between_location_and_destination[robot.mov_path_index]))
-
+        elif len(robot.mov_path_between_location_and_destination) == 1:
+            robot.current_move_destination = None # Reached destination
+            return None
 
         # Initialise path
         if robot.mov_path_between_location_and_destination == None:
             if robot.burned_out_on_turn != -1:
                 robot.mov_path_between_location_and_destination = None
+                robot.mov_path_index = 0
                 fin_dir = pathfinding.bug_walk(passable_map, occupied_map, final_pos_x, final_pos_y, pos_x, pos_y)
                 return robot.move(fin_dir[0], fin_dir[1])
             else:
@@ -86,6 +80,7 @@ def move_to_destination(robot):
             else:
                 if robot.burned_out_on_turn != -1:
                     robot.mov_path_between_location_and_destination = None
+                    robot.mov_path_index = 0
                     fin_dir = pathfinding.bug_walk(passable_map, occupied_map, final_pos_x, final_pos_y, pos_x, pos_y)
                     return robot.move(fin_dir[0], fin_dir[1])
                 else:
@@ -97,16 +92,21 @@ def move_to_destination(robot):
         # In middle of the list
         else:
             robot.mov_path_index = robot.mov_path_index + 1
-            if robot.mov_path_between_location_and_destination == None or len(robot.mov_path_between_location_and_destination) == 0:
+            if robot.mov_path_between_location_and_destination == None:
                 robot.log("Hit")
                 return None
             else:
-                new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
+                if len(robot.mov_path_between_location_and_destination[robot.mov_path_index]) == 2:
+                    new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
+                else:
+                    robot.log("These are the problem values in move_to_destination " + robot.mov_path_between_location_and_destination + " " + str(robot.mov_path_index) + " " + str(robot.mov_path_between_location_and_destination[robot.mov_path_index]))
+
                 # robot.log("Fouth block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
                 # TODO -Try to add fuzzy jump or something (This is when some tile occupies the place you want to move to)
                 if utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y):
                     if robot.burned_out_on_turn != -1:
                         robot.mov_path_between_location_and_destination = None
+                        robot.mov_path_index = 0
                         fin_dir = pathfinding.bug_walk(passable_map, occupied_map, final_pos_x, final_pos_y, pos_x, pos_y)
                         return robot.move(fin_dir[0], fin_dir[1])
                     else:
