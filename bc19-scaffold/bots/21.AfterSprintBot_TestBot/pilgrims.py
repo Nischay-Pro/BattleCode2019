@@ -193,26 +193,24 @@ def pilgrim_full(robot):
                             robot.signal(0, 0)
                             return robot.give(dx, dy, carry_karb, carry_fuel)
 
-                    if robot.step < 75:
+                    # Convoys
+                    if robot.step < 50:
                         robot.resource_depot = f_unit
-                        robot.log("the resources depot is " + str(robot.resource_depot))
                         dockspots = movement.find_dockspots(robot, robot.resource_depot)
-                        robot.log("the dockspots are " + str(dockspots))
+                        
+                        # If in near vicinity (one hop)
                         fin_dir = (0, 0)
                         for direction in constants.non_crusader_move_directions:
                             for pos in dockspots:
                                 if pos[0] == pos_x + direction[0] and pos[1] == pos_y + direction[1]:
                                     if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x, pos_y):
                                         fin_dir = direction
-
                         if fin_dir[0] != 0 and fin_dir[1] != 0:
-                            # robot.log("Is moving 1")
                             return robot.move(fin_dir[0], fin_dir[1])
 
+                        # Not near vicinity, do bug search
                         fin_dir = pathfinding.bug_walk(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y)
-                        # robot.log("Is moving 2")
                         return robot.move(fin_dir[0], fin_dir[1])
-                        # robot.log("Is not moving 3")
 
     else:
         for direction in directions:
@@ -225,8 +223,6 @@ def pilgrim_full(robot):
                 if pos[0] == pos_x + direction[0] and pos[1] == pos_y + direction[1]:
                     if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x, pos_y):
                         fin_dir = direction
-                    else:
-                        return None
 
         if fin_dir[0] != 0 and fin_dir[1] != 0:
             return robot.move(fin_dir[0], fin_dir[1])
