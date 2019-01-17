@@ -117,7 +117,7 @@ def move_to_destination(robot):
                             robot.bug_nav_destination = robot.mov_path_between_location_and_destination[iter_i]
                             robot.bug_nav_index = iter_i
                             fin_dir = 0
-                            fin_dir = pathfinding.bug_walk(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
+                            fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
                             if fin_dir != 0:
                                 # robot.log("Ninth block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))
                                 # TRAVIS MOVE CHECK 6
@@ -145,7 +145,7 @@ def move_to_destination(robot):
                         robot.bug_nav_index = iter_i
                         robot.bug_nav_counter = 0
                         fin_dir = 0
-                        fin_dir = pathfinding.bug_walk(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
+                        fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
                         if fin_dir != 0:
                             # robot.log("Act")
                             # robot.log("Seventh block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))

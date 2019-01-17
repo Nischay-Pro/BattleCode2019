@@ -28,7 +28,7 @@ enemy_unit_priority_for_prophet = [
 ]
 
 # MAYBE TRY CHANGING THIS
-pathfinding_power = 60
+pathfinding_power = 100
 
 # DO NOT CHANGE THIS
 
