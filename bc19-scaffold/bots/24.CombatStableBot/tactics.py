@@ -93,10 +93,7 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
     if is_combat_unit_at_front:
         # robot.log("Inside if")
         robot.current_move_destination = None
-        robot.mov_path_between_location_and_destination = None
-        robot.bug_nav_destination = None
-        robot.bug_nav_index = -1
-        robot.bug_nav_counter = 0
+        utility.default_movement_variables(robot)
         return None # we have reached to battle front, don't move
     else:
         # robot.log("Inside else")

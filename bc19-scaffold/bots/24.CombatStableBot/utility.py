@@ -155,3 +155,9 @@ def distance_ratio(robot, destination: tuple,
     ans = True if abs(ratio-expected_ratio) <= delta else False
     # robot.log("Outcome: " + str(ans))
     return ans
+
+def default_movement_variables(robot):
+    robot.mov_path_between_location_and_destination = None
+    robot.bug_nav_destination = None
+    robot.bug_nav_index = -1
+    robot.bug_nav_counter = 0

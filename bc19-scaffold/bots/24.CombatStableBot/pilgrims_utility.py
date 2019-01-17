@@ -100,7 +100,7 @@ def is_pilgrim_scavenging(robot):
     if robot.current_move_destination != None and robot.step < robot.pilgrim_mine_age_limt:
         # TODO - Occupied by pilgrim condition
         if utility.is_cell_occupied(occupied_map, robot.current_move_destination[0], robot.current_move_destination[1]):
-            if occupied_map[robot.current_move_destination[1]][robot.current_move_destination[0]]['unit'] == constants.unit_pilgrim or robot.step > 5:
+            if occupied_map[robot.current_move_destination[1]][robot.current_move_destination[0]]['unit'] == constants.unit_pilgrim or robot.step > 10:
                 robot.pilgrim_mine_age_limt -= constants.pilgrim_fails_to_get_mine_aging # Time befells those who have mine impotency
                 # One time event that makes pilgrim a scavenger
                 if robot.pilgrim_type != 2:
@@ -120,10 +120,7 @@ def _update_scavenge_list(robot):
             if str(robot.current_move_destination) != str(robot.pilgrim_scavenge_mine_location_list[iter_i]):
                 robot.current_move_destination = robot.pilgrim_scavenge_mine_location_list[iter_i]
                 # Check if new mine is in vision and occupied, then move to next. Counters aging by using good eyes.
-                robot.mov_path_between_location_and_destination = None
-                robot.bug_nav_destination = None
-                robot.bug_nav_index = -1
-                robot.bug_nav_counter = 0
+                utility.default_movement_variables(robot)
                 if not utility.is_cell_occupied(occupied_map, robot.current_move_destination[0], robot.current_move_destination[1]):
                     # robot.log("Scavenger -> " + str(robot.pilgrim_scavenge_mine_occupancy_list))
                     break
@@ -136,10 +133,7 @@ def _revitalise_scavanger_pilgrim(robot):
         for iter_i in range(midway_point):
             robot.pilgrim_scavenge_mine_occupancy_list[iter_i] = 0
         robot.current_move_destination = robot.pilgrim_scavenge_mine_location_list[midway_point]
-        robot.mov_path_between_location_and_destination = None
-        robot.bug_nav_destination = None
-        robot.bug_nav_index = -1
-        robot.bug_nav_counter = 0
+        utility.default_movement_variables(robot)
 
 def make_church(robot):
     pos_x = robot.me.x

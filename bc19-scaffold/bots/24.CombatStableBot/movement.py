@@ -49,17 +49,19 @@ def move_to_destination(robot):
         # Can't apply pathfinding if final location is visible and occupied
         if utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
             robot.current_move_destination = None
-            robot.mov_path_between_location_and_destination = None
+            utility.default_movement_variables(robot)
+            utility.default_movement_variables(robot)
             return None
         # We already at the final location
         elif len(robot.mov_path_between_location_and_destination) == 1:
             robot.current_move_destination = None # Reached destination
-            robot.mov_path_between_location_and_destination = None
+            utility.default_movement_variables(robot)
+            utility.default_movement_variables(robot)
             return None
         # Another way to check the above
         elif robot.me.x == robot.current_move_destination[0] and robot.me.y == robot.current_move_destination[1]:
             robot.current_move_destination = None
-            robot.mov_path_between_location_and_destination = None
+            utility.default_movement_variables(robot)
             return None
 
         if robot.mov_path_between_location_and_destination != None or len(robot.mov_path_between_location_and_destination) != 0:
@@ -67,39 +69,20 @@ def move_to_destination(robot):
                 assumed_pos_x = robot.mov_path_between_location_and_destination[robot.mov_path_index][0]
                 assumed_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index][1]
                 if assumed_pos_x != pos_x or assumed_pos_y != pos_y:
-                    robot.mov_path_between_location_and_destination = None
-                    robot.bug_nav_destination = None
-                    robot.bug_nav_index = -1
-                    robot.bug_nav_counter = 0
-
-        # # Apply bug nav to save on time
-        # robot.mov_path_between_location_and_destination = None
-        # fin_dir = pathfinding.bug_walk(passable_map, occupied_map, final_pos_x, final_pos_y, pos_x, pos_y)
-        # if fin_dir != 0:
-        #     # robot.log("Speeded up 3")
-        #     return robot.move(fin_dir[0], fin_dir[1])
-        # else:
-        #     return None
-
-        # robot.log("Before the if conditions index is" + str(robot.mov_path_index))
+                    utility.default_movement_variables(robot)
 
         if robot.bug_nav_counter > 5:
             robot.mov_path_between_location_and_destination = None
         elif robot.bug_nav_counter > 10:
             robot.current_move_destination = None
-            robot.mov_path_between_location_and_destination = None
-            robot.bug_nav_destination = None
-            robot.bug_nav_index = -1
-            robot.bug_nav_counter = 0
+            utility.default_movement_variables(robot)
             return None
 
         # Initialise path
         if robot.mov_path_between_location_and_destination == None:
+            utility.default_movement_variables(robot)
             robot.mov_path_between_location_and_destination, robot.burned_out = pathfinding.astar_search(robot, (robot.me.x, robot.me.y), robot.current_move_destination, 2)
             robot.mov_path_index = 0
-            robot.bug_nav_destination = None
-            robot.bug_nav_index = -1
-            robot.bug_nav_counter = 0
             new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
             # robot.log("First block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
             # TRAVIS MOVE CHECK 3
@@ -110,10 +93,7 @@ def move_to_destination(robot):
             new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
             # robot.log("Second block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
             if str(robot.mov_path_between_location_and_destination[robot.mov_path_index]) != str(robot.current_move_destination):
-                robot.mov_path_between_location_and_destination = None
-                robot.bug_nav_destination = None
-                robot.bug_nav_index = -1
-                robot.bug_nav_counter = 0
+                utility.default_movement_variables(robot)
             if not utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y):
                 robot.pilgrim_mine_ownership = robot.current_move_destination
                 robot.current_move_destination = None
@@ -131,69 +111,51 @@ def move_to_destination(robot):
                     robot.bug_nav_index = -1
                     robot.bug_nav_counter = 0
                 else:
-                    if not utility.is_cell_occupied(occupied_map, possible_pos_x, possible_pos_y):
-                        fin_dir = 0
-                        fin_dir = pathfinding.bug_walk(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
-                        if fin_dir != 0:
-                            # robot.log("Eight block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))
-                            # TRAVIS MOVE CHECK 5
-                            return check.move_check(robot, fin_dir[0], fin_dir[1], 5)
-                        else:
-                            robot.bug_nav_counter += 1
-                            # robot.log("None1")
-                            return None
-                    else:
-                        for iter_i in range(robot.bug_nav_index + 1, len(robot.mov_path_between_location_and_destination)):
-                            possible_pos_x, possible_pos_y = robot.mov_path_between_location_and_destination[iter_i]
-                            if not utility.is_cell_occupied(occupied_map, possible_pos_x, possible_pos_y):
-                                robot.bug_nav_destination = robot.mov_path_between_location_and_destination[iter_i]
-                                robot.bug_nav_index = iter_i
-                                fin_dir = 0
-                                fin_dir = pathfinding.bug_walk(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
-                                if fin_dir != 0:
-                                    # robot.log("Ninth block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))
-                                    # TRAVIS MOVE CHECK 6
-                                    return check.move_check(robot, fin_dir[0], fin_dir[1], 6)
-                                else:
-                                    # robot.log("None2")
-                                    return None
-                        # robot.log("None3")
-                        return None
+                    for iter_i in range(robot.bug_nav_index, len(robot.mov_path_between_location_and_destination)):
+                        possible_pos_x, possible_pos_y = robot.mov_path_between_location_and_destination[iter_i]
+                        if not utility.is_cell_occupied(occupied_map, possible_pos_x, possible_pos_y):
+                            robot.bug_nav_destination = robot.mov_path_between_location_and_destination[iter_i]
+                            robot.bug_nav_index = iter_i
+                            fin_dir = 0
+                            fin_dir = pathfinding.bug_walk(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
+                            if fin_dir != 0:
+                                # robot.log("Ninth block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))
+                                # TRAVIS MOVE CHECK 6
+                                return check.move_check(robot, fin_dir[0], fin_dir[1], 6)
+                            else:
+                                # robot.log("None2")
+                                return None
+                    # robot.log("None3")
+                    return None
             robot.mov_path_index = robot.mov_path_index + 1
             if len(robot.mov_path_between_location_and_destination[robot.mov_path_index]) == 2:
                 new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
             else:
                 # robot.log("These are the problem values in move_to_destination " + robot.mov_path_between_location_and_destination + " " + str(robot.mov_path_index) + " " + str(robot.mov_path_between_location_and_destination[robot.mov_path_index]))
-                robot.mov_path_index = robot.mov_path_index - 1
                 return None
 
             if utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y):
-                robot.mov_path_index = robot.mov_path_index - 1
                 # robot.log("**** Potential ****")
                 # robot.log("Sixth block list " + str(new_pos_x) + " " + str(new_pos_y) + " " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
                 possible_pos_x, possible_pos_y = (-1, -1)
-                for iter_i in range(robot.mov_path_index + 1, len(robot.mov_path_between_location_and_destination)):
+                for iter_i in range(robot.mov_path_index, len(robot.mov_path_between_location_and_destination)):
                     possible_pos_x, possible_pos_y = robot.mov_path_between_location_and_destination[iter_i]
                     if not utility.is_cell_occupied(occupied_map, possible_pos_x, possible_pos_y):
                         robot.bug_nav_destination = robot.mov_path_between_location_and_destination[iter_i]
                         robot.bug_nav_index = iter_i
                         robot.bug_nav_counter = 0
-                        break
-                if robot.bug_nav_destination != None:
-                    fin_dir = 0
-                    fin_dir = pathfinding.bug_walk(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
-                    if fin_dir != 0:
-                        # robot.log("Act")
-                        # robot.log("Seventh block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))
-                        # TRAVIS MOVE CHECK 7
-                        return check.move_check(robot, fin_dir[0], fin_dir[1], 7)
-                    else:
-                        robot.bug_nav_counter += 1
-                        # robot.log("None4")
-                        return None
-                else:
-                    # robot.log("None5")
-                    return None
+                        fin_dir = 0
+                        fin_dir = pathfinding.bug_walk(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
+                        if fin_dir != 0:
+                            # robot.log("Act")
+                            # robot.log("Seventh block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))
+                            # TRAVIS MOVE CHECK 7
+                            return check.move_check(robot, fin_dir[0], fin_dir[1], 7)
+                        else:
+                            robot.bug_nav_counter += 1
+                            # robot.log("None4")
+                            return None
+                return None
             # robot.log("Fouth block list " + str(new_pos_x) + " " + str(new_pos_y) + " " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
             # TRAVIS MOVE CHECK 8
             return check.move_check(robot, new_pos_x - pos_x, new_pos_y - pos_y, 8)
