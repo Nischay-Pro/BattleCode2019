@@ -133,6 +133,22 @@ def main():
                     stats["seed"][seed] = data.strip()
                 pretty_print(stats, seed, lessmode=lessmoded)
                 lprint("Seed %s Failed. Initialization Error" % seed, lessmoded, travis)
+            if "Move check failed " in data:
+                datacor = data.split("failed ")
+                datacor = datacor[1]
+                datacor = datacor[:1]
+                searchFolder("TRAVIS MOVE CHECK %s" % datacor, bluepath)
+            if "Mine check failed " in data:
+                datacor = data.split("failed ")
+                datacor = datacor[1]
+                datacor = datacor[:1]
+                searchFolder("TRAVIS MINE CHECK %s" % datacor, bluepath)
+            if "Attack check failed " in data:
+                datacor = data.split("failed ")
+                datacor = datacor[1]
+                datacor = datacor[:1]
+                searchFolder("TRAVIS ATTACK CHECK %s" % datacor, bluepath)
+
     pretty_print(stats, 1000, done=True, lessmode=lessmoded)
     lprint("Done", lessmoded, travis)
     if badman:
@@ -181,6 +197,25 @@ def pretty_print(stats, seed, done=False, lessmode=False):
             cprint("******************************", "magenta")
         except KeyError:
             print(stats)
+
+def searchFolder(whatSearch, bluepath):
+    root_dir = os.path.normpath(bluepath)
+    print(root_dir)
+    for root, dirs, files in os.walk(root_dir, onerror=None):
+        for filename in files:
+            file_path = os.path.join(root, filename)
+            try:
+                with open(file_path, "rb") as f: 
+                    for idx,line in enumerate(f):
+                        try:
+                            line = line.decode("utf-8")
+                        except ValueError:
+                            continue
+                        if whatSearch in line:
+                            print("Error Occured in line %s at \n %s" % (idx + 2), file_path)
+                            break 
+            except (IOError, OSError):
+                pass
 
 def clearScreen():
     os.system('cls' if os.name == 'nt' else 'clear')
