@@ -91,7 +91,8 @@ def pilgrim_mine(robot):
 
     if utility.is_cell_resourceful(karb_map, fuel_map, pos_x, pos_y):
         robot.signal(0, 0)
-        return robot.mine()
+        # TRAVIS CHECK MINE 1
+        return check.mine_check(robot)
     else:
         return 0
 
