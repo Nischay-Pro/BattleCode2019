@@ -49,6 +49,12 @@ unit_pilgrim = SPECS['PILGRIM']
 unit_preacher = SPECS['PREACHER']
 unit_prophet = SPECS['PROPHET']
 
+# Move Fuel Cost
+pilgrim_move_fuel_cost = SPECS['UNITS'][SPECS["PILGRIM"]]['FUEL_PER_MOVE']
+
+# Attack Fuel Cost
+prophet_attack_fuel_cost = SPECS['UNITS'][SPECS["PROPHET"]]['ATTACK_FUEL_COST']
+
 # Speed Check
 pilgrim_speed = SPECS['UNITS'][SPECS["PILGRIM"]]['SPEED']
 prophet_speed = SPECS['UNITS'][SPECS["PROPHET"]]['SPEED']
