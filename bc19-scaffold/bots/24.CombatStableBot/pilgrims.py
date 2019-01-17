@@ -49,7 +49,7 @@ def pilgrim_move(robot):
     random_directions = utility.random_cells_around()
     # May change for impossible resources
 
-    pilgrims_utility.did_pilgrim_burn_out(robot)
+    # pilgrims_utility.did_pilgrim_burn_out(robot)
 
     # Capture and start mining any resource if more than 50 turns since creation and no mine
     # TODO - Improve this code snippet to mine, if in visible region and empty

@@ -15,7 +15,7 @@ def prophet(robot):
 
 def prophet_move(robot):
 
-    prophet_utility.did_prophet_burn_out(robot)
+    # prophet_utility.did_prophet_burn_out(robot)
 
     # if robot.step > 300:
     #     march_increment = (robot.step - 200) // 100
