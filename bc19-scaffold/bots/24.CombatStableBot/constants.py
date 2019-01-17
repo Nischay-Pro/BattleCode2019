@@ -51,13 +51,19 @@ unit_prophet = SPECS['PROPHET']
 
 # Move Fuel Cost
 pilgrim_move_fuel_cost = SPECS['UNITS'][SPECS["PILGRIM"]]['FUEL_PER_MOVE']
+prophet_move_fuel_cost = SPECS['UNITS'][SPECS["PROPHET"]]['FUEL_PER_MOVE']
+crusader_move_fuel_cost = SPECS['UNITS'][SPECS["CRUSADER"]]['FUEL_PER_MOVE']
+preacher_move_fuel_cost = SPECS['UNITS'][SPECS["PREACHER"]]['FUEL_PER_MOVE']
 
 # Attack Fuel Cost
 prophet_attack_fuel_cost = SPECS['UNITS'][SPECS["PROPHET"]]['ATTACK_FUEL_COST']
+preacher_attack_fuel_cost = SPECS['UNITS'][SPECS["PREACHER"]]['ATTACK_FUEL_COST']
+crusader_attack_fuel_cost = SPECS['UNITS'][SPECS["CRUSADER"]]['ATTACK_FUEL_COST']
 
 # Speed Check
 pilgrim_speed = SPECS['UNITS'][SPECS["PILGRIM"]]['SPEED']
 prophet_speed = SPECS['UNITS'][SPECS["PROPHET"]]['SPEED']
+crusader_speed = SPECS['UNITS'][SPECS["CRUSADER"]]['SPEED']
 
 # Attack Damage
 crusader_attack_damage = SPECS['UNITS'][SPECS["CRUSADER"]]['ATTACK_DAMAGE']

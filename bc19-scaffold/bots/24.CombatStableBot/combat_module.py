@@ -2,6 +2,7 @@ import constants
 import vision
 import pathfinding
 import tactics
+import check
 # TODO - Enemy analysis function
 # TODO - All archer formation functions
 
@@ -62,11 +63,13 @@ def _prophet_combat(robot):
         if target_robot_id in unit_will_attack_id:
             old_enemy = robot.has_enemy_target_dict[target_robot_id]
             if robot.fuel > 25:
-                return robot.attack(old_enemy['x'] - unit_current_pos[0], old_enemy['y'] - unit_current_pos[1])
+                # TRAVIS ATTACK CHECK 1
+                return check.attack_check(robot, old_enemy['x'] - unit_current_pos[0], old_enemy['y'] - unit_current_pos[1], 1)
         if enemy:
             robot.is_targeting_robot_with_id = enemy['id']
             if robot.fuel > 25:
-                return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+                # TRAVIS ATTACK CHECK 2
+                return check.attack_check(robot, enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1], 2)
         return None
     else:
         return None
@@ -95,11 +98,13 @@ def _crusader_combat(robot):
         if len(unit_will_attack_list) !=0:
             enemy = unit_will_attack_list[0]
             # robot.log("Crusader f-i-g-h-t-i-n-g`")
-            return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+            # TRAVIS ATTACK CHECK 3
+            return check.attack_check(robot, enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1], 3)
         elif len(unit_will_attack_pilgrim_list) != 0 :
             enemy = unit_will_attack_pilgrim_list[0]
             # robot.log("Crusader bullying pilgrim")
-            return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+            # TRAVIS ATTACK CHECK 4
+            return check.attack_check(robot, enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1], 4)
         else:
             enemy = visible_enemy_list[0]
             # robot.log(enemy)
@@ -108,7 +113,8 @@ def _crusader_combat(robot):
             if move_to != None and len(move_to) != 0:
                 # robot.log("Moving to " + str(move_to))
                 new_pos_x, new_pos_y = move_to
-                return robot.move(new_pos_x - unit_current_pos[0], new_pos_y - unit_current_pos[1])
+                # TRAVIS MOVE CHECK 1
+                return check.move_check(robot, new_pos_x - unit_current_pos[0], new_pos_y - unit_current_pos[1], 1)
         return None
 
 # TODO - Preacher check which direction the friendlies are in and see if it's safe to drop AOE attack
@@ -148,20 +154,24 @@ def _preacher_combat(robot):
             if friendlyfire():
                 if len(unit_will_attack_list) != 0:
                     enemy = unit_will_attack_list[0]
-                    return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+                    # TRAVIS ATTACK CHECK 5
+                    return check.attack_check(robot, enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1], 5)
                 elif len(unit_will_attack_pilgrim_list) != 0:
                     enemy = unit_will_attack_pilgrim_list[0]
-                    return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+                    # TRAVIS ATTACK CHECK 6
+                    return check.attack_check(robot, enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1], 6)
                 else:
                     # Preachers should not be moving towards targets!
                     None
         else:
             if len(unit_will_attack_list) != 0:
                 enemy = unit_will_attack_list[0]
-                return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+                # TRAVIS ATTACK CHECK 7
+                return check.attack_check(robot, enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1], 7)
             elif len(unit_will_attack_pilgrim_list) != 0:
                 enemy = unit_will_attack_pilgrim_list[0]
-                return robot.attack(enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1])
+                # TRAVIS ATTACK CHECK 8
+                return check.attack_check(robot, enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1], 8)
             else:
                 # Preachers should not be moving towards targets!
                 None

@@ -1,5 +1,6 @@
 import utility
 import combat_module
+import check
 
 def preacher(robot):
     return preacher_move(robot)
@@ -19,4 +20,5 @@ def preacher_move(robot):
 
     for direction in directions:
         if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
-            return robot.move(direction[1], direction[0])
+            # TRAVIS MOVE CHECK 14
+            return check.move_check(robot, direction[1], direction[0], 14)

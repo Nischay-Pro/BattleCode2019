@@ -5,6 +5,7 @@ import movement
 import pathfinding
 import utility
 import vision
+import check
 
 def receive_initial_siganl(robot):
     unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)
@@ -63,11 +64,13 @@ def give_or_mine(robot):
                                     if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x, pos_y):
                                         fin_dir = direction
                         if fin_dir[0] != 0 and fin_dir[1] != 0:
-                            return robot.move(fin_dir[0], fin_dir[1])
+                            # TRAVIS MOVE CHECK 9
+                            return check.move_check(robot, fin_dir[0], fin_dir[1], 9)
                         # Not near vicinity, do bug search
                         fin_dir = pathfinding.bug_walk(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y)
                         if fin_dir != 0:
-                            return robot.move(fin_dir[0], fin_dir[1])
+                            # TRAVIS MOVE CHECK 10
+                            return check.move_check(robot, fin_dir[0], fin_dir[1], 10)
                         else:
                             return None
     else:
@@ -82,10 +85,12 @@ def give_or_mine(robot):
                     if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x, pos_y):
                         fin_dir = direction
         if fin_dir[0] != 0 and fin_dir[1] != 0:
-            return robot.move(fin_dir[0], fin_dir[1])
+            # TRAVIS MOVE CHECK 11
+            return check.move_check(robot, fin_dir[0], fin_dir[1], 11)
         fin_dir = pathfinding.bug_walk(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y)
         if fin_dir != 0:
-            return robot.move(fin_dir[0], fin_dir[1])
+            # TRAVIS MOVE CHECK 12
+            return check.move_check(robot, fin_dir[0], fin_dir[1], 12)
         else:
             return None
     return 0

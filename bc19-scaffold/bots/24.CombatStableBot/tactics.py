@@ -3,6 +3,7 @@ import utility
 import movement
 import pathfinding
 import constants
+import check
 
 def prophet_will_combat_1vs1(robot, enemy):
     passable_map = robot.get_passable_map()
@@ -29,7 +30,8 @@ def prophet_will_combat_1vs1(robot, enemy):
                         new_pos_x = guessing_new_pos_x
                         new_pos_y = guessing_new_pos_y
                 if max_distance > constants.prophet_max_attack_range:
-                    return robot.move(new_pos_x - robot.me.x, new_pos_y - robot.me.y)
+                    # TRAVIS MOVE CHECK 15
+                    return check.move_check(robot, new_pos_x - robot.me.x, new_pos_y - robot.me.y, 15)
 
                 # Can move into non-attack region
                 min_distance = constants.prophet_min_attack_range
@@ -43,6 +45,7 @@ def prophet_will_combat_1vs1(robot, enemy):
                         new_pos_x = guessing_new_pos_x
                         new_pos_y = guessing_new_pos_y
                 if min_distance < constants.prophet_min_attack_range:
+                    # TRAVIS MOVE CHECK 16
                     return robot.move()
 
             # robot.is_targeting_robot_with_id = enemy['id']
@@ -101,7 +104,8 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
         fin_dir = 0
         fin_dir = pathfinding.bug_walk(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
         if fin_dir != 0:
-            ans = robot.move(fin_dir[0], fin_dir[1])
+            # TRAVIS MOVE CHECK 17
+            ans = check.move_check(robot, fin_dir[0], fin_dir[1], 17)
         else:
             robot.bug_nav_counter += 1
             ans =  None

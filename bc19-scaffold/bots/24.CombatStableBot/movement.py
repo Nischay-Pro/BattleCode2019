@@ -2,6 +2,7 @@ import communications
 import pathfinding
 import constants
 import utility
+import check
 
 # from datetime import datetime
 
@@ -101,7 +102,8 @@ def move_to_destination(robot):
             robot.bug_nav_counter = 0
             new_pos_x, new_pos_y = robot.mov_path_between_location_and_destination[robot.mov_path_index]
             # robot.log("First block , list " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
-            return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
+            # TRAVIS MOVE CHECK 3
+            return check.move_check(robot, new_pos_x - pos_x, new_pos_y - pos_y, 3)
         # Reached end of move list
         elif len(robot.mov_path_between_location_and_destination) - 1 == robot.mov_path_index + 1:
             robot.mov_path_index = robot.mov_path_index + 1
@@ -115,7 +117,8 @@ def move_to_destination(robot):
             if not utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y):
                 robot.pilgrim_mine_ownership = robot.current_move_destination
                 robot.current_move_destination = None
-                return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
+                # TRAVIS MOVE CHECK 4
+                return check.move_check(robot, new_pos_x - pos_x, new_pos_y - pos_y, 4)
         # In middle of the list
         else:
             # robot.log("Current location is " + str((robot.me.x, robot.me.y)))
@@ -133,7 +136,8 @@ def move_to_destination(robot):
                         fin_dir = pathfinding.bug_walk(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
                         if fin_dir != 0:
                             # robot.log("Eight block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))
-                            return robot.move(fin_dir[0], fin_dir[1])
+                            # TRAVIS MOVE CHECK 5
+                            return check.move_check(robot, fin_dir[0], fin_dir[1], 5)
                         else:
                             robot.bug_nav_counter += 1
                             # robot.log("None1")
@@ -148,7 +152,8 @@ def move_to_destination(robot):
                                 fin_dir = pathfinding.bug_walk(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
                                 if fin_dir != 0:
                                     # robot.log("Ninth block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))
-                                    return robot.move(fin_dir[0], fin_dir[1])
+                                    # TRAVIS MOVE CHECK 6
+                                    return check.move_check(robot, fin_dir[0], fin_dir[1], 6)
                                 else:
                                     # robot.log("None2")
                                     return None
@@ -180,7 +185,8 @@ def move_to_destination(robot):
                     if fin_dir != 0:
                         # robot.log("Act")
                         # robot.log("Seventh block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))
-                        return robot.move(fin_dir[0], fin_dir[1])
+                        # TRAVIS MOVE CHECK 7
+                        return check.move_check(robot, fin_dir[0], fin_dir[1], 7)
                     else:
                         robot.bug_nav_counter += 1
                         # robot.log("None4")
@@ -189,7 +195,8 @@ def move_to_destination(robot):
                     # robot.log("None5")
                     return None
             # robot.log("Fouth block list " + str(new_pos_x) + " " + str(new_pos_y) + " " + str(robot.mov_path_between_location_and_destination) + " index " + str(robot.mov_path_index))
-            return robot.move(new_pos_x - pos_x, new_pos_y - pos_y)
+            # TRAVIS MOVE CHECK 8
+            return check.move_check(robot, new_pos_x - pos_x, new_pos_y - pos_y, 8)
     # Conditions not satisfied
     return None
 

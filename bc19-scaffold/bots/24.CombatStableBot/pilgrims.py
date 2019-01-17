@@ -2,6 +2,7 @@ import constants
 import utility
 import pilgrims_utility
 import movement
+import check
 
 def pilgrim(robot):
 
@@ -60,7 +61,8 @@ def pilgrim_move(robot):
                 robot.bug_nav_destination = None
                 robot.bug_nav_index = -1
                 robot.bug_nav_counter = 0
-                return robot.move(direction[1], direction[0])
+                # TRAVIS MOVE CHECK 13
+                return check.move_check(robot, direction[1], direction[0], 13)
 
     # TODO - Make into scout if too old, which will scout enemy bases
     # If the mine is already occupied
