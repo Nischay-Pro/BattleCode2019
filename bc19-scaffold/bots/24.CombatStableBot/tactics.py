@@ -99,7 +99,7 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
         # robot.log("Inside else")
         possible_pos_x, possible_pos_y = robot.current_move_destination
         fin_dir = 0
-        fin_dir = pathfinding.bug_walk(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
+        fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
         if fin_dir != 0:
             # TRAVIS MOVE CHECK 17
             ans = check.move_check(robot, fin_dir[0], fin_dir[1], 17)
