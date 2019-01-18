@@ -54,7 +54,7 @@ def _build_manager_castle(robot):
         if prophet_count < 2 and robot.karbonite >= 25 and robot.step < 10:
             robot.signal(1, 2)
             return castles_utility._castle_build(robot, constants.unit_prophet)
-        elif robot.karbonite >= 15 and robot.fuel > 200 and pilgrim_count < (total_fuel + total_karbonite) * .35 and robot.step < 60:
+        elif robot.karbonite >= 15 and robot.fuel > 100 and pilgrim_count < (total_fuel + total_karbonite) * .35 and robot.step < 60:
             if prophet_count < pilgrim_count/2:
                 robot.signal(1, 2)
                 return castles_utility._castle_build(robot, constants.unit_prophet)
@@ -103,7 +103,7 @@ def _build_manager_church(robot):
             return check.build_check(robot, unit_type, direction[1], direction[0], 4)
     # robot.log("No space to build units anymore for churches")
     return None
-    
+
 
 def default_production_order(robot):
     unit_type = robot.me.unit

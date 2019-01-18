@@ -80,7 +80,7 @@ def build_check(robot, build_unit_type, dx, dy, flag):
         elif build_unit_type == constants.unit_crusader and current_fuel >= constants.crusader_construction_fuel and current_karbonite >= constants.crusader_construction_karbonite:
             return robot.build_unit(build_unit_type, dx, dy)
         else:
-            robot.log("Illegal build command " + str(flag))
+            robot.log("Not enough fuel or karbonite to build unit " + str(flag))
             return None
     else:
         robot.log("Build check failed " + str(flag))
