@@ -21,7 +21,7 @@ def main():
         print("Travis Mode")
         travis = True
         lessmoded = True
-        fileman = open("input.txt", "r") 
+        fileman = open("input.txt", "r")
         dataman = fileman.read()
         print(dataman)
         frk = dataman.split("\n")
@@ -129,7 +129,7 @@ def main():
                 process.terminate()
                 break
             if "failed to initialize" in data:
-                if not lessmoded:    
+                if not lessmoded:
                     stats["seed"][seed] = data.strip()
                 pretty_print(stats, seed, lessmode=lessmoded)
                 lprint("Seed %s Failed. Initialization Error" % seed, lessmoded, travis)
@@ -210,7 +210,7 @@ def searchFolder(whatSearch, bluepath):
         for filename in files:
             file_path = os.path.join(root, filename)
             try:
-                with open(file_path, "rb") as f: 
+                with open(file_path, "rb") as f:
                     for idx,line in enumerate(f):
                         try:
                             line = line.decode("utf-8")
@@ -218,13 +218,13 @@ def searchFolder(whatSearch, bluepath):
                             continue
                         if whatSearch in line:
                             print("Error Occured in line %s at \n %s" % ((idx + 2), file_path))
-                            break 
+                            break
             except (IOError, OSError):
                 pass
 
 def clearScreen():
     os.system('cls' if os.name == 'nt' else 'clear')
-    
+
 
 if __name__ == "__main__":
     main()

@@ -2,6 +2,7 @@ import constants
 
 def move_check(robot, dx, dy, flag):
     distance = dx**2 + dy**2
+    position_at_end_of_turn = (robot.me.x, robot.me.y)
     if robot.me.unit == constants.unit_pilgrim:
         if distance <= constants.pilgrim_speed:
             if robot.fuel >= constants.pilgrim_move_fuel_cost * distance:
@@ -65,7 +66,11 @@ def attack_check(robot, dx, dy, flag):
 
 def build_check(robot, build_unit_type, dx, dy, flag):
     distance = dx**2 + dy**2
+    current_fuel = robot.fuel
+    current_karbonite = robot.karbonite
     if distance <= 2:
+        if build_unit_type == constants.unit_church and current_fuel >= constants.church_construction_fuel and current_karbonite >= constants.church_construction_karbonite:
+            return robot.build_unit(build_unit_type, dx, dy)
         return robot.build_unit(build_unit_type, dx, dy)
     else:
         robot.log("Build check failed " + str(flag))
