@@ -160,7 +160,8 @@ def make_church(robot):
         robot.log("Making a church at (" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
         robot.signal(0, 0)
         robot.pilgrim_has_built_a_church = 1
-        return robot.build_unit(constants.unit_church, max_resource_pos[1], max_resource_pos[0])
+        # TRAVIS BUILD CHECK 3
+        return check.build_check(robot, constants.unit_church, max_resource_pos[1], max_resource_pos[0], 3)
 
 def did_pilgrim_burn_out(robot):
     # Can't move around, don't do astar

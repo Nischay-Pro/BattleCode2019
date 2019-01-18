@@ -3,6 +3,7 @@ import communications
 import vision
 import mapping
 import constants
+import check
 
 # Add code for locked castles
 
@@ -170,12 +171,14 @@ def _castle_build(robot, unit_type):
     for direction in directions:
         if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x + direction[1],  pos_y + direction[0]) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
             # robot.log("Building unit of type " + str(unit_type) + " at " + str(direction))
-            return robot.build_unit(unit_type, direction[1], direction[0])
+            # TRAVIS BUILD CHECK 1
+            return check.build_check(robot, unit_type, direction[1], direction[0], 1)
 
     for direction in directions:
         if not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0]) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
             # robot.log("Building unit of type " + str(unit_type) + " at " + str(direction))
-            return robot.build_unit(unit_type, direction[1], direction[0])
+            # TRAVIS BUILD CHECK 2
+            return check.build_check(robot, unit_type, direction[1], direction[0], 2)
     # robot.log("No space to build units anymore for castles")
     return None
 

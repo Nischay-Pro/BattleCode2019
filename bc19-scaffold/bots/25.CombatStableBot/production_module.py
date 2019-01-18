@@ -1,5 +1,6 @@
 import constants
 import utility
+import check
 
 
 def _build_manager_castle(robot):
@@ -14,7 +15,8 @@ def _build_manager_church(robot):
     directions = utility.random_cells_around()
     for direction in directions:
         if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
-            return robot.build_unit(unit_type, direction[1], direction[0])
+            # TRAVIS BUILD CHECK 4
+            return check.build_check(robot, unit_type, direction[1], direction[0], 4)
     # robot.log("No space to build units anymore for churches")
     return None
 

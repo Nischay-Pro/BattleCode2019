@@ -63,5 +63,13 @@ def attack_check(robot, dx, dy, flag):
             robot.log("Attack check failed " + str(flag))
             return None
 
+def build_check(robot, build_unit_type, dx, dy, flag):
+    distance = dx**2 + dy**2
+    if distance <= 2:
+        return robot.build_unit(build_unit_type, dx, dy)
+    else:
+        robot.log("Build failed " + str(flag))
+        return None
+
 def give(robot, dx, dy, karbonite, fuel, flag):
     None

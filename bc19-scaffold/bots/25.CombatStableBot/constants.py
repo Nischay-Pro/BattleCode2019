@@ -86,7 +86,11 @@ crusader_max_health = SPECS['UNITS'][SPECS["CRUSADER"]]['STARTING_HP']
 prophet_max_health = SPECS['UNITS'][SPECS["PROPHET"]]['STARTING_HP']
 preacher_max_health = SPECS['UNITS'][SPECS["PREACHER"]]['STARTING_HP']
 
-
+# Construction Cost
+castle_construction_karbonite = SPECS['UNITS'][SPECS["CASTLE"]]['CONSTRUCTION_KARBONITE']
+castle_construction_fuel = SPECS['UNITS'][SPECS["CASTLE"]]['CONSTRUCTION_FUEL']
+church_construction_karbonite = SPECS['UNITS'][SPECS["CHURCH"]]['CONSTRUCTION_KARBONITE']
+church_construction_fuel = SPECS['UNITS'][SPECS["CHURCH"]]['CONSTRUCTION_FUEL']
 
 # SPEC API
 # public int CONSTRUCTION_KARBONITE;
