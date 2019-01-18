@@ -131,6 +131,26 @@ class MyRobot(BCAbstractRobot):
         if self.delta_time_consumed > 100:
             self.burned_out = 1
 
+        if self.step == 0:
+            if unit_type == constants.unit_castle:
+                self.combat_map = [[-1] * 21 for iter_i in range(21)]
+                self.previousturn_combat_map = [[-1] * 21 for iter_i in range(21)]
+            elif unit_type == constants.unit_church:
+                self.combat_map = [[-1] * 21 for iter_i in range(21)]
+                self.previousturn_combat_map = [[-1] * 21 for iter_i in range(21)]
+            elif unit_type == constants.unit_crusader:
+                self.combat_map = [[-1] * 15 for iter_i in range(15)]
+                self.previousturn_combat_map = [[-1] * 15 for iter_i in range(15)]
+            elif unit_type == constants.unit_preacher:
+                self.combat_map = [[-1] * 9 for iter_i in range(9)]
+                self.previousturn_combat_map = [[-1] * 9 for iter_i in range(9)]
+            elif unit_type == constants.unit_prophet:
+                self.combat_map = [[-1] * 17 for iter_i in range(17)]
+                self.previousturn_combat_map =  [[-1] * 17 for iter_i in range(17)]
+            elif unit_type == constants.unit_pilgrim:
+                self.combat_map = [[-1] * 21 for iter_i in range(21)]
+                self.previousturn_combat_map = [[-1] * 21 for iter_i in range(21)]
+
 
         if self.step % 200 == 3 and unit_type == constants.unit_castle:
             # robot.log(str(self.me))

@@ -179,7 +179,6 @@ def _preacher_combat(robot):
 
 def default_military_behaviour(robot):
     unit_type = robot.me.unit
-
     if unit_type == constants.unit_crusader:
         return _crusader_combat(robot)
     elif unit_type == constants.unit_preacher:
