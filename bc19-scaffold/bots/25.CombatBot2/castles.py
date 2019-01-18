@@ -166,20 +166,31 @@ def _castle_build(robot, unit_type):
     pos_x = robot.me.x
     pos_y = robot.me.y
     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
-    directions = utility.random_cells_around()
+    directions = constants.directions
+
+    res_list = []
+    res_max = (0, 0, 0)
 
     for direction in directions:
-        if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x + direction[1],  pos_y + direction[0]) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
-            # robot.log("Building unit of type " + str(unit_type) + " at " + str(direction))
-            # TRAVIS BUILD CHECK 1
-            return check.build_check(robot, unit_type, direction[1], direction[0], 1)
+        if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x + direction[0],  pos_y + direction[1]) and passable_map[pos_y + direction[1]][pos_x + direction[0]] == 1:
+            res_list.append((direction[0], direction[1], mapping.get_map_ratio(pos_x + direction[0],  pos_y + direction[1], passable_map, 1)))
 
-    for direction in directions:
-        if not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0]) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
-            # robot.log("Building unit of type " + str(unit_type) + " at " + str(direction))
-            # TRAVIS BUILD CHECK 2
-            return check.build_check(robot, unit_type, direction[1], direction[0], 2)
+    if len(res_list) == 0:
+        for direction in directions:
+            if not utility.is_cell_occupied(occupied_map, pos_x + direction[0],  pos_y + direction[1]) and passable_map[pos_y + direction[1]][pos_x + direction[0]] == 1:
+                res_list.append((direction[0], direction[1], mapping.get_map_ratio(pos_x + direction[0],  pos_y + direction[1], passable_map, 1)))
     # robot.log("No space to build units anymore for castles")
+
+    for res in res_list:
+        if res[2] > res_max[2]:
+            res_max = res
+
+    if not (res_max[0] == 0 and res_max[1] == 0):
+        # robot.log("Building unit of type " + str(unit_type) + " at " + str(res_max))
+        # TRAVIS BUILD CHECK 1
+        return check.build_check(robot, unit_type, res_max[0], res_max[1], 1)
+
+    robot.log("Castle surrounded, no space to build.")
     return None
 
 def castle_all_friendly_units(robot):
