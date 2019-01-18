@@ -46,6 +46,7 @@ class MyRobot(BCAbstractRobot):
     delta_time_consumed = 0
 
     mov_path_between_location_and_destination = None # So we can go back and forth by reversing list
+    steps_to_mine = 0
     mov_path_index = 0 # to keep track of movement in the above index
     map_symmetry = None # 0 - Horizontal, 1 is vertical
     burned_out_on_turn = -1

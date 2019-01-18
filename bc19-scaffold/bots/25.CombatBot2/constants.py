@@ -3,7 +3,8 @@ from battlecode import SPECS
 pathfinding_heuristic_multiplier = 1.1
 
 convoy_age_end_round = 50
-convoy_distance = 6
+convoy_radius = 6
+convoy_step_limit = 10
 pilgrim_aging_factor = .3 # Weight for the age of pilgrim after whihc it won't try to search for new mines
 pilgrim_will_scavenge_closeby_mines_after_turns = 5
 pilgrim_will_scavenge_closeby_mines_before_turns = 150

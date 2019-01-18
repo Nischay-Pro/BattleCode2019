@@ -53,7 +53,7 @@ def give_or_mine(robot):
                             return robot.give(dx, dy, carry_karb, carry_fuel)
 
                     # Convoys
-                    if robot.step < constants.convoy_age_end_round or (dx + dy) < constants.convoy_distance:
+                    if (robot.step < constants.convoy_age_end_round or (dx + dy) < constants.convoy_distance) and robot.steps_to_mine < constants.convoy_step_limit:
                         robot.resource_depot = f_unit
                         dockspots = movement.find_dockspots(robot, robot.resource_depot)
                         # If in near vicinity (one hop)

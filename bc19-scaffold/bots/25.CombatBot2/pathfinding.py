@@ -138,8 +138,9 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
     #     robot.log("Normal completion " + len(nodes))
     return retrace_path(pos_initial, pos_final, came_from), 0
 
-def bug_walk_toward(passable_map, occupied_map, des_x, des_y, pos_x, pos_y):
-    ideal_toward_direction = _choose_ideal_direction(des_x, des_y, pos_x, pos_y)
+#TODO Bug nav follows wall
+def bug_walk_toward(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, robot = None):
+    ideal_toward_direction = _choose_ideal_direction(des_x, des_y, pos_x, pos_y, robot)
     return _choose_practical_direction(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, ideal_toward_direction)
 
 def bug_walk_away(passable_map, occupied_map, des_x, des_y, pos_x, pos_y):
@@ -147,7 +148,7 @@ def bug_walk_away(passable_map, occupied_map, des_x, des_y, pos_x, pos_y):
     ideal_away_direction = (- ideal_toward_direction[0], - ideal_toward_direction[1])
     return _choose_practical_direction(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, ideal_away_direction)
 
-def _choose_ideal_direction(des_x, des_y, pos_x, pos_y):
+def _choose_ideal_direction(des_x, des_y, pos_x, pos_y, robot):
     diff_x = des_x - pos_x
     diff_y = des_y - pos_y
     # Normalise
@@ -176,7 +177,12 @@ def _choose_ideal_direction(des_x, des_y, pos_x, pos_y):
         else:
             return (2 * dir_x, 0)
 
+    return 0
+
 def _choose_practical_direction(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, direction):
+    if direction == 0:
+        return 0
+
     if not utility.is_cell_occupied(occupied_map, pos_x + direction[0], pos_y + direction[1]):
         if passable_map[pos_y + direction[1]][pos_x + direction[0]] == 1:
             return (direction[0], direction[1])

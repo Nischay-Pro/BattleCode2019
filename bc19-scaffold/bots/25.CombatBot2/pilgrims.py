@@ -5,6 +5,8 @@ import movement
 import check
 
 def pilgrim(robot):
+    if robot.pilgrim_mine_ownership == None:
+        robot.steps_to_mine += 1
 
     # TODO - Fix random difficult to find timeout errors happening for some pilgrims in large maps (-s 56)
     # TODO - Add scout bots, who scout if no mine to mine
