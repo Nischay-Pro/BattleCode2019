@@ -68,7 +68,7 @@ def build_check(robot, build_unit_type, dx, dy, flag):
     if distance <= 2:
         return robot.build_unit(build_unit_type, dx, dy)
     else:
-        robot.log("Build failed " + str(flag))
+        robot.log("Build check failed " + str(flag))
         return None
 
 def give(robot, dx, dy, karbonite, fuel, flag):

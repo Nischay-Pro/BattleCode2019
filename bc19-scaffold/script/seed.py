@@ -148,6 +148,11 @@ def main():
                 datacor = datacor[1]
                 datacor = datacor[:1]
                 searchFolder("TRAVIS ATTACK CHECK %s" % datacor, bluepath)
+            if "Build check failed " in data:
+                datacor = data.split("failed ")
+                datacor = datacor[1]
+                datacor = datacor[:1]
+                searchFolder("TRAVIS BUILD CHECK %s" % datacor, bluepath)
 
     pretty_print(stats, 1000, done=True, lessmode=lessmoded)
     lprint("Done", lessmoded, travis)
@@ -212,7 +217,7 @@ def searchFolder(whatSearch, bluepath):
                         except ValueError:
                             continue
                         if whatSearch in line:
-                            print("Error Occured in line %s at \n %s" % (idx + 2), file_path)
+                            print("Error Occured in line %s at \n %s" % ((idx + 2), file_path))
                             break 
             except (IOError, OSError):
                 pass
