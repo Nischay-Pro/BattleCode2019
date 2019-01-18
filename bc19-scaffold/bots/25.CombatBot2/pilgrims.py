@@ -104,3 +104,5 @@ def pilgrim_full(robot):
     # FIXME - Make churches not be built if castle/other church is in reasonable travel range
     if robot.karbonite > 50 and robot.fuel > 200:
         return pilgrims_utility.make_church(robot)
+
+    return None

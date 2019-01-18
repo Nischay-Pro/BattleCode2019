@@ -57,6 +57,7 @@ def give_or_mine(robot):
                         robot.resource_depot = f_unit
                         dockspots = movement.find_dockspots(robot, robot.resource_depot)
                         # If in near vicinity (one hop)
+
                         fin_dir = (0, 0)
                         for direction in constants.non_crusader_move_directions:
                             for pos in dockspots:
@@ -72,7 +73,8 @@ def give_or_mine(robot):
                             # TRAVIS MOVE CHECK 10
                             return check.move_check(robot, fin_dir[0], fin_dir[1], 10)
                         else:
-                            return None
+
+                            return 0
     else:
         for direction in directions:
             if pos_x == robot.resource_depot.x + direction[0] and pos_y == robot.resource_depot.y + direction[1]:
@@ -93,7 +95,7 @@ def give_or_mine(robot):
             # TRAVIS MOVE CHECK 12
             return check.move_check(robot, fin_dir[0], fin_dir[1], 12)
         else:
-            return None
+            return 0
     return 0
 
 def is_pilgrim_scavenging(robot):
@@ -102,7 +104,7 @@ def is_pilgrim_scavenging(robot):
         # TODO - Occupied by pilgrim condition
         if utility.is_cell_occupied(occupied_map, robot.current_move_destination[0], robot.current_move_destination[1]):
             if robot.step > 10:
-                robot.log(str(occupied_map[robot.current_move_destination[1]][robot.current_move_destination[0]]['unit']))
+                # robot.log(str(occupied_map[robot.current_move_destination[1]][robot.current_move_destination[0]]['unit']))
                 robot.pilgrim_mine_age_limt -= constants.pilgrim_fails_to_get_mine_aging # Time befells those who have mine impotency
                 # One time event that makes pilgrim a scavenger
                 if robot.pilgrim_type != 2:
