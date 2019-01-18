@@ -162,6 +162,7 @@ def _castle_assign_mine_or_scout(robot):
         return comms
 
     return 0
+
 def _castle_build(robot, unit_type):
     pos_x = robot.me.x
     pos_y = robot.me.y

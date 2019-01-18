@@ -91,6 +91,14 @@ castle_construction_karbonite = SPECS['UNITS'][SPECS["CASTLE"]]['CONSTRUCTION_KA
 castle_construction_fuel = SPECS['UNITS'][SPECS["CASTLE"]]['CONSTRUCTION_FUEL']
 church_construction_karbonite = SPECS['UNITS'][SPECS["CHURCH"]]['CONSTRUCTION_KARBONITE']
 church_construction_fuel = SPECS['UNITS'][SPECS["CHURCH"]]['CONSTRUCTION_FUEL']
+pilgrim_construction_karbonite = SPECS['UNITS'][SPECS["PILGRIM"]]['CONSTRUCTION_KARBONITE']
+pilgrim_construction_fuel = SPECS['UNITS'][SPECS["PILGRIM"]]['CONSTRUCTION_FUEL']
+prophet_construction_karbonite = SPECS['UNITS'][SPECS["PROPHET"]]['CONSTRUCTION_KARBONITE']
+prophet_construction_fuel = SPECS['UNITS'][SPECS["PROPHET"]]['CONSTRUCTION_FUEL']
+crusader_construction_karbonite = SPECS['UNITS'][SPECS["CRUSADER"]]['CONSTRUCTION_KARBONITE']
+crusader_construction_fuel = SPECS['UNITS'][SPECS["CRUSADER"]]['CONSTRUCTION_FUEL']
+preacher_construction_karbonite = SPECS['UNITS'][SPECS["PREACHER"]]['CONSTRUCTION_KARBONITE']
+preacher_construction_fuel = SPECS['UNITS'][SPECS["PREACHER"]]['CONSTRUCTION_FUEL']
 
 # SPEC API
 # public int CONSTRUCTION_KARBONITE;

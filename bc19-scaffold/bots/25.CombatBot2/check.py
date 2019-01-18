@@ -71,7 +71,17 @@ def build_check(robot, build_unit_type, dx, dy, flag):
     if distance <= 2:
         if build_unit_type == constants.unit_church and current_fuel >= constants.church_construction_fuel and current_karbonite >= constants.church_construction_karbonite:
             return robot.build_unit(build_unit_type, dx, dy)
-        return robot.build_unit(build_unit_type, dx, dy)
+        elif build_unit_type == constants.unit_pilgrim and current_fuel >= constants.pilgrim_construction_fuel and current_karbonite >= constants.pilgrim_construction_karbonite:
+            return robot.build_unit(build_unit_type, dx, dy)
+        elif build_unit_type == constants.unit_prophet and current_fuel >= constants.prophet_construction_fuel and current_karbonite >= constants.prophet_construction_karbonite:
+            return robot.build_unit(build_unit_type, dx, dy)
+        elif build_unit_type == constants.unit_preacher and current_fuel >= constants.preacher_construction_fuel and current_karbonite >= constants.preacher_construction_karbonite:
+            return robot.build_unit(build_unit_type, dx, dy)
+        elif build_unit_type == constants.unit_crusader and current_fuel >= constants.crusader_construction_fuel and current_karbonite >= constants.crusader_construction_karbonite:
+            return robot.build_unit(build_unit_type, dx, dy)
+        else:
+            robot.log("Illegal build command " + str(flag))
+            return None
     else:
         robot.log("Build check failed " + str(flag))
         return None

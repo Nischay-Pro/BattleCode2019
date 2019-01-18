@@ -50,5 +50,3 @@ def _prophet_initial_check(robot, friendly_unit):
         robot.enemy_castles.append(mapping.find_symmetrical_point(robot, friendly_unit['x'], friendly_unit['y'], robot.map_symmetry))
 
     robot.current_move_destination = mapping.find_symmetrical_point(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1], robot.map_symmetry)
-    if robot.built_by_a_castle == 0:
-        robot.log("Current move destination is" + str(robot.current_move_destination))
