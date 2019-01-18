@@ -217,13 +217,8 @@ def searchFolder(whatSearch, bluepath):
                         except ValueError:
                             continue
                         if whatSearch in line:
-<<<<<<< Updated upstream
                             print("Error Occured in line %s at \n %s" % ((idx + 2), file_path))
-                            break 
-=======
-                            print("Error Occured in line %s at \n %s" % (idx + 2), file_path)
                             break
->>>>>>> Stashed changes
             except (IOError, OSError):
                 pass
 

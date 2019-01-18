@@ -161,3 +161,9 @@ def default_movement_variables(robot):
     robot.bug_nav_destination = None
     robot.bug_nav_index = -1
     robot.bug_nav_counter = 0
+
+def is_in_list(element, given_list):
+    for iter_i in len(given_list):
+        if str(element) == str(given_list[iter_i]):
+            return True
+    return False
