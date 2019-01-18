@@ -180,51 +180,61 @@ def _choose_practical_direction(passable_map, occupied_map, des_x, des_y, pos_x,
     if not utility.is_cell_occupied(occupied_map, pos_x + direction[0], pos_y + direction[1]):
         if passable_map[pos_y + direction[1]][pos_x + direction[0]] == 1:
             return (direction[0], direction[1])
-    elif abs(direction[0]) == 1 and abs(direction[1]) == 1:
+    if abs(direction[0]) == 1 and abs(direction[1]) == 1:
         if not utility.is_cell_occupied(occupied_map, pos_x, pos_y + direction[1] * 2):
             if passable_map[pos_y + direction[1] * 2][pos_x] == 1:
                 return (0, direction[1] * 2)
-        elif not utility.is_cell_occupied(occupied_map, pos_x + direction[0] * 2, pos_y):
+        if not utility.is_cell_occupied(occupied_map, pos_x + direction[0] * 2, pos_y):
             if passable_map[pos_y][pos_x + direction[0] * 2] == 1:
                 return (direction[0] * 2, 0)
-        elif not utility.is_cell_occupied(occupied_map, pos_x - direction[0], pos_y + direction[1]):
+        if not utility.is_cell_occupied(occupied_map, pos_x - direction[0], pos_y + direction[1]):
             if passable_map[pos_y + direction[1]][pos_x - direction[0]] == 1:
                 return (- direction[0], direction[1])
-        elif not utility.is_cell_occupied(occupied_map, pos_x + direction[0], pos_y - direction[1]):
+        if not utility.is_cell_occupied(occupied_map, pos_x + direction[0], pos_y - direction[1]):
             if passable_map[pos_y - direction[1]][pos_x + direction[0]] == 1:
                 return (direction[0], - direction[1])
-    elif direction[0] == 0:
+    if direction[0] == 0:
         if abs(direction[1]) > 1:
             if not utility.is_cell_occupied(occupied_map, pos_x, pos_y + direction[1] / 2):
                 if passable_map[pos_y + direction[1] / 2][pos_x] == 1:
                     return (0, direction[1] / 2)
-        elif not utility.is_cell_occupied(occupied_map, pos_x + 1, pos_y + direction[1]):
-            if passable_map[pos_y + direction[1]][pos_x + 1] == 1:
-                return (1, direction[1])
-        elif not utility.is_cell_occupied(occupied_map, pos_x - 1, pos_y + direction[1]):
-            if passable_map[pos_y + direction[1]][pos_x - 1] == 1:
-                return (-1, direction[1])
-        elif not utility.is_cell_occupied(occupied_map, pos_x + 2, pos_y):
+        dir_y = 0
+        if abs(direction[1]) == 2:
+            dir_y = direction[1] / 2
+        else:
+            dir_y = direction[1]
+        if not utility.is_cell_occupied(occupied_map, pos_x + 1, pos_y + dir_y):
+            if passable_map[pos_y + dir_y][pos_x + 1] == 1:
+                return (1, dir_y)
+        if not utility.is_cell_occupied(occupied_map, pos_x - 1, pos_y + dir_y):
+            if passable_map[pos_y + dir_y][pos_x - 1] == 1:
+                return (-1, dir_y)
+        if not utility.is_cell_occupied(occupied_map, pos_x + 2, pos_y):
             if passable_map[pos_y][pos_x + 2] == 1:
                 return (2, 0)
-        elif not utility.is_cell_occupied(occupied_map, pos_x - 2, pos_y):
+        if not utility.is_cell_occupied(occupied_map, pos_x - 2, pos_y):
             if passable_map[pos_y][pos_x - 2] == 1:
                 return (-2, 0)
-    elif direction[1] == 0:
+    if direction[1] == 0:
         if abs(direction[0]) > 1:
             if not utility.is_cell_occupied(occupied_map, pos_x + direction[0] / 2, pos_y):
                 if passable_map[pos_y][pos_x + direction[0] / 2] == 1:
                     return (direction[0] / 2, 0)
-        elif not utility.is_cell_occupied(occupied_map, pos_x + direction[0], pos_y + 1):
-            if passable_map[pos_y + 1][pos_x + direction[0]] == 1:
-                return (direction[0], 1)
-        elif not utility.is_cell_occupied(occupied_map, pos_x + direction[0], pos_y - 1):
-            if passable_map[pos_y - 1][pos_x + direction[0]] == 1:
-                return (direction[0], -1)
-        elif not utility.is_cell_occupied(occupied_map, pos_x, pos_y + 2):
+        dir_x = 0
+        if abs(direction[0]) == 2:
+            dir_x = direction[0] / 2
+        else:
+            dir_x = direction[0]
+        if not utility.is_cell_occupied(occupied_map, pos_x + dir_x, pos_y + 1):
+            if passable_map[pos_y + 1][pos_x + dir_x] == 1:
+                return (dir_x, 1)
+        if not utility.is_cell_occupied(occupied_map, pos_x + dir_x, pos_y - 1):
+            if passable_map[pos_y - 1][pos_x + dir_x] == 1:
+                return (dir_x, -1)
+        if not utility.is_cell_occupied(occupied_map, pos_x, pos_y + 2):
             if passable_map[pos_y + 2][pos_x] == 1:
                 return (0, 2)
-        elif not utility.is_cell_occupied(occupied_map, pos_x, pos_y - 2):
+        if not utility.is_cell_occupied(occupied_map, pos_x, pos_y - 2):
             if passable_map[pos_y - 2][pos_x] == 1:
                 return (0, -2)
     return 0
