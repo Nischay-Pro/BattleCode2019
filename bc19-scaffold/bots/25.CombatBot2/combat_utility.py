@@ -13,6 +13,7 @@ def fill_combat_map(robot):
     min_y = pos_y - (combat_map_length - 1)/2
     max_y = pos_y + (combat_map_length - 1)/2
 
+    visible_units = robot.get_visible_robot_map()
     visible_map = robot.get_visible_robot_map()
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
     visible_friendly_distance, visible_friendly_list = vision.sort_visible_friendlies_by_distance(robot)
@@ -24,9 +25,11 @@ def fill_combat_map(robot):
                 combat_map_length[iter_i][iter_j] = -1
             else:
                 location_data = visible_map[iter_i][iter_j]
-                combat_map_length[iter_i][iter_j] = visible_map
-
-
+                # Empty
+                if location_data <= 0:
+                    combat_map_length[iter_i][iter_j] = visible_map
+                else:
+                    if utility.is_in_list(loca)
 
 
     # robot.combat_map
