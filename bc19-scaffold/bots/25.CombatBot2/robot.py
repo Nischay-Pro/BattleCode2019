@@ -34,7 +34,8 @@ class MyRobot(BCAbstractRobot):
     current_move_destination = None # Give the current destination to move to -> Tuple
     built_by_a_castle = 0 # Boolean
     built_by_a_church = 0 # Boolean
-    our_castle_or_church_base = None # Give location of home castle/church -> Tuple
+    our_castle_base_or_church_base = None # Give location of home castle/church -> Tuple
+
     friendly_castles = []
     friendly_churches = []
     enemy_castles = []

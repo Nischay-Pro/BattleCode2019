@@ -158,7 +158,11 @@ def make_church(robot):
                 max_resource_pos = pos
         # TODO - Build a church at a chokepoint so that enemy pilgrim cannot get into a research rich area
         robot.log("Making a church at (" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
-        robot.signal(0, 0)
+        temp_store = _give_church_castle_location(robot)
+        if temp_store != 0:
+            robot.signal(temp_store, 2)
+        else:
+            robot.signal(65534, 2)
         robot.pilgrim_has_built_a_church = 1
         # TRAVIS BUILD CHECK 3
         return check.build_check(robot, constants.unit_church, max_resource_pos[1], max_resource_pos[0], 3)
@@ -178,3 +182,8 @@ def did_pilgrim_burn_out(robot):
         robot.burned_out_on_turn += 3
     elif robot.burned_out_on_turn + constants.pilgrim_burnout_period <= robot.step:
         robot.burned_out_on_turn = -1
+
+def _give_church_castle_location(robot):
+    comms = communications.encode_msg_without_direction(robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1])
+    # robot.log("Comms is " + str((robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1])))
+    return comms

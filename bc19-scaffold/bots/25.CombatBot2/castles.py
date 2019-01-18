@@ -74,7 +74,7 @@ def castle(robot):
                 robot.signal(temp_store, 2)
             else:
                 robot.signal(65534, 2)
-            return _castle_build(robot,constants.unit_pilgrim)
+            return _castle_build(robot, constants.unit_pilgrim)
     elif robot.karbonite > 100 and robot.fuel > 200:
         #  if (crusader_count * 3) < pilgrim_count:
             #  # robot.signal(robot.me.signal + 1, 2)
@@ -92,7 +92,7 @@ def castle(robot):
                 robot.signal(temp_store, 2)
             else:
                 robot.signal(65534, 2)
-            return _castle_build(robot,constants.unit_pilgrim)
+            return _castle_build(robot, constants.unit_pilgrim)
         elif robot.step > 300 and robot.karbonite > 600 and robot.fuel > 600:
             robot.signal(1, 2)
             return _castle_build(robot, constants.unit_prophet)

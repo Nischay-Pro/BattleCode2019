@@ -11,6 +11,10 @@ def receive_initial_signal(robot):
             robot.built_by_a_castle = 1
             robot.built_by_a_church = 0
             _prophet_initial_check(robot, friendly_unit)
+        elif friendly_unit.unit == 1 and friendly_unit.signal > 0:
+            robot.built_by_a_castle = 0
+            robot.built_by_a_church = 1
+            _prophet_initial_check(robot, friendly_unit)
             break
 
 def did_prophet_burn_out(robot):
@@ -28,10 +32,12 @@ def did_prophet_burn_out(robot):
         robot.burned_out_on_turn = -1
 
 def _prophet_initial_check(robot, friendly_unit):
-    robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
+
     if robot.built_by_a_castle == 1:
+        robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
         robot.friendly_castles.append(robot.our_castle_or_church_base)
     else:
+        robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
         robot.friendly_churches.append(robot.our_castle_or_church_base)
 
     if robot.prophet_health == None:
@@ -42,4 +48,7 @@ def _prophet_initial_check(robot, friendly_unit):
 
     if len(robot.enemy_castles) == 0 and robot.built_by_a_castle == 1:
         robot.enemy_castles.append(mapping.find_symmetrical_point(robot, friendly_unit['x'], friendly_unit['y'], robot.map_symmetry))
-        robot.current_move_destination = robot.enemy_castles[0]
+
+    robot.current_move_destination = mapping.find_symmetrical_point(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1], robot.map_symmetry)
+    if robot.built_by_a_castle == 0:
+        robot.log("Current move destination is" + str(robot.current_move_destination))

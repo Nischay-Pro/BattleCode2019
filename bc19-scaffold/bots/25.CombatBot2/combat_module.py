@@ -1,8 +1,11 @@
+import check
+import combat_utility
 import constants
-import vision
 import pathfinding
 import tactics
-import check
+import vision
+
+
 # TODO - Enemy analysis function
 # TODO - All archer formation functions
 
@@ -11,6 +14,7 @@ def give_military_command(robot, received_message = 0, self_signal = 0):
         return default_military_behaviour(robot)
 
 def _prophet_combat(robot):
+    # combat_utility.fill_combat_map(robot)
     # TODO : store the health of enemy assuming that it has full health
     # TODO : remove from dictionary if the health of an enemy becomes zero
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
