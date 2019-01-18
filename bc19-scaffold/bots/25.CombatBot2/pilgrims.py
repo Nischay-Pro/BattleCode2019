@@ -65,10 +65,12 @@ def pilgrim_move(robot):
     pilgrims_utility.is_pilgrim_scavenging(robot)
 
     # Just move
-    if robot.step < robot.pilgrim_mine_age_limt and not movement.is_completely_surrounded(robot):
+    if not movement.is_completely_surrounded(robot):
         move_command = movement.move_to_destination(robot)
         if move_command != None:
             return move_command
+        elif robot.current_move_destination == None and robot.pilgrim_mine_ownership != None:
+            robot.current_move_destination = robot.pilgrim_mine_ownership
 
         # Random Movement when not enough time
         # for direction in random_directions:
@@ -88,6 +90,7 @@ def pilgrim_mine(robot):
     if utility.is_cell_resourceful(karb_map, fuel_map, pos_x, pos_y):
         robot.signal(0, 0)
         # TRAVIS CHECK MINE 1
+        robot.pilgrim_mine_ownership = (pos_x, pos_y)
         return check.mine_check(robot, 1)
     else:
         return 0

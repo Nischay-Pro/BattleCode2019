@@ -21,7 +21,6 @@ def _pilgrims_initial_check(robot, friendly_unit):
         robot.current_move_destination = None
     else:
         robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
-        robot.pilgrim_mine_ownership = 1
 
     robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
     if robot.map_symmetry == None:
@@ -50,6 +49,7 @@ def give_or_mine(robot):
                     for direction in directions:
                         if direction[1] == dx and direction[0] == dy:
                             robot.signal(0, 0)
+                            robot.current_move_destination = robot.pilgrim_mine_ownership
                             return robot.give(dx, dy, carry_karb, carry_fuel)
 
                     # Convoys
@@ -76,6 +76,7 @@ def give_or_mine(robot):
     else:
         for direction in directions:
             if pos_x == robot.resource_depot.x + direction[0] and pos_y == robot.resource_depot.y + direction[1]:
+                robot.current_move_destination = robot.pilgrim_mine_ownership
                 return robot.give(-direction[0], -direction[1], carry_karb, carry_fuel)
         dockspots = movement.find_dockspots(robot, robot.resource_depot)
         fin_dir = (0, 0)
@@ -97,10 +98,11 @@ def give_or_mine(robot):
 
 def is_pilgrim_scavenging(robot):
     occupied_map = robot.get_visible_robot_map()
-    if robot.current_move_destination != None and robot.step < robot.pilgrim_mine_age_limt:
+    if robot.current_move_destination != None and robot.step < robot.pilgrim_mine_age_limt and robot.pilgrim_mine_ownership == None:
         # TODO - Occupied by pilgrim condition
         if utility.is_cell_occupied(occupied_map, robot.current_move_destination[0], robot.current_move_destination[1]):
-            if occupied_map[robot.current_move_destination[1]][robot.current_move_destination[0]]['unit'] == constants.unit_pilgrim or robot.step > 10:
+            if robot.step > 10:
+                robot.log(str(occupied_map[robot.current_move_destination[1]][robot.current_move_destination[0]]['unit']))
                 robot.pilgrim_mine_age_limt -= constants.pilgrim_fails_to_get_mine_aging # Time befells those who have mine impotency
                 # One time event that makes pilgrim a scavenger
                 if robot.pilgrim_type != 2:
@@ -109,7 +111,7 @@ def is_pilgrim_scavenging(robot):
                     robot.pilgrim_scavenge_mine_occupancy_list = [-1 for i in range(len(robot.pilgrim_scavenge_mine_location_list))]
                 _update_scavenge_list(robot)
     # One more try old man
-    if robot.step > robot.pilgrim_mine_age_limt and robot.pilgrim_has_been_revitalised == 0:
+    if robot.step > robot.pilgrim_mine_age_limt and robot.pilgrim_has_been_revitalised == 0 and robot.pilgrim_mine_ownership == None:
         _revitalise_scavanger_pilgrim(robot)
 
 def _update_scavenge_list(robot):

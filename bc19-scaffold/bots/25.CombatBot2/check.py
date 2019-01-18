@@ -86,5 +86,5 @@ def build_check(robot, build_unit_type, dx, dy, flag):
         robot.log("Build check failed " + str(flag))
         return None
 
-def give(robot, dx, dy, karbonite, fuel, flag):
+def give_check(robot, dx, dy, karbonite, fuel, flag):
     None
