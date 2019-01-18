@@ -44,21 +44,21 @@ def attack_check(robot, dx, dy, flag):
     distance = dx**2 + dy**2
     if robot.me.unit == constants.unit_prophet:
         if distance <= constants.prophet_max_attack_range and distance >= constants.prophet_min_attack_range:
-            if robot.fuel >= distance * constants.prophet_attack_fuel_cost:
+            if robot.fuel >= constants.prophet_attack_fuel_cost:
                 return robot.attack(dx, dy)
         else:
             robot.log("Attack check failed " + str(flag))
             return None
     if robot.me.unit == constants.unit_preacher:
         if distance <= constants.preacher_max_attack_range and distance >= constants.preacher_min_attack_range:
-            if robot.fuel >= distance * constants.preacher_attack_fuel_cost:
+            if robot.fuel >= constants.preacher_attack_fuel_cost:
                 return robot.attack(dx, dy)
         else:
             robot.log("Attack check failed " + str(flag))
             return None
     if robot.me.unit == constants.unit_crusader:
         if distance <= constants.crusader_max_attack_range and distance >= constants.crusader_min_attack_range:
-            if robot.fuel >= distance * constants.crusader_attack_fuel_cost:
+            if robot.fuel >= constants.crusader_attack_fuel_cost:
                 return robot.attack(dx, dy)
         else:
             robot.log("Attack check failed " + str(flag))
@@ -86,5 +86,5 @@ def build_check(robot, build_unit_type, dx, dy, flag):
         robot.log("Build check failed " + str(flag))
         return None
 
-def give(robot, dx, dy, karbonite, fuel, flag):
+def give_check(robot, dx, dy, karbonite, fuel, flag):
     None

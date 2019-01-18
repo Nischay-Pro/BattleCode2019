@@ -5,7 +5,6 @@ import pathfinding
 import tactics
 import vision
 
-
 # TODO - Enemy analysis function
 # TODO - All archer formation functions
 
@@ -36,7 +35,7 @@ def _prophet_combat(robot):
                 robot.has_enemy_target_dict[enemy['id']] = enemy
 
             # Units In Attack Range
-            if enemy_distance <= robot.prophet_attack_range_max and enemy_distance >= robot.prophet_attack_range_min:
+            if enemy_distance <= constants.prophet_max_attack_range and enemy_distance >= constants.prophet_min_attack_range:
                 if enemy['unit'] == constants.unit_pilgrim:
                     unit_will_attack_pilgrim_list.append(enemy)
                 else:
@@ -69,14 +68,12 @@ def _prophet_combat(robot):
             if robot.fuel > 25:
                 # TRAVIS ATTACK CHECK 1
                 return check.attack_check(robot, old_enemy['x'] - unit_current_pos[0], old_enemy['y'] - unit_current_pos[1], 1)
-        if enemy:
+        if enemy != None:
             robot.is_targeting_robot_with_id = enemy['id']
             if robot.fuel > 25:
                 # TRAVIS ATTACK CHECK 2
                 return check.attack_check(robot, enemy['x'] - unit_current_pos[0], enemy['y'] - unit_current_pos[1], 2)
-        return None
-    else:
-        return None
+    return None
 
 def _crusader_combat(robot):
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)

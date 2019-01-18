@@ -95,7 +95,6 @@ def move_to_destination(robot):
             if str(robot.mov_path_between_location_and_destination[robot.mov_path_index]) != str(robot.current_move_destination):
                 utility.default_movement_variables(robot)
             if not utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y):
-                robot.pilgrim_mine_ownership = robot.current_move_destination
                 robot.current_move_destination = None
                 # TRAVIS MOVE CHECK 4
                 return check.move_check(robot, new_pos_x - pos_x, new_pos_y - pos_y, 4)
