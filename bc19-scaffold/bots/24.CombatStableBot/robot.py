@@ -53,6 +53,10 @@ class MyRobot(BCAbstractRobot):
     bug_nav_index = -1
     bug_nav_counter = 0
 
+    # Combat Zone
+    combat_map = None
+    previousturn_combat_map = None
+
     # Pilgrims
     pilgrim_type = 0 # 0 for miner, 1 for transporter, 2 for scavenger and 3 for scout, 4 for attained nirvana
     pilgrim_mine_ownership = None # Does pilgrim own a mine or is traversing back and forth -> Tuple denotes mine position

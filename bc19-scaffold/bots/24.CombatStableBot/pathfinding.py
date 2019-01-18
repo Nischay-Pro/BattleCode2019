@@ -201,7 +201,7 @@ def _choose_practical_direction(passable_map, occupied_map, des_x, des_y, pos_x,
         elif not utility.is_cell_occupied(occupied_map, pos_x + 1, pos_y + direction[1]):
             if passable_map[pos_y + direction[1]][pos_x + 1] == 1:
                 return (1, direction[1])
-        elif not utility.is_cell_occupied(occupied_map, pos_x - 1, pos_y + dir_y):
+        elif not utility.is_cell_occupied(occupied_map, pos_x - 1, pos_y + direction[1]):
             if passable_map[pos_y + direction[1]][pos_x - 1] == 1:
                 return (-1, direction[1])
         elif not utility.is_cell_occupied(occupied_map, pos_x + 2, pos_y):
@@ -228,4 +228,3 @@ def _choose_practical_direction(passable_map, occupied_map, des_x, des_y, pos_x,
             if passable_map[pos_y - 2][pos_x] == 1:
                 return (0, -2)
     return 0
-
