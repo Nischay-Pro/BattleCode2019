@@ -3,6 +3,7 @@ import mapping
 import constants
 import check
 import production_module
+import signal_module
 
 # Add code for locked castles
 
@@ -18,6 +19,18 @@ def castle(robot):
 
     if robot.step < 1:
         _castle_initial_check(robot)
+
+    if robot.step < 3:
+        signal_module.broadcastCastlePosition(robot)
+    
+    if robot.step < 4:
+        signal_module.getInitialCastlePosition(robot)
+
+    if robot.step == 4:
+        if robot.other_castle_index_1 != 0:
+            robot.friendly_castles.append(tuple(robot.other_castle_1_co_ordinates))
+            if robot.other_castle_index_2 != 0:
+                robot.friendly_castles.append(tuple(robot.other_castle_2_co_ordinates))
 
     return production_module.default_production_order(robot)
 

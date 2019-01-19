@@ -84,6 +84,11 @@ class MyRobot(BCAbstractRobot):
     castle_under_attack = 0 # Boolean, if for 5 turn no more decrease in health,
     castle_under_attack_turn = None # Change to turn number of attack
     pilgrim_build_number = 0
+    other_castle_index_1 = 0
+    other_castle_index_2 = 0
+    other_castle_1_co_ordinates = []
+    other_castle_2_co_ordinates = []
+    number_castles = 1
 
     # Church
     church_unit_build_log = [] # Maintains unit type of nearby robots

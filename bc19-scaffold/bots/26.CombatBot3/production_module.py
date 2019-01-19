@@ -87,12 +87,15 @@ def _build_manager_castle(robot):
             elif robot.step > 300 and robot.karbonite > 600 and robot.fuel > 600:
                 robot.signal(1, 2)
                 return castles_utility._castle_build(robot, constants.unit_prophet)
-            elif robot.step > 500 and robot.karbonite > 300 and robot.fuel > 300:
+            elif robot.step > 500 and robot.step < 800 and robot.karbonite > 300 and robot.fuel > 300:
                 robot.signal(1, 2)
                 return castles_utility._castle_build(robot, constants.unit_prophet)
+            elif robot.step >= 800:
+                #TODO At war change production status
+                robot.signal(1, 2)
+                return castles_utility._castle_build(robot, constants.unit_crusader)
 
 def _build_manager_church(robot):
-    unit_type = constants.unit_prophet
     pos_x = robot.me.x
     pos_y = robot.me.y
     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
@@ -100,7 +103,8 @@ def _build_manager_church(robot):
     for direction in directions:
         if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
             # TRAVIS BUILD CHECK 4
-            return check.build_check(robot, unit_type, direction[1], direction[0], 4)
+            return check.build_check(robot, constants.unit_prophet, direction[1], direction[0], 4)
+
     # robot.log("No space to build units anymore for churches")
     return None
 
