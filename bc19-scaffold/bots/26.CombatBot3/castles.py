@@ -4,6 +4,7 @@ import constants
 import check
 import production_module
 import signal_module
+import castles_utility
 
 # Add code for locked castles
 
@@ -21,16 +22,18 @@ def castle(robot):
         _castle_initial_check(robot)
 
     if robot.step < 3:
-        signal_module.broadcastCastlePosition(robot)
+        signal_module.broadcast_castle_position(robot)
     
     if robot.step < 4:
-        signal_module.getInitialCastlePosition(robot)
+        signal_module.get_initial_castle_position(robot)
 
-    if robot.step == 4:
+    if robot.step == 3:
+        robot.friendly_castles.append((robot.me['x'], robot.me['y']))
         if robot.other_castle_index_1 != 0:
             robot.friendly_castles.append(tuple(robot.other_castle_1_co_ordinates))
             if robot.other_castle_index_2 != 0:
                 robot.friendly_castles.append(tuple(robot.other_castle_2_co_ordinates))
+        castles_utility.get_enemy_castles(robot)
 
     return production_module.default_production_order(robot)
 
@@ -52,6 +55,6 @@ def _castle_initial_check(robot):
     if robot.map_symmetry == None:
         mapping.return_map_symmetry(robot)
 
-    if len(robot.enemy_castles) == 0:
-        robot.enemy_castles.append(mapping.find_symmetrical_point(robot, robot.me.x, robot.me.y, robot.map_symmetry))
+    # if len(robot.enemy_castles) == 0:
+    #     robot.enemy_castles.append(mapping.find_symmetrical_point(robot, robot.me.x, robot.me.y, robot.map_symmetry))
         # robot.log(str(robot.enemy_castles))

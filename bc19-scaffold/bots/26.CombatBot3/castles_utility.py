@@ -90,3 +90,9 @@ def _castle_assign_mine_or_scout(robot):
         return comms
 
     return 0
+
+def get_enemy_castles(robot):
+    my_castles = robot.friendly_castles
+    for i in range(len(my_castles)):
+        current_castle = mapping.find_symmetrical_point(robot, my_castles[i][0], my_castles[i][1], robot.map_symmetry)
+        robot.enemy_castles.append(current_castle)

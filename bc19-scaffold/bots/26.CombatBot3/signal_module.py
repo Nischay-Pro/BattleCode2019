@@ -1,6 +1,6 @@
 
 
-def getInitialCastlePosition(robot):
+def get_initial_castle_position(robot):
     visible = robot.get_visible_robots()
     if visible == None:
         # That's weird
@@ -26,7 +26,7 @@ def getInitialCastlePosition(robot):
                     # Huh 4 castles in a map
                     robot.log("Weird Shit 4 castles?")
 
-def broadcastCastlePosition(robot):
+def broadcast_castle_position(robot):
     if robot.step == 1:
         robot.castle_talk(robot.me['x'] + 64)
     elif robot.step == 2:
