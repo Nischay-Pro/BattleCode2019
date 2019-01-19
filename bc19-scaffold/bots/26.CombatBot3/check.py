@@ -80,7 +80,26 @@ def build_check(robot, build_unit_type, dx, dy, flag):
         elif build_unit_type == constants.unit_crusader and current_fuel >= constants.crusader_construction_fuel and current_karbonite >= constants.crusader_construction_karbonite:
             return robot.build_unit(build_unit_type, dx, dy)
         else:
-            robot.log("Not enough fuel or karbonite to build unit " + str(flag))
+            dfuel = 0
+            dkarb = 0
+            if build_unit_type == constants.unit_church:
+                dfuel = constants.church_construction_fuel - current_fuel
+                dkarb = constants.church_construction_karbonite - current_karbonite
+            elif build_unit_type == constants.unit_pilgrim:
+                dfuel = constants.pilgrim_construction_fuel - current_fuel
+                dkarb = constants.pilgrim_construction_karbonite - current_karbonite
+            elif build_unit_type == constants.unit_prophet:
+                dfuel = constants.prophet_construction_fuel - current_fuel
+                dkarb = constants.prophet_construction_karbonite - current_karbonite
+            elif build_unit_type == constants.unit_preacher:
+                dfuel = constants.preacher_construction_fuel - current_fuel
+                dkarb = constants.preacher_construction_karbonite - current_karbonite
+            elif build_unit_type == constants.unit_crusader:
+                dfuel = constants.crusader_construction_fuel - current_fuel
+                dkarb = constants.crusader_construction_karbonite - current_karbonite
+            dfuel = 0 if dfuel < 0 else dfuel
+            dkarb = 0 if dkarb < 0 else dkarb
+            robot.log("Not enough fuel or karbonite to build unit " + str(flag) + ". Deficit of " + str(dfuel) + " fuel and " + str(dkarb) + " karbonite.")
             return None
     else:
         robot.log("Build check failed " + str(flag))
