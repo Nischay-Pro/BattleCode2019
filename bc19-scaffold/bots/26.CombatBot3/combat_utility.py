@@ -2,6 +2,13 @@ import constants
 import utility
 import vision
 
+def command_flow(robot):
+    None
+    # If no hostile units, arrange lattice formation
+    # If core is ready, push
+    # If we are fighting for useless land retreat if possible, else attack
+    # If outnumbered, try to retreat
+
 def fill_combat_map(robot):
     pos_x = robot.me.x
     pos_y = robot.me.y
@@ -32,6 +39,11 @@ def fill_combat_map(robot):
                 # -2 to -4097
                 robot.combat_map[unit['y'] - min_y][unit['x'] - min_x] = -unit['id'] - 1
 
+    is_unit_safe_at_current_position(robot)
+    is_unit_in_enemy_vision_range(robot)
+    is_position_in_enemy_attack_range(robot, 0, 0)
+    is_position_in_enemy_vision_range(robot, 0, 0)
+
     # robot.combat_map
 
 
@@ -46,14 +58,59 @@ def is_unit_safe_at_current_position(robot):
             danger_count += 1
     return danger_count
 
-def is_unit_in_enemy_unit_vision_range(robot):
-    None
+def is_unit_in_enemy_vision_range(robot):
+    visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
+    sighted_count = 0
+    for iter_i in range(len(visible_enemy_list)):
+        unit = visible_enemy_list[iter_i]
+        distance = visible_enemy_distance[iter_i]
+        attack_damage, speed, min_attack_range, max_attack_range, vision_range, has_handicapped_area, max_health = give_stats(unit)
+        if distance <= vision_range:
+            sighted_count += 1
+    return sighted_count
 
-def is_unit_in_enemy_unit_attack_range(robot):
-    None
+def is_position_in_enemy_attack_range(robot, pos_x, pos_y):
+    visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
+    for iter_i in range(len(visible_enemy_list)):
+        unit = visible_enemy_list[iter_i]
+        enemy_pos_x = unit['x']
+        enemy_pos_y = unit['y']
+        distance = utility.distance(robot, (enemy_pos_x, enemy_pos_y), (pos_x, pos_y))
+        attack_damage, speed, min_attack_range, max_attack_range, vision_range, has_handicapped_area, max_health = give_stats(unit)
+        if distance >= min_attack_range and distance <= max_attack_range:
+            return 1
+    return 0
+
+def is_position_in_enemy_vision_range(robot, pos_x, pos_y):
+    visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
+    for iter_i in range(len(visible_enemy_list)):
+        unit = visible_enemy_list[iter_i]
+        enemy_pos_x = unit['x']
+        enemy_pos_y = unit['y']
+        distance = utility.distance(robot, (enemy_pos_x, enemy_pos_y), (pos_x, pos_y))
+        attack_damage, speed, min_attack_range, max_attack_range, vision_range, has_handicapped_area, max_health = give_stats(unit)
+        if distance <= vision_range:
+            return 1
+    return 0
 
 def give_postions_where_unit_can_evade_enemy_vision(robot):
-    None
+    directions = None
+    evasion_position_list = []
+    pos_x = robot.me.x
+    pos_y = robot.me.y
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
+    if robot.me.unit != constants.unit_crusader:
+        directions = constants.non_crusader_move_directions
+    else:
+        directions = constants.crusader_move_directions
+    for direction in directions:
+        new_pos_x = pos_x + direction[0]
+        new_pos_y = pos_y + direction[1]
+        if utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y) or passable_map[new_pos_y][new_pos_x] != 1:
+            continue
+        if is_position_in_enemy_vision_range(robot, new_pos_x, new_pos_y) == 0:
+            evasion_position_list.append((new_pos_x, new_pos_y))
+    return evasion_position_list
 
 def give_postions_where_unit_can_unit_evade_attack(robot):
     None
@@ -62,6 +119,9 @@ def give_postions_where_unit_is_in_handicapped_area(robot):
     None
 
 def can_unit_kite(robot):
+    None
+
+def is_attacked_by_hidden_unit(robot):
     None
 
 def compare_combat_map(robot):
