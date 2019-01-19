@@ -19,6 +19,21 @@ def castle_all_friendly_units(robot):
 
     return friendly_units, enemy_units
 
+def castle_all_friendly_units_but_not_me(robot):
+    all_units = robot.get_visible_robots()
+
+    friendly_units = []
+    enemy_units = []
+    for unit in all_units:
+        if unit.team == None and robot.me['id'] != unit['id']:
+            friendly_units.append(unit)
+        elif robot.me.team == unit.team and robot.me['id'] != unit['id']:
+            friendly_units.append(unit)
+        else:
+            enemy_units.append(unit)
+
+    return friendly_units, enemy_units
+
 def _is_castle_under_attack(robot, enemy_units):
     if robot.me.health < robot.castle_health:
         robot.castle_health = robot.me.health
@@ -96,3 +111,61 @@ def get_enemy_castles(robot):
     for i in range(len(my_castles)):
         current_castle = mapping.find_symmetrical_point(robot, my_castles[i][0], my_castles[i][1], robot.map_symmetry)
         robot.enemy_castles.append(current_castle)
+
+def _check_if_piligrim_spoke_with_me_already(robot, id):
+    keys_to_check = list(robot.co_ordinate_storage_locker.keys())
+    if len(keys_to_check) > 0:
+        for i in range(len(keys_to_check)):
+            if keys_to_check[i] == id:
+                return True
+        return None
+    else:
+        return None
+    return None
+    # for i in range(len())
+
+def _check_if_co_ordinate_exists_in_karb_manager(robot, with_what, also_who):
+    keys_to_check = list(robot.karb_manager.keys())
+    for i in range(len(keys_to_check)):
+        if keys_to_check[i] == with_what:
+            robot.karb_manager[with_what] = [also_who, True]
+            return True
+    return False
+
+def _check_if_co_ordinate_exists_in_fuel_manager(robot, with_what, also_who):
+    keys_to_check = list(robot.fuel_manager.keys())
+    for i in range(len(keys_to_check)):
+        if keys_to_check[i] == with_what:
+            robot.fuel_manager[with_what] = [also_who, True]
+            return True
+    return False
+
+def _castle_mine_and_karb_processor(robot):
+    visible_robots,_ = castle_all_friendly_units_but_not_me(robot)
+    if len(visible_robots) != 0:
+        for i in range(len(visible_robots)):
+            current_unit = visible_robots[i]
+            if current_unit['signal'] == -1:
+                # Don't put the conditions as AND. Consult Nischay for info on why
+                if current_unit['castle_talk'] >= 64:
+                    what_say_you = current_unit['castle_talk']
+                    response = _check_if_piligrim_spoke_with_me_already(robot, current_unit['id'])
+                    if response == True:
+                        # Yeah. So you spoke to me, let me fetch your x coord from storage locker and check against the managers.
+                        piligrim_x_cord = robot.co_ordinate_storage_locker[current_unit['id']][0]
+                        piligrim_y_cord = what_say_you - 64
+                        robot.co_ordinate_storage_locker[current_unit['id']].append(piligrim_y_cord)
+                        if _check_if_co_ordinate_exists_in_karb_manager(robot, (piligrim_x_cord, piligrim_y_cord), current_unit['id']):
+                            None
+                            # mi casa es su casa
+                        elif _check_if_co_ordinate_exists_in_fuel_manager(robot, (piligrim_x_cord, piligrim_y_cord), current_unit['id']):
+                            # mi casa es su casa
+                            None
+                        else:
+                            robot.log("This shouldn't have happened")
+
+                    else:
+                        # My man you did not speak to me so I guess you are shouting the x coords. I shall handle them gladly.
+                        robot.co_ordinate_storage_locker[current_unit['id']] = [what_say_you - 64]
+
+

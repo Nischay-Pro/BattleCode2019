@@ -72,6 +72,8 @@ class MyRobot(BCAbstractRobot):
     pilgrim_has_been_revitalised = 0
     pilgrim_has_built_a_church = 0
     resource_depot = None
+    piligrim_did_i_shout_my_x_cord = False
+    piligrim_did_i_shout_my_y_cord = False
 
     # Castles
     castle_unit_build_log = [] # Maintain the ids of robots, pop and push every turn
@@ -89,6 +91,9 @@ class MyRobot(BCAbstractRobot):
     other_castle_1_co_ordinates = []
     other_castle_2_co_ordinates = []
     number_castles = 1
+    fuel_manager = {}
+    karb_manager = {}
+    co_ordinate_storage_locker = {}
 
     # Church
     church_unit_build_log = [] # Maintains unit type of nearby robots

@@ -35,6 +35,9 @@ def castle(robot):
                 robot.friendly_castles.append(tuple(robot.other_castle_2_co_ordinates))
         castles_utility.get_enemy_castles(robot)
 
+    if robot.step >= 4:
+        castles_utility._castle_mine_and_karb_processor(robot)
+
     return production_module.default_production_order(robot)
 
     # robot.log(str(robot.me.signal))
@@ -55,6 +58,12 @@ def _castle_initial_check(robot):
     if robot.map_symmetry == None:
         mapping.return_map_symmetry(robot)
 
+    for i in range(len(robot.fuel_mine_locations_from_this_castle)):
+        robot.fuel_manager[robot.fuel_mine_locations_from_this_castle[i]] = [0, False]
+
+    for i in range(len(robot.karb_mine_locations_from_this_castle)):
+        robot.karb_manager[robot.karb_mine_locations_from_this_castle[i]] = [0, False]
+    
     # if len(robot.enemy_castles) == 0:
     #     robot.enemy_castles.append(mapping.find_symmetrical_point(robot, robot.me.x, robot.me.y, robot.map_symmetry))
         # robot.log(str(robot.enemy_castles))

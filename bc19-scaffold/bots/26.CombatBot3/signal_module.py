@@ -8,7 +8,7 @@ def get_initial_castle_position(robot):
     for r in visible:
         if r['signal'] == -1 and r['team'] == robot.me['team'] and r['id'] != robot.me['id']:
             castle_talk_value = r['castle_talk']
-            if castle_talk_value > 64:
+            if castle_talk_value >= 64:
                 castle_index = r['id']
                 if robot.other_castle_index_1 == r['id']:
                     robot.other_castle_1_co_ordinates.append(castle_talk_value - 64)

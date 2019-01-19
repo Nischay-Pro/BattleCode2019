@@ -23,6 +23,13 @@ def pilgrim(robot):
     # The pilgrim checks if it has a mine on it's current position
     pilgrim_is_mining = pilgrim_mine(robot)
     if pilgrim_is_mining !=0 and robot.fuel > 1 and robot.step > 1:
+        if robot.piligrim_did_i_shout_my_x_cord == False:
+            robot.castle_talk(robot.me.x + 64)
+            robot.piligrim_did_i_shout_my_x_cord = True
+        else:
+            if robot.piligrim_did_i_shout_my_y_cord == False:
+                robot.castle_talk(robot.me.y + 64)
+                robot.piligrim_did_i_shout_my_y_cord = True
         return pilgrim_is_mining
 
     # Receive signal from castle on which mine to go to
