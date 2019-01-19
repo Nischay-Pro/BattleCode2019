@@ -16,7 +16,6 @@ def _build_manager_castle(robot):
     total_karbonite = vision.all_karbonite(robot)
     total_fuel = vision.all_fuel(robot)
 
-    # TODO - Build combat units, link with production modules?
     castles_utility._is_castle_under_attack(robot, enemy_units)
 
     # robot.log(mapping.analyze_map(robot.get_passable_map()))

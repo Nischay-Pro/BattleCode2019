@@ -23,9 +23,6 @@ __pragma__('tconv')
 def find_unit_type(self, map):
     None
 
-# TODO - Add condition that team has fuel before making it move
-# TODO - Before final turn, make sure that as much resources has been consumed
-# TODO - Symmetry variable use
 class MyRobot(BCAbstractRobot):
 
     step = -1

@@ -76,8 +76,6 @@ def _castle_build(robot, unit_type):
 
 def _castle_assign_mine_or_scout(robot):
     # TODO - Change as per our requirements of fuel or karbonite
-    # TODO - Change occupancy to robot id when reached mine
-    # TODO - Add scouts
     # Build a karb mine
     karb_mine_assigned = -1
     fuel_mine_assigned = -1
