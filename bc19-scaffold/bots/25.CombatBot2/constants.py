@@ -51,6 +51,14 @@ unit_pilgrim = SPECS['PILGRIM']
 unit_preacher = SPECS['PREACHER']
 unit_prophet = SPECS['PROPHET']
 
+# Vision Radius
+castle_vision_range = SPECS['UNITS'][SPECS["CASTLE"]]['VISION_RADIUS']
+church_vision_range = SPECS['UNITS'][SPECS["CHURCH"]]['VISION_RADIUS']
+pilgrim_vision_range = SPECS['UNITS'][SPECS["PILGRIM"]]['VISION_RADIUS']
+crusader_vision_range = SPECS['UNITS'][SPECS["CRUSADER"]]['VISION_RADIUS']
+prophet_vision_range = SPECS['UNITS'][SPECS["PROPHET"]]['VISION_RADIUS']
+preacher_vision_range = SPECS['UNITS'][SPECS["PREACHER"]]['VISION_RADIUS']
+
 # Move Fuel Cost
 pilgrim_move_fuel_cost = SPECS['UNITS'][SPECS["PILGRIM"]]['FUEL_PER_MOVE']
 prophet_move_fuel_cost = SPECS['UNITS'][SPECS["PROPHET"]]['FUEL_PER_MOVE']
@@ -66,13 +74,17 @@ crusader_attack_fuel_cost = SPECS['UNITS'][SPECS["CRUSADER"]]['ATTACK_FUEL_COST'
 pilgrim_speed = SPECS['UNITS'][SPECS["PILGRIM"]]['SPEED']
 prophet_speed = SPECS['UNITS'][SPECS["PROPHET"]]['SPEED']
 crusader_speed = SPECS['UNITS'][SPECS["CRUSADER"]]['SPEED']
+preacher_speed = SPECS['UNITS'][SPECS["PREACHER"]]['SPEED']
 
 # Attack Damage
+castle_attack_damage = SPECS['UNITS'][SPECS["CASTLE"]]['ATTACK_DAMAGE']
 crusader_attack_damage = SPECS['UNITS'][SPECS["CRUSADER"]]['ATTACK_DAMAGE']
 prophet_attack_damage = SPECS['UNITS'][SPECS["PROPHET"]]['ATTACK_DAMAGE']
 preacher_attack_damage = SPECS['UNITS'][SPECS["PREACHER"]]['ATTACK_DAMAGE']
 
 # Attack Range
+castle_min_attack_range = SPECS['UNITS'][SPECS["CASTLE"]]['ATTACK_RADIUS'][0]
+castle_max_attack_range = SPECS['UNITS'][SPECS["CASTLE"]]['ATTACK_RADIUS'][1]
 crusader_min_attack_range = SPECS['UNITS'][SPECS["CRUSADER"]]['ATTACK_RADIUS'][0]
 crusader_max_attack_range = SPECS['UNITS'][SPECS["CRUSADER"]]['ATTACK_RADIUS'][1]
 prophet_min_attack_range = SPECS['UNITS'][SPECS["PROPHET"]]['ATTACK_RADIUS'][0]
