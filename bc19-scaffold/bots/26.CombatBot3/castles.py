@@ -3,8 +3,9 @@ import mapping
 import constants
 import check
 import production_module
-import signal_module
 import castles_utility
+import communications
+import comm_analyzer
 
 # Add code for locked castles
 
@@ -22,10 +23,10 @@ def castle(robot):
         _castle_initial_check(robot)
 
     if robot.step < 3:
-        signal_module.broadcast_castle_position(robot)
+        comm_analyzer.broadcast_castle_position(robot)
     
     if robot.step < 4:
-        signal_module.get_initial_castle_position(robot)
+        comm_analyzer.get_initial_castle_position(robot)
 
     if robot.step == 3:
         robot.friendly_castles.append((robot.me['x'], robot.me['y']))

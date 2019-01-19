@@ -21,17 +21,17 @@ def _build_manager_castle(robot):
     # robot.log(mapping.analyze_map(robot.get_passable_map()))
 
     for f_unit in friendly_units:
-        if f_unit.castle_talk == constants.unit_castle:
+        if f_unit.castle_talk == constants.unit_castle: #0
             castle_count+=1
-        elif f_unit.castle_talk == constants.unit_church:
+        elif f_unit.castle_talk == constants.unit_church: #1
             church_count+=1
-        elif f_unit.castle_talk == constants.unit_crusader:
+        elif f_unit.castle_talk == constants.unit_crusader: #3
             crusader_count+=1
-        elif f_unit.castle_talk == constants.unit_pilgrim:
+        elif f_unit.castle_talk == constants.unit_pilgrim: #2
             pilgrim_count+=1
-        elif f_unit.castle_talk == constants.unit_preacher:
+        elif f_unit.castle_talk == constants.unit_preacher: #5
             preacher_count+=1
-        elif f_unit.castle_talk == constants.unit_prophet:
+        elif f_unit.castle_talk == constants.unit_prophet: #4
             prophet_count+=1
 
     """ Building units -

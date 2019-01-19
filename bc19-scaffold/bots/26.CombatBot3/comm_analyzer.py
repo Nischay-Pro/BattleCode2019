@@ -1,4 +1,38 @@
 
+''' Signal Protocol
+
+Reserved Signals
+
+    0 -
+    1 - Built by this unit (Church and Castle Identification Signal)        (Castles, Churches)
+    2 - 
+    3 -
+    4 -
+    5 -
+    6 - Castle instructing all units to build Crusaders                     (Castles)
+    7 - Castle instructing all units to build Prophets                      (Castles)
+    8 - Castle instructing all units to build Preachers                     (Castles)
+    9 - Castle instructing all units to build Piligrims                     (Castles)
+    10 - Update ratio Crusader : Prophet make it 2 : 1                      (Castles)
+    11 - Update ratio Crusader : Prophet make it 1 : 2                      (Castles)
+
+    65534 - Failed to allocate mine                                         (Castles)
+    
+
+Reserved Castle Talk
+
+    0 - Castle Identification Signal                                        (Castle)
+    1 - Church Identification Signal                                        (Church)
+    2 - Piligrim Identification Signal                                      (Piligrim)
+    3 - Crusader Identification Signal                                      (Crusader)
+    4 - Prophet Identification Signal                                       (Prophet)
+    5 - Preacher Identification Signal                                      (Preacher)
+
+    64 - 127 - Reserved for positions                                      (All Units)
+
+
+'''
+
 
 def get_initial_castle_position(robot):
     visible = robot.get_visible_robots()
@@ -31,5 +65,4 @@ def broadcast_castle_position(robot):
         robot.castle_talk(robot.me['x'] + 64)
     elif robot.step == 2:
         robot.castle_talk(robot.me['y'] + 64)
-
         
