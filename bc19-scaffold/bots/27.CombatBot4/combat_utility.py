@@ -1,3 +1,4 @@
+import check
 import constants
 import utility
 import vision
@@ -47,19 +48,27 @@ def fill_combat_map(robot):
 
     # robot.combat_map
 
+def is_attackable_enemy_unit(robot, enemy, enemy_distance):
+    # This data call (give_stats) is for the self_robot i.e the current bot, so you require a ".me" also
+    attack_damage, speed, min_attack_range, max_attack_range, vision_range, has_handicapped_area, max_health = give_stats(robot.me)
+    if enemy_distance >= min_attack_range and enemy_distance <= max_attack_range:
+        return 1
+    return 0
 
-def is_unit_safe_at_current_position(robot):
+def is_unit_in_any_enemy_attack_range(robot):
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
+    unit_count = 0
     danger_count = 0
     for iter_i in range(len(visible_enemy_list)):
         unit = visible_enemy_list[iter_i]
         distance = visible_enemy_distance[iter_i]
         attack_damage, speed, min_attack_range, max_attack_range, vision_range, has_handicapped_area, max_health = give_stats(unit)
         if distance >= min_attack_range and distance <= max_attack_range:
-            danger_count += 1
+            danger_count += attack_damage/10 # All damages are multiples of 10
+            unit_count += 1
     return danger_count
 
-def is_unit_in_enemy_vision_range(robot):
+def is_unit_in_any_enemy_vision_range(robot):
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
     sighted_count = 0
     for iter_i in range(len(visible_enemy_list)):
@@ -70,7 +79,7 @@ def is_unit_in_enemy_vision_range(robot):
             sighted_count += 1
     return sighted_count
 
-def is_position_in_enemy_attack_range(robot, pos_x, pos_y):
+def is_position_in_any_enemy_attack_range(robot, pos_x, pos_y):
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
     for iter_i in range(len(visible_enemy_list)):
         unit = visible_enemy_list[iter_i]
@@ -82,7 +91,7 @@ def is_position_in_enemy_attack_range(robot, pos_x, pos_y):
             return 1
     return 0
 
-def is_position_in_enemy_vision_range(robot, pos_x, pos_y):
+def is_position_in_any_enemy_vision_range(robot, pos_x, pos_y):
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
     for iter_i in range(len(visible_enemy_list)):
         unit = visible_enemy_list[iter_i]
@@ -94,7 +103,7 @@ def is_position_in_enemy_vision_range(robot, pos_x, pos_y):
             return 1
     return 0
 
-def is_position_in_enemy_handicap_range(robot, pos_x, pos_y):
+def is_position_in_any_enemy_handicap_range(robot, pos_x, pos_y):
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
     for iter_i in range(len(visible_enemy_list)):
         unit = visible_enemy_list[iter_i]
@@ -102,11 +111,11 @@ def is_position_in_enemy_handicap_range(robot, pos_x, pos_y):
         enemy_pos_y = unit['y']
         distance = utility.distance(robot, (enemy_pos_x, enemy_pos_y), (pos_x, pos_y))
         attack_damage, speed, min_attack_range, max_attack_range, vision_range, has_handicapped_area, max_health = give_stats(unit)
-        if has_handicapped_area ==1 and distance < min_attack_range:
+        if has_handicapped_area == 1 and distance < min_attack_range:
             return 1
     return 0
 
-def give_postions_where_unit_can_evade_enemy_vision(robot):
+def give_postions_where_unit_can_evade_all_enemy_vision(robot):
     directions = None
     vision_evasion_position_list = []
     pos_x = robot.me.x
@@ -121,11 +130,11 @@ def give_postions_where_unit_can_evade_enemy_vision(robot):
         new_pos_y = pos_y + direction[1]
         if utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y) or passable_map[new_pos_y][new_pos_x] != 1:
             continue
-        if is_position_in_enemy_vision_range(robot, new_pos_x, new_pos_y) == 0:
+        if is_position_in_any_enemy_vision_range(robot, new_pos_x, new_pos_y) == 0:
             vision_evasion_position_list.append((new_pos_x, new_pos_y))
     return vision_evasion_position_list
 
-def give_postions_where_unit_can_unit_evade_attack(robot):
+def give_postions_where_unit_can_evade_all_enemy_attack(robot):
     directions = None
     attack_evasion_position_list = []
     pos_x = robot.me.x
@@ -140,11 +149,11 @@ def give_postions_where_unit_can_unit_evade_attack(robot):
         new_pos_y = pos_y + direction[1]
         if utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y) or passable_map[new_pos_y][new_pos_x] != 1:
             continue
-        if is_position_in_enemy_attack_range(robot, new_pos_x, new_pos_y) == 0:
+        if is_position_in_any_enemy_attack_range(robot, new_pos_x, new_pos_y) == 0:
             attack_evasion_position_list.append((new_pos_x, new_pos_y))
     return attack_evasion_position_list
 
-def give_postions_where_unit_is_in_handicapped_area(robot):
+def give_postions_where_unit_is_in_handicap_area_of_any_enemy(robot):
     directions = None
     handicap_position_list = []
     pos_x = robot.me.x
@@ -159,7 +168,7 @@ def give_postions_where_unit_is_in_handicapped_area(robot):
         new_pos_y = pos_y + direction[1]
         if utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y) or passable_map[new_pos_y][new_pos_x] != 1:
             continue
-        if is_position_in_enemy_handicap_range(robot, new_pos_x, new_pos_y) == 0:
+        if is_position_in_any_enemy_handicap_range(robot, new_pos_x, new_pos_y) == 0:
             handicap_position_list.append((new_pos_x, new_pos_y))
     return handicap_position_list
 
@@ -188,6 +197,11 @@ def retreat_decider(robot):
     #On the ratio of your troops, enemy troops and signal
     None
 
+def attack_location(robot, pos_x, pos_y, flag, fuel, enemy = None):
+    robot.is_targeting_robot_with_id = enemy['id']
+    if robot.fuel > fuel:
+        return check.attack_check(robot, pos_x - robot.me.x, pos_y - robot.me.y, flag)
+    return None
 
 def give_stats(unit):
     if unit['unit'] == constants.unit_castle:
@@ -202,6 +216,7 @@ def give_stats(unit):
         return _give_crusader_stats()
     elif unit['unit'] == constants.unit_preacher:
         return _give_preacher_stats()
+
 
 def _give_castle_stats():
     attack_damage = constants.castle_attack_damage

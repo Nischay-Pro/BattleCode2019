@@ -54,12 +54,7 @@ class MyRobot(BCAbstractRobot):
     bug_nav_counter = 0
 
     position_at_end_of_turn = (-1, 1)
-
     unit_health = None
-
-    # Combat Zone
-    combat_map = None
-    previousturn_combat_map = None
 
     # Pilgrims
     pilgrim_type = 0 # 0 for miner, 1 for transporter, 2 for scavenger and 3 for scout, 4 for attained nirvana
@@ -98,6 +93,10 @@ class MyRobot(BCAbstractRobot):
     # Church
     church_unit_build_log = [] # Maintains unit type of nearby robots
     home_castle_location = None # TODO - Given by pilgrim that built church
+
+    # Combat Zone
+    combat_map = None
+    previousturn_combat_map = None
 
     # Combat Units
     is_targeting_robot_with_id = None # Remember robot to kill, after current turn
@@ -139,6 +138,7 @@ class MyRobot(BCAbstractRobot):
         if self.unit_health is None:
             self.unit_health = self.me.health
 
+        # Note that on the first turn these will be not zero as they are being initialised
         self.delta_karbonite_per_turn = self.karbonite - self.delta_karbonite_per_turn
         self.delta_fuel_per_turn = self.fuel - self.delta_fuel_per_turn
         self.delta_time_consumed = self.me.time - self.delta_time_consumed
