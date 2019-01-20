@@ -166,13 +166,13 @@ def _choose_ideal_direction(des_x, des_y, pos_x, pos_y, robot):
     # Movement on x_axis
     if diff_x == 0 and diff_y != 0:
         # If two steps away, move one step so as to not move into occupied
-        if abs(diff_y) == 2:
+        if abs(diff_y) <= 2:
             return (0, dir_y)
         else:
             return (0, 2 * dir_y)
     # Same for y_axis
     if diff_x != 0 and diff_y == 0:
-        if abs(diff_x) == 2:
+        if abs(diff_x) <= 2:
             return (dir_x, 0)
         else:
             return (2 * dir_x, 0)
