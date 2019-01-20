@@ -39,17 +39,23 @@ def castle(robot):
     if robot.step >= 4:
         castles_utility._castle_mine_and_karb_processor(robot)
 
+    response = castles_utility._castle_attack_when_attack_range(robot)
+    if response != None:
+        return response
+
     return production_module.default_production_order(robot)
 
     # robot.log(str(robot.me.signal))
 
 def _castle_initial_check(robot):
+    my_x = robot.me['x']
+    my_y = robot.me['y']
     if len(robot.fuel_mine_locations_from_this_castle) == 0:
-        unused_store, robot.fuel_mine_locations_from_this_castle = utility.get_relative_fuel_mine_positions(robot)
+        _, robot.fuel_mine_locations_from_this_castle = utility.get_sorted_list_from_a_point(my_x, my_y, mapping.get_friendly_fuel(robot))
         robot.fuel_mine_occupancy_from_this_castle = [-1 for i in range(len(robot.fuel_mine_locations_from_this_castle))]
 
     if len(robot.karb_mine_locations_from_this_castle) == 0:
-        unused_store, robot.karb_mine_locations_from_this_castle = utility.get_relative_karbonite_mine_positions(robot)
+        _, robot.karb_mine_locations_from_this_castle = utility.get_sorted_list_from_a_point(my_x, my_y, mapping.get_friendly_karbonite(robot))
         robot.karb_mine_occupancy_from_this_castle = [-1 for i in range(len(robot.karb_mine_locations_from_this_castle))]
 
     if robot.castle_health == None:

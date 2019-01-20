@@ -1,5 +1,6 @@
 import random
 import constants
+import mapping
 
 def distance(robot, start: tuple, end: tuple) -> int:
     ans = (start[0]-end[0])**2 + (start[1]-end[1])**2
@@ -102,6 +103,19 @@ def get_relative_mine_positions(robot):
             if fuel_map[iter_i][iter_j] or karb_map[iter_i][iter_j]:
                 distance.append((iter_j - pos_x)**2 + (iter_i - pos_y)**2)
                 queue.append((iter_j, iter_i))
+
+    sorted_distance, sorted_tuple = insertionSort(distance, queue)
+    return sorted_distance, sorted_tuple
+
+def get_sorted_list_from_a_point(pos_x, pos_y, list_to_check):
+    queue = []
+    distance = []
+
+    for i in range(len(list_to_check)):
+        iter_x = list_to_check[i][0]
+        iter_y = list_to_check[i][1]
+        distance.append((iter_x - pos_x)**2 + (iter_x - pos_y)**2)
+        queue.append((iter_x, iter_y))
 
     sorted_distance, sorted_tuple = insertionSort(distance, queue)
     return sorted_distance, sorted_tuple

@@ -50,49 +50,50 @@ def _build_manager_castle(robot):
         #TODO Broadcast with Co-ordinates to send troops. Range set to max of map.
     else:
         # Peaceful Conditions
-        if prophet_count < 2 and robot.karbonite >= 25 and robot.step < 10:
+        if robot.step >= 3:
+            if robot.karbonite >= 15 and robot.fuel > 100 and pilgrim_count < (total_fuel + total_karbonite) * .35 and robot.step < 60:
+                if prophet_count < pilgrim_count/2:
+                    robot.signal(1, 2)
+                    return castles_utility._castle_build(robot, constants.unit_prophet)
+                else:
+                    robot.pilgrim_build_number += 1
+                    temp_store = castles_utility._castle_assign_mine_or_scout(robot)
+                    if temp_store != 0:
+                        robot.signal(temp_store, 2)
+                    else:
+                        robot.signal(65534, 2)
+                    return castles_utility._castle_build(robot,constants.unit_pilgrim)
+            elif robot.karbonite > 100 and robot.fuel > 200:
+                #  if (crusader_count * 3) < pilgrim_count:
+                    #  # robot.signal(robot.me.signal + 1, 2)
+                    #  return castle_build(robot,constants.unit_crusader)
+                # elif (preacher_count * 2) < crusader_count:
+                #     # robot.signal(robot.me.signal + 1, 2)
+                #     return castle_build(robot, constants.unit_preacher)
+                if prophet_count < pilgrim_count and robot.step > 60:
+                    robot.signal(1, 2)
+                    return castles_utility._castle_build(robot, constants.unit_prophet)
+                if pilgrim_count < (total_fuel + total_karbonite) * .55:
+                    robot.pilgrim_build_number += 1
+                    temp_store = castles_utility._castle_assign_mine_or_scout(robot)
+                    if temp_store != 0:
+                        robot.signal(temp_store, 2)
+                    else:
+                        robot.signal(65534, 2)
+                    return castles_utility._castle_build(robot,constants.unit_pilgrim)
+                elif robot.step > 300 and robot.karbonite > 600 and robot.fuel > 600:
+                    robot.signal(1, 2)
+                    return castles_utility._castle_build(robot, constants.unit_prophet)
+                elif robot.step > 500 and robot.step < 800 and robot.karbonite > 300 and robot.fuel > 300:
+                    robot.signal(1, 2)
+                    return castles_utility._castle_build(robot, constants.unit_prophet)
+                elif robot.step >= 800:
+                    #TODO At war change production status
+                    robot.signal(1, 2)
+                    return castles_utility._castle_build(robot, constants.unit_crusader)
+        elif prophet_count < 2 and robot.karbonite >= 25 and robot.step < 10:
             robot.signal(1, 2)
             return castles_utility._castle_build(robot, constants.unit_prophet)
-        elif robot.karbonite >= 15 and robot.fuel > 100 and pilgrim_count < (total_fuel + total_karbonite) * .35 and robot.step < 60:
-            if prophet_count < pilgrim_count/2:
-                robot.signal(1, 2)
-                return castles_utility._castle_build(robot, constants.unit_prophet)
-            else:
-                robot.pilgrim_build_number += 1
-                temp_store = castles_utility._castle_assign_mine_or_scout(robot)
-                if temp_store != 0:
-                    robot.signal(temp_store, 2)
-                else:
-                    robot.signal(65534, 2)
-                return castles_utility._castle_build(robot,constants.unit_pilgrim)
-        elif robot.karbonite > 100 and robot.fuel > 200:
-            #  if (crusader_count * 3) < pilgrim_count:
-                #  # robot.signal(robot.me.signal + 1, 2)
-                #  return castle_build(robot,constants.unit_crusader)
-            # elif (preacher_count * 2) < crusader_count:
-            #     # robot.signal(robot.me.signal + 1, 2)
-            #     return castle_build(robot, constants.unit_preacher)
-            if prophet_count < pilgrim_count and robot.step > 60:
-                robot.signal(1, 2)
-                return castles_utility._castle_build(robot, constants.unit_prophet)
-            if pilgrim_count < (total_fuel + total_karbonite) * .55:
-                robot.pilgrim_build_number += 1
-                temp_store = castles_utility._castle_assign_mine_or_scout(robot)
-                if temp_store != 0:
-                    robot.signal(temp_store, 2)
-                else:
-                    robot.signal(65534, 2)
-                return castles_utility._castle_build(robot,constants.unit_pilgrim)
-            elif robot.step > 300 and robot.karbonite > 600 and robot.fuel > 600:
-                robot.signal(1, 2)
-                return castles_utility._castle_build(robot, constants.unit_prophet)
-            elif robot.step > 500 and robot.step < 800 and robot.karbonite > 300 and robot.fuel > 300:
-                robot.signal(1, 2)
-                return castles_utility._castle_build(robot, constants.unit_prophet)
-            elif robot.step >= 800:
-                #TODO At war change production status
-                robot.signal(1, 2)
-                return castles_utility._castle_build(robot, constants.unit_crusader)
 
 def _build_manager_church(robot):
     pos_x = robot.me.x

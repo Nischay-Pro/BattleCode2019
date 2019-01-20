@@ -63,6 +63,13 @@ def attack_check(robot, dx, dy, flag):
         else:
             robot.log("Attack check failed " + str(flag))
             return None
+    if robot.me.unit == constants.unit_castle:
+        if distance <= constants.castle_max_attack_range and distance >= constants.castle_min_attack_range:
+            if robot.fuel >= constants.castle_attack_fuel_cost:
+                return robot.attack(dx, dy)
+        else:
+            robot.log("Attack check failed " + str(flag))
+            return None
 
 def build_check(robot, build_unit_type, dx, dy, flag):
     distance = dx**2 + dy**2

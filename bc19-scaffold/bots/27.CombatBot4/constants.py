@@ -71,6 +71,7 @@ preacher_move_fuel_cost = SPECS['UNITS'][SPECS["PREACHER"]]['FUEL_PER_MOVE']
 prophet_attack_fuel_cost = SPECS['UNITS'][SPECS["PROPHET"]]['ATTACK_FUEL_COST']
 preacher_attack_fuel_cost = SPECS['UNITS'][SPECS["PREACHER"]]['ATTACK_FUEL_COST']
 crusader_attack_fuel_cost = SPECS['UNITS'][SPECS["CRUSADER"]]['ATTACK_FUEL_COST']
+castle_attack_fuel_cost = SPECS['UNITS'][SPECS["CASTLE"]]['ATTACK_FUEL_COST']
 
 # Speed Check
 pilgrim_speed = SPECS['UNITS'][SPECS["PILGRIM"]]['SPEED']

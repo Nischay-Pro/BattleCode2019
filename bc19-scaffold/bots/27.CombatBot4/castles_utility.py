@@ -3,6 +3,7 @@ import check
 import mapping
 import constants
 import communications
+import vision
 
 def castle_all_friendly_units(robot):
     all_units = robot.get_visible_robots()
@@ -82,13 +83,19 @@ def _castle_assign_mine_or_scout(robot):
 
     for iter_i in range(len(robot.karb_mine_occupancy_from_this_castle)):
         if robot.karb_mine_occupancy_from_this_castle[iter_i] == -1:
-            karb_mine_assigned = iter_i
-            break
+            if am_i_the_nearest_castle_to_this(robot, robot.karb_mine_locations_from_this_castle[iter_i][0], robot.karb_mine_locations_from_this_castle[iter_i][1]):
+                karb_mine_assigned = iter_i
+                break
+            else:
+                robot.karb_mine_occupancy_from_this_castle[iter_i] = 0
 
     for iter_j in range(len(robot.fuel_mine_occupancy_from_this_castle)):
         if robot.fuel_mine_occupancy_from_this_castle[iter_j] == -1:
-            fuel_mine_assigned = iter_j
-            break
+            if am_i_the_nearest_castle_to_this(robot, robot.fuel_mine_locations_from_this_castle[iter_j][0], robot.fuel_mine_locations_from_this_castle[iter_j][1]):
+                fuel_mine_assigned = iter_j
+                break
+            else:
+                robot.karb_mine_occupancy_from_this_castle[iter_i] = 0
 
     if (robot.pilgrim_build_number % 2 == 1 or fuel_mine_assigned == -1) and karb_mine_assigned != -1:
         robot.karb_mine_occupancy_from_this_castle[karb_mine_assigned] = 0
@@ -167,3 +174,74 @@ def _castle_mine_and_karb_processor(robot):
                         robot.co_ordinate_storage_locker[current_unit['id']] = [what_say_you - 64]
 
 
+def _get_free_karb_mines_never_sent(robot):
+    karbs = robot.karb_manager
+    keys_to_check = list(robot.karb_manager.keys())
+    mines = []
+    if len(karbs) > 0:
+        for i in range(len(robot.karb_manager)):
+            data = karbs[keys_to_check[i]]
+            if data[0] == 0 and data[1] == False:
+                mines.append((int(keys_to_check[i].split(",")[0]), int(keys_to_check[i].split(",")[1])))
+    return mines
+
+def _get_free_fuel_mines_never_sent(robot):
+    fuels = robot.fuel_manager
+    keys_to_check = list(robot.fuel_manager.keys())
+    mines = []
+    if len(fuels) > 0:
+        for i in range(len(robot.fuel_manager)):
+            data = fuels[keys_to_check[i]]
+            if data[0] == 0 and data[1] == False:
+                mines.append((int(keys_to_check[i].split(",")[0]), int(keys_to_check[i].split(",")[1])))
+    return mines
+
+def _get_free_karb_mines_now_unsafe(robot):
+    karbs = robot.karb_manager
+    keys_to_check = list(robot.karb_manager.keys())
+    mines = []
+    if len(karbs) > 0:
+        for i in range(len(robot.karb_manager)):
+            data = karbs[keys_to_check[i]]
+            if data[0] != 0 and data[1] == False:
+                mines.append((int(keys_to_check[i].split(",")[0]), int(keys_to_check[i].split(",")[1])))
+    return mines
+
+def _get_free_fuel_mines_now_unsafe(robot):
+    fuels = robot.fuel_manager
+    keys_to_check = list(robot.fuel_manager.keys())
+    mines = []
+    if len(fuels) > 0:
+        for i in range(len(robot.fuel_manager)):
+            data = fuels[keys_to_check[i]]
+            if data[0] != 0 and data[1] == False:
+                mines.append((int(keys_to_check[i].split(",")[0]), int(keys_to_check[i].split(",")[1])))
+    return mines
+
+def _castle_attack_when_attack_range(robot):
+    enemies_dist, enemies = vision.sort_visible_enemies_by_distance(robot)
+    if len(enemies_dist) > 0:
+        distance = enemies_dist[0]
+        my_enemy = enemies[0]
+        if distance <= constants.castle_max_attack_range and distance >= constants.castle_min_attack_range:
+            # TRAVIS ATTACK CHECK 9
+            return check.attack_check(robot, my_enemy['x'] - robot.me['x'], my_enemy['y'] - robot.me['y'], 9)
+    return None
+
+def am_i_the_nearest_castle_to_this(robot, xcord, ycord):
+    castle_list = robot.friendly_castles
+    if len(castle_list) > 0:
+        am_i_the_closest = True
+        my_x = robot.me['x']
+        my_y = robot.me['y']
+        how_far_is_it_from_me = ((my_x - xcord) ** 2) + ((my_y - ycord) ** 2)
+        for i in range(len(castle_list)):
+            castle_x = castle_list[i][0]
+            castle_y = castle_list[i][1]
+            how_far_is_it_from_other = ((castle_x - xcord) ** 2) + ((castle_y - ycord) ** 2)
+            if how_far_is_it_from_other < how_far_is_it_from_me:
+                am_i_the_closest = False
+        return am_i_the_closest
+    else:
+        # This shouldn't have happened
+        robot.log("This shouldn't have happened")
