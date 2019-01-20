@@ -139,10 +139,10 @@ def get_friendly_karbonite(castle):
     hoz_symmetry = check_hoz_symmetry(karbonite_map)
 
     side = len(karbonite_map)
-    mid = side / 2
+    mid = side // 2
     coord = 1
     init = 0
-    fin = mid
+    fin = mid + 1
     final = []
 
     if hoz_symmetry:
@@ -169,10 +169,10 @@ def get_friendly_fuel(castle):
     hoz_symmetry = check_hoz_symmetry(fuel_map)
 
     side = len(fuel_map)
-    mid = side / 2
+    mid = side // 2
     coord = 1
     init = 0
-    fin = mid
+    fin = mid + 1
     final = []
 
     if hoz_symmetry:
@@ -200,10 +200,10 @@ def get_friendly_resources(castle):
     hoz_symmetry = check_hoz_symmetry(karbonite_map)
 
     side = len(karbonite_map)
-    mid = side / 2
+    mid = side // 2
     coord = 1
     init = 0
-    fin = mid
+    fin = mid + 1
     final = []
 
     if hoz_symmetry:
@@ -230,7 +230,7 @@ def get_enemy_karbonite(castle):
     hoz_symmetry = check_hoz_symmetry(karbonite_map)
 
     side = len(karbonite_map)
-    mid = side / 2
+    mid = side // 2
     coord = 1
     init = 0
     fin = mid
@@ -238,7 +238,7 @@ def get_enemy_karbonite(castle):
 
     if hoz_symmetry:
         if castle.me.y < mid:
-            init = mid
+            init = mid + 1
             fin = side
         for i in range(init, fin):
             for j in range(side):
@@ -246,7 +246,7 @@ def get_enemy_karbonite(castle):
                     final.append((j, i))
     else:
         if castle.me.x < mid:
-            init = mid
+            init = mid + 1
             fin = side
         for i in range(side):
             for j in range(init, fin):
@@ -260,7 +260,7 @@ def get_enemy_fuel(castle):
     hoz_symmetry = check_hoz_symmetry(fuel_map)
 
     side = len(fuel_map)
-    mid = side / 2
+    mid = side // 2
     coord = 1
     init = 0
     fin = mid
@@ -268,7 +268,7 @@ def get_enemy_fuel(castle):
 
     if hoz_symmetry:
         if castle.me.y < mid:
-            init = mid
+            init = mid + 1
             fin = side
         for i in range(init, fin):
             for j in range(side):
@@ -276,7 +276,7 @@ def get_enemy_fuel(castle):
                     final.append((j, i))
     else:
         if castle.me.x < mid:
-            init = mid
+            init = mid + 1
             fin = side
         for i in range(side):
             for j in range(init, fin):
@@ -291,7 +291,7 @@ def get_enemy_resources(castle):
     hoz_symmetry = check_hoz_symmetry(karbonite_map)
 
     side = len(karbonite_map)
-    mid = side / 2
+    mid = side // 2
     coord = 1
     init = 0
     fin = mid
@@ -299,7 +299,7 @@ def get_enemy_resources(castle):
 
     if hoz_symmetry:
         if castle.me.y < mid:
-            init = mid
+            init = mid + 1
             fin = side
         for i in range(init, fin):
             for j in range(side):
@@ -307,7 +307,7 @@ def get_enemy_resources(castle):
                     final.append((j, i))
     else:
         if castle.me.x < mid:
-            init = mid
+            init = mid + 1
             fin = side
         for i in range(side):
             for j in range(init, fin):
@@ -333,7 +333,7 @@ def get_friendly_influence(robot):
                     if robot.get_robot(visible_map[i][j]).team == robot.me.team:
                         visible_friendlies += 1
 
-    return visible_friendlies / visible_area
+    return visible_friendlies // visible_area
 
 def get_enemy_influence(robot):
     visible_map = robot.get_visible_robot_map()
@@ -352,7 +352,7 @@ def get_enemy_influence(robot):
                     if robot.get_robot(visible_map[i][j]).team != robot.me.team:
                         visible_enemies += 1
 
-    return visible_enemies / visible_area
+    return visible_enemies // visible_area
 
 def get_tension(robot):
     visible_map = robot.get_visible_robot_map()
@@ -373,4 +373,4 @@ def get_tension(robot):
                     else:
                         visible_friendlies -= 1
 
-    return visible_friendlies / visible_area
+    return visible_friendlies // visible_area
