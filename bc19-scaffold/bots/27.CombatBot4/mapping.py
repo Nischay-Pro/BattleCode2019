@@ -134,6 +134,188 @@ def find_resource_rich(robot, grid_radius = 2):
 
     return results
 
+def get_friendly_karbonite(castle):
+    karbonite_map = castle.get_karbonite_map()
+    hoz_symmetry = check_hoz_symmetry(karbonite_map)
+
+    side = len(karbonite_map)
+    mid = side / 2
+    coord = 1
+    init = 0
+    fin = mid
+    final = []
+
+    if hoz_symmetry:
+        if castle.me.y > mid:
+            init = mid
+            fin = side
+        for i in range(init, fin):
+            for j in range(side):
+                if karbonite_map[i][j] == 1:
+                    final.append((j, i))
+    else:
+        if castle.me.x > mid:
+            init = mid
+            fin = side
+        for i in range(side):
+            for j in range(init, fin):
+                if karbonite_map[i][j] == 1:
+                    final.append((j, i))
+
+    return final
+
+def get_friendly_fuel(castle):
+    fuel_map = castle.get_fuel_map()
+    hoz_symmetry = check_hoz_symmetry(fuel_map)
+
+    side = len(fuel_map)
+    mid = side / 2
+    coord = 1
+    init = 0
+    fin = mid
+    final = []
+
+    if hoz_symmetry:
+        if castle.me.y > mid:
+            init = mid
+            fin = side
+        for i in range(init, fin):
+            for j in range(side):
+                if fuel_map[i][j] == 1:
+                    final.append((j, i))
+    else:
+        if castle.me.x > mid:
+            init = mid
+            fin = side
+        for i in range(side):
+            for j in range(init, fin):
+                if fuel_map[i][j] == 1:
+                    final.append((j, i))
+
+    return final
+
+def get_friendly_resources(castle):
+    fuel_map = castle.get_fuel_map()
+    karbonite_map = castle.get_karbonite_map()
+    hoz_symmetry = check_hoz_symmetry(karbonite_map)
+
+    side = len(karbonite_map)
+    mid = side / 2
+    coord = 1
+    init = 0
+    fin = mid
+    final = []
+
+    if hoz_symmetry:
+        if castle.me.y > mid:
+            init = mid
+            fin = side
+        for i in range(init, fin):
+            for j in range(side):
+                if karbonite_map[i][j] == 1 or fuel_map[i][j] == 1:
+                    final.append((j, i))
+    else:
+        if castle.me.x > mid:
+            init = mid
+            fin = side
+        for i in range(side):
+            for j in range(init, fin):
+                if karbonite_map[i][j] == 1 or fuel_map[i][j] == 1:
+                    final.append((j, i))
+
+    return final
+
+def get_enemy_karbonite(castle):
+    karbonite_map = castle.get_karbonite_map()
+    hoz_symmetry = check_hoz_symmetry(karbonite_map)
+
+    side = len(karbonite_map)
+    mid = side / 2
+    coord = 1
+    init = 0
+    fin = mid
+    final = []
+
+    if hoz_symmetry:
+        if castle.me.y < mid:
+            init = mid
+            fin = side
+        for i in range(init, fin):
+            for j in range(side):
+                if karbonite_map[i][j] == 1:
+                    final.append((j, i))
+    else:
+        if castle.me.x < mid:
+            init = mid
+            fin = side
+        for i in range(side):
+            for j in range(init, fin):
+                if karbonite_map[i][j] == 1:
+                    final.append((j, i))
+
+    return final
+
+def get_enemy_fuel(castle):
+    fuel_map = castle.get_fuel_map()
+    hoz_symmetry = check_hoz_symmetry(fuel_map)
+
+    side = len(fuel_map)
+    mid = side / 2
+    coord = 1
+    init = 0
+    fin = mid
+    final = []
+
+    if hoz_symmetry:
+        if castle.me.y < mid:
+            init = mid
+            fin = side
+        for i in range(init, fin):
+            for j in range(side):
+                if fuel_map[i][j] == 1:
+                    final.append((j, i))
+    else:
+        if castle.me.x < mid:
+            init = mid
+            fin = side
+        for i in range(side):
+            for j in range(init, fin):
+                if fuel_map[i][j] == 1:
+                    final.append((j, i))
+
+    return final
+
+def get_enemy_resources(castle):
+    fuel_map = castle.get_fuel_map()
+    karbonite_map = castle.get_karbonite_map()
+    hoz_symmetry = check_hoz_symmetry(karbonite_map)
+
+    side = len(karbonite_map)
+    mid = side / 2
+    coord = 1
+    init = 0
+    fin = mid
+    final = []
+
+    if hoz_symmetry:
+        if castle.me.y < mid:
+            init = mid
+            fin = side
+        for i in range(init, fin):
+            for j in range(side):
+                if karbonite_map[i][j] == 1 or fuel_map[i][j] == 1:
+                    final.append((j, i))
+    else:
+        if castle.me.x < mid:
+            init = mid
+            fin = side
+        for i in range(side):
+            for j in range(init, fin):
+                if karbonite_map[i][j] == 1 or fuel_map[i][j] == 1:
+                    final.append((j, i))
+
+    return final
+
 def get_friendly_influence(robot):
     visible_map = robot.get_visible_robot_map()
     pos_x = robot.me.x

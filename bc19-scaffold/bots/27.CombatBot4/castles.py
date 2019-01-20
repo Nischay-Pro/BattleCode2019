@@ -24,7 +24,7 @@ def castle(robot):
 
     if robot.step < 3:
         comm_analyzer.broadcast_castle_position(robot)
-    
+
     if robot.step < 4:
         comm_analyzer.get_initial_castle_position(robot)
 
@@ -64,7 +64,7 @@ def _castle_initial_check(robot):
 
     for i in range(len(robot.karb_mine_locations_from_this_castle)):
         robot.karb_manager[robot.karb_mine_locations_from_this_castle[i]] = [0, False]
-    
+
     # if len(robot.enemy_castles) == 0:
     #     robot.enemy_castles.append(mapping.find_symmetrical_point(robot, robot.me.x, robot.me.y, robot.map_symmetry))
         # robot.log(str(robot.enemy_castles))
