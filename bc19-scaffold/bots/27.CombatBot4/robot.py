@@ -89,6 +89,7 @@ class MyRobot(BCAbstractRobot):
     fuel_manager = {}
     karb_manager = {}
     co_ordinate_storage_locker = {}
+    
 
     # Church
     church_unit_build_log = [] # Maintains unit type of nearby robots

@@ -60,9 +60,9 @@ def _build_manager_castle(robot):
                     temp_store = castles_utility._castle_assign_mine_or_scout(robot)
                     if temp_store != 0:
                         robot.signal(temp_store, 2)
+                        return castles_utility._castle_build(robot,constants.unit_pilgrim)
                     else:
                         robot.signal(65534, 2)
-                    return castles_utility._castle_build(robot,constants.unit_pilgrim)
             elif robot.karbonite > 100 and robot.fuel > 200:
                 #  if (crusader_count * 3) < pilgrim_count:
                     #  # robot.signal(robot.me.signal + 1, 2)
@@ -70,7 +70,7 @@ def _build_manager_castle(robot):
                 # elif (preacher_count * 2) < crusader_count:
                 #     # robot.signal(robot.me.signal + 1, 2)
                 #     return castle_build(robot, constants.unit_preacher)
-                if prophet_count < pilgrim_count and robot.step > 60:
+                if prophet_count < pilgrim_count and robot.step > 60 and robot.fuel > 600:
                     robot.signal(1, 2)
                     return castles_utility._castle_build(robot, constants.unit_prophet)
                 if pilgrim_count < (total_fuel + total_karbonite) * .55:
@@ -78,9 +78,9 @@ def _build_manager_castle(robot):
                     temp_store = castles_utility._castle_assign_mine_or_scout(robot)
                     if temp_store != 0:
                         robot.signal(temp_store, 2)
+                        return castles_utility._castle_build(robot,constants.unit_pilgrim)
                     else:
                         robot.signal(65534, 2)
-                    return castles_utility._castle_build(robot,constants.unit_pilgrim)
                 elif robot.step > 300 and robot.karbonite > 600 and robot.fuel > 600:
                     robot.signal(1, 2)
                     return castles_utility._castle_build(robot, constants.unit_prophet)
@@ -100,10 +100,11 @@ def _build_manager_church(robot):
     pos_y = robot.me.y
     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
     directions = utility.random_cells_around()
-    for direction in directions:
-        if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
-            # TRAVIS BUILD CHECK 4
-            return check.build_check(robot, constants.unit_prophet, direction[1], direction[0], 4)
+    if robot.step < 25 or robot.fuel > 1000:
+        for direction in directions:
+            if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
+                # TRAVIS BUILD CHECK 4
+                return check.build_check(robot, constants.unit_prophet, direction[1], direction[0], 4)
 
     # robot.log("No space to build units anymore for churches")
     return None
