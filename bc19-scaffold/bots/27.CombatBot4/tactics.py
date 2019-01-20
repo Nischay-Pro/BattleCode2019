@@ -1,59 +1,28 @@
 # General tactics for all units
-import utility
+import check
+import combat_utility
+import constants
 import movement
 import pathfinding
-import constants
-import check
+import utility
 
-def prophet_will_combat_1vs1(robot, enemy):
-    passable_map = robot.get_passable_map()
-    if enemy['unit'] == constants.unit_prophet:
-        if robot.me.health == constants.prophet_max_health:
-            robot.is_targeting_robot_with_id = enemy['id']
-            return enemy
-        elif robot.me.health < constants.prophet_max_health:
-            if enemy['id'] == robot.is_targeting_robot_with_id:
-                robot.is_targeting_robot_with_id = enemy['id']
-                return enemy
-            else:
-                new_pos_x = 0
-                new_pos_y = 0
 
-                # Can move out of bot vision
-                max_distance = constants.prophet_max_attack_range
-                for directions in constants.non_crusader_move_directions:
-                    guessing_new_pos_x = robot.me.x + directions[0]
-                    guessing_new_pos_y = robot.me.y + directions[1]
-                    guessing_distance = (guessing_new_pos_x - enemy['x'])**2 + (guessing_new_pos_y- enemy['y'])**2
-                    if guessing_distance > max_distance and not utility.is_cell_occupied(passable_map, guessing_new_pos_x, guessing_new_pos_y):
-                        guessing_distance = max_distance
-                        new_pos_x = guessing_new_pos_x
-                        new_pos_y = guessing_new_pos_y
-                if max_distance > constants.prophet_max_attack_range:
-                    # TRAVIS MOVE CHECK 15
-                    return check.move_check(robot, new_pos_x - robot.me.x, new_pos_y - robot.me.y, 15)
-
-                # Can move into non-attack region
-                min_distance = constants.prophet_min_attack_range
-                for directions in constants.non_crusader_move_directions:
-                    guessing_new_pos_x = robot.me.x + directions[0]
-                    guessing_new_pos_y = robot.me.y + directions[1]
-                    guessing_distance = (guessing_new_pos_x - enemy['x'])**2 + (guessing_new_pos_y- enemy['y'])**2
-
-                    if guessing_distance < min_distance and not utility.is_cell_occupied(passable_map, guessing_new_pos_x, guessing_new_pos_y):
-                        guessing_distance = min_distance
-                        new_pos_x = guessing_new_pos_x
-                        new_pos_y = guessing_new_pos_y
-                if min_distance < constants.prophet_min_attack_range:
-                    # TRAVIS MOVE CHECK 16
-                    return robot.move()
-
-            # robot.is_targeting_robot_with_id = enemy['id']
-
-def simple_attack(robot):
+def simple_attack(robot, enemy_list):
     None
 
-def simulate_conbat_result(robot):
+def choose_target(robot, enemy_list, enemy_distance_list):
+    best_target = None
+    enemy_score = -99
+    for iter_i in range(len(enemy_list)):
+        if combat_utility.is_attackable_enemy_unit(robot, enemy_list[iter_i], enemy_distance_list[iter_i]) == 1:
+            # Replace with get priority
+            unit_score = constants.enemy_unit_priority_for_prophet[enemy_list[iter_i]['unit']]
+            if unit_score > enemy_score:
+                enemy_score = unit_score
+                best_target = enemy_list[iter_i]
+    return best_target
+
+def simulate_combat_result(robot):
     None
 
 def increase_influence_at_submap(robot, pos_x, pos_y):
@@ -109,3 +78,48 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
         # ans = movement.move_to_destination(robot)
         # robot.log("Return value: " + str(ans))
         return ans
+
+# def prophet_will_combat_1vs1(robot, enemy):
+#     passable_map = robot.get_passable_map()
+#     if enemy['unit'] == constants.unit_prophet:
+#         if robot.me.health == constants.prophet_max_health:
+#             robot.is_targeting_robot_with_id = enemy['id']
+#             return enemy
+#         elif robot.me.health < constants.prophet_max_health:
+#             if enemy['id'] == robot.is_targeting_robot_with_id:
+#                 robot.is_targeting_robot_with_id = enemy['id']
+#                 return enemy
+#             else:
+#                 new_pos_x = 0
+#                 new_pos_y = 0
+
+#                 # Can move out of bot vision
+#                 max_distance = constants.prophet_max_attack_range
+#                 for directions in constants.non_crusader_move_directions:
+#                     guessing_new_pos_x = robot.me.x + directions[0]
+#                     guessing_new_pos_y = robot.me.y + directions[1]
+#                     guessing_distance = (guessing_new_pos_x - enemy['x'])**2 + (guessing_new_pos_y- enemy['y'])**2
+#                     if guessing_distance > max_distance and not utility.is_cell_occupied(passable_map, guessing_new_pos_x, guessing_new_pos_y):
+#                         guessing_distance = max_distance
+#                         new_pos_x = guessing_new_pos_x
+#                         new_pos_y = guessing_new_pos_y
+#                 if max_distance > constants.prophet_max_attack_range:
+#                     # TRAVIS MOVE CHECK 15
+#                     return check.move_check(robot, new_pos_x - robot.me.x, new_pos_y - robot.me.y, 15)
+
+#                 # Can move into non-attack region
+#                 min_distance = constants.prophet_min_attack_range
+#                 for directions in constants.non_crusader_move_directions:
+#                     guessing_new_pos_x = robot.me.x + directions[0]
+#                     guessing_new_pos_y = robot.me.y + directions[1]
+#                     guessing_distance = (guessing_new_pos_x - enemy['x'])**2 + (guessing_new_pos_y- enemy['y'])**2
+
+#                     if guessing_distance < min_distance and not utility.is_cell_occupied(passable_map, guessing_new_pos_x, guessing_new_pos_y):
+#                         guessing_distance = min_distance
+#                         new_pos_x = guessing_new_pos_x
+#                         new_pos_y = guessing_new_pos_y
+#                 if min_distance < constants.prophet_min_attack_range:
+#                     # TRAVIS MOVE CHECK 16
+#                     return robot.move()
+
+#             # robot.is_targeting_robot_with_id = enemy['id']

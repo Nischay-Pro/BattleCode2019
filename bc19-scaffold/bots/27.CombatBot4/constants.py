@@ -45,7 +45,6 @@ crusader_move_directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (
 
 non_crusader_move_directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1), (0, 2), (0, -2), (2, 0), (-2, 0)]
 
-
 unit_castle = SPECS['CASTLE']
 unit_church = SPECS['CHURCH']
 unit_crusader = SPECS['CRUSADER']
