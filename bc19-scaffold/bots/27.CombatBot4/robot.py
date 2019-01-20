@@ -109,6 +109,7 @@ class MyRobot(BCAbstractRobot):
     vertical_ratio_satisfied = False
     even_rule_satisfied = False # sum of current co-ordinates should be even
     lattice_dest = False
+    bug_nav_prev_coord = None
 
     # Crusader
 

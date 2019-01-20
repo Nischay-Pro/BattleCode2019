@@ -89,13 +89,28 @@ def _move(robot):
         robot.log("Dir is: " + str(find_dir))
     if find_dir != 0:
         # TRAVIS MOVE CHECK 17
-        ans = check.move_check(robot, find_dir[0], find_dir[1], 17)
+        new_dest = (pos_x + find_dir[0], pos_y + find_dir[1])
+        if str(robot.bug_nav_prev_coord) == str(new_dest):
+            ans = None
+        else:
+            robot.bug_nav_prev_coord = (pos_x, pos_y)
+            ans = check.move_check(robot, find_dir[0], find_dir[1], 17)
     else:
         robot.bug_nav_counter += 1
         ans =  None
     # ans = movement.move_to_destination(robot)
     # robot.log("Return value: " + str(ans))
     return ans
+
+def _stop_movement(robot):
+    next_move = _move(robot)
+    if next_move:
+        return next_move
+    else:
+        # TODO: find the possible empty lattice points in the adjacent boxes
+        robot.current_move_destination = None
+        utility.default_movement_variables(robot)
+        return None
 
 # Need to optimize
 def find_lattice_point(robot):
@@ -144,7 +159,7 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
                 utility.default_movement_variables(robot)
             return None # we have reached to battle front, don't move
         else:
-            return _move(robot)
+            return _stop_movement(robot)
     elif robot.vertical_ratio_satisfied and not robot.even_rule_satisfied:
         if not robot.lattice_dest: # First time
             coordinate = find_lattice_point(robot)
@@ -153,14 +168,15 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
                 x, y = coordinate
                 robot.current_move_destination = (x, y)
                 robot.lattice_dest = True
-                return _move(robot)
+                return _stop_movement(robot)
         else:
+            next_move = None
             if occupied_map[dest[1]][dest[0]] > 0:
                 coordinate = find_lattice_point(robot)
                 if coordinate:
                     x, y = coordinate
                     robot.current_move_destination = (x, y)
                     # robot.log("Current pos 2: " + str((pos_x, pos_y)))
-                    return _move(robot)
+                    return _stop_movement(robot)
                 return None
-            return _move(robot)
+            return _stop_movement(robot)
