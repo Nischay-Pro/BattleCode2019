@@ -2,7 +2,9 @@ import constants
 
 def move_check(robot, dx, dy, flag):
     distance = dx**2 + dy**2
-    position_at_end_of_turn = (robot.me.x, robot.me.y)
+    robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
+    if robot.me.id == 1037:
+        robot.log("Destination: " + str(robot.current_move_destination))
     if robot.me.unit == constants.unit_pilgrim:
         if distance <= constants.pilgrim_speed:
             if robot.fuel >= constants.pilgrim_move_fuel_cost * distance:
