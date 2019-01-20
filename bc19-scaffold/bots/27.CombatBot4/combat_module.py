@@ -19,7 +19,6 @@ def _prophet_combat(robot):
     fuel = constants.prophet_attack_fuel_cost
     attack_safety_check = 0
     vision_safety_check = 0
-
     target_robot_id = robot.is_targeting_robot_with_id
 
     # Move to near lattice point if no enemies visibles and no damage taken
@@ -34,6 +33,7 @@ def _prophet_combat(robot):
         attack_safety_check = combat_utility.is_unit_in_any_enemy_attack_range(robot)
         vision_safety_check = combat_utility.is_unit_in_any_enemy_vision_range(robot)
 
+        # Enemy doesn't have vision of bot
         if vision_safety_check == 0:
             enemy_unit = tactics.choose_target(robot, visible_enemy_list, visible_enemy_distance)
             if enemy_unit == None:
@@ -41,26 +41,117 @@ def _prophet_combat(robot):
             else:
                 # TRAVIS ATTACK CHECK 13
                 return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 13, fuel, enemy_unit)
-        elif attack_safety_check == 0:
+
+        # Enemy cannot attack the bot
+        if attack_safety_check == 0:
             enemy_unit = tactics.choose_target(robot, visible_enemy_list, visible_enemy_distance)
             if enemy_unit == None:
                 return None
             else:
                 # TRAVIS ATTACK CHECK 14
                 return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 14, fuel, enemy_unit)
+
+        # Fall through all the if cases
+        enemy_unit = tactics.choose_target(robot, visible_enemy_list, visible_enemy_distance)
+        if enemy_unit == None:
+            return None
         else:
+            # TRAVIS ATTACK CHECK 15
+            return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 15, fuel, enemy_unit)
+
+def _crusader_combat(robot):
+    combat_utility.fill_combat_map(robot)
+    visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
+    visible_friendly_distance, visible_friendly_list = vision.sort_visible_friendlies_by_distance(robot)
+    fuel = constants.crusader_attack_fuel_cost
+    attack_safety_check = 0
+    vision_safety_check = 0
+    target_robot_id = robot.is_targeting_robot_with_id
+
+    # Move to near lattice point if no enemies visibles and no damage taken
+    if len(visible_enemy_list) == 0 and robot.delta_health_reduced == 0 and robot.step != 0:
+        # Give resources to church/castle/pilgrim/unit via convoy
+        return None
+
+    # Attacked by out-of-vision enemy unit
+
+    # We see an enemy
+    if len(visible_enemy_list) != 0:
+        attack_safety_check = combat_utility.is_unit_in_any_enemy_attack_range(robot)
+        vision_safety_check = combat_utility.is_unit_in_any_enemy_vision_range(robot)
+
+        # Enemy doesn't have vision of bot
+        if vision_safety_check == 0:
             enemy_unit = tactics.choose_target(robot, visible_enemy_list, visible_enemy_distance)
             if enemy_unit == None:
                 return None
             else:
-                # TRAVIS ATTACK CHECK 15
-                return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 15, fuel, enemy_unit)
+                # TRAVIS ATTACK CHECK 13
+                return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 16, fuel, enemy_unit)
 
-def _crusader_combat(robot):
-    return None
+        # Enemy cannot attack the bot
+        if attack_safety_check == 0:
+            enemy_unit = tactics.choose_target(robot, visible_enemy_list, visible_enemy_distance)
+            if enemy_unit == None:
+                return None
+            else:
+                # TRAVIS ATTACK CHECK 14
+                return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 17, fuel, enemy_unit)
+
+        # Fall through all the if cases
+        enemy_unit = tactics.choose_target(robot, visible_enemy_list, visible_enemy_distance)
+        if enemy_unit == None:
+            return None
+        else:
+            # TRAVIS ATTACK CHECK 15
+            return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 18, fuel, enemy_unit)
 
 def _preacher_combat(robot):
-    return None
+    combat_utility.fill_combat_map(robot)
+    visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
+    visible_friendly_distance, visible_friendly_list = vision.sort_visible_friendlies_by_distance(robot)
+    fuel = constants.preacher_attack_fuel_cost
+    attack_safety_check = 0
+    vision_safety_check = 0
+    target_robot_id = robot.is_targeting_robot_with_id
+
+    # Move to near lattice point if no enemies visibles and no damage taken
+    if len(visible_enemy_list) == 0 and robot.delta_health_reduced == 0 and robot.step != 0:
+        # Give resources to church/castle/pilgrim/unit via convoy
+        return None
+
+    # Attacked by out-of-vision enemy unit
+
+    # We see an enemy
+    if len(visible_enemy_list) != 0:
+        attack_safety_check = combat_utility.is_unit_in_any_enemy_attack_range(robot)
+        vision_safety_check = combat_utility.is_unit_in_any_enemy_vision_range(robot)
+
+        # Enemy doesn't have vision of bot
+        if vision_safety_check == 0:
+            enemy_unit = tactics.choose_target(robot, visible_enemy_list, visible_enemy_distance)
+            if enemy_unit == None:
+                return None
+            else:
+                # TRAVIS ATTACK CHECK 13
+                return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 19, fuel, enemy_unit)
+
+        # Enemy cannot attack the bot
+        if attack_safety_check == 0:
+            enemy_unit = tactics.choose_target(robot, visible_enemy_list, visible_enemy_distance)
+            if enemy_unit == None:
+                return None
+            else:
+                # TRAVIS ATTACK CHECK 14
+                return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 20, fuel, enemy_unit)
+
+        # Fall through all the if cases
+        enemy_unit = tactics.choose_target(robot, visible_enemy_list, visible_enemy_distance)
+        if enemy_unit == None:
+            return None
+        else:
+            # TRAVIS ATTACK CHECK 15
+            return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 21, fuel, enemy_unit)
 
 def default_military_behaviour(robot):
     unit_type = robot.me.unit
