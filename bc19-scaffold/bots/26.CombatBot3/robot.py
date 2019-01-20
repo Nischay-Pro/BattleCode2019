@@ -44,6 +44,7 @@ class MyRobot(BCAbstractRobot):
     delta_karbonite_per_turn = 0
     delta_fuel_per_turn = 0
     delta_time_consumed = 0
+    delta_health_reduced = 0
 
     mov_path_between_location_and_destination = None # So we can go back and forth by reversing list
     steps_to_mine = 0
@@ -56,6 +57,8 @@ class MyRobot(BCAbstractRobot):
     bug_nav_counter = 0
 
     position_at_end_of_turn = (-1, 1)
+
+    unit_health = None
 
     # Combat Zone
     combat_map = None
@@ -126,9 +129,13 @@ class MyRobot(BCAbstractRobot):
             # first turn!
             self.unit_spawn_loc = (self.me['x'], self.me['y'])
 
+        if self.unit_health is None:
+            self.unit_health = self.me.health
+
         self.delta_karbonite_per_turn = self.karbonite - self.delta_karbonite_per_turn
         self.delta_fuel_per_turn = self.fuel - self.delta_fuel_per_turn
         self.delta_time_consumed = self.me.time - self.delta_time_consumed
+        self.delta_health_reduced = self.me.health - self.unit_health
 
         self.castle_talk(self.me.unit)
 
