@@ -106,6 +106,9 @@ class MyRobot(BCAbstractRobot):
     has_enemy_target_dict = {} # Pop and
     is_fleeing_to_home_base = 0 # Boolean, switch to one if routed
     has_unit_value = 1 # Decreases if less health or too much danger
+    vertical_ratio_satisfied = False
+    even_rule_satisfied = False # sum of current co-ordinates should be even
+    lattice_dest = False
 
     # Crusader
 

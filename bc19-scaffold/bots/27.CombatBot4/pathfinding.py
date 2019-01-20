@@ -57,9 +57,9 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
         while 1 < new_node_index:
             new_node = nodes[new_node_index]
             if new_node_index % 2 == 0:
-                parent_index = new_node_index / 2
+                parent_index = new_node_index // 2
             else:
-                parent_index = (new_node_index - 1) / 2
+                parent_index = (new_node_index - 1) // 2
             parent_node = nodes[parent_index]
             # Parent too big?
             if _is_higher_than(parent_node, new_node):
@@ -155,9 +155,9 @@ def _choose_ideal_direction(des_x, des_y, pos_x, pos_y, robot):
     dir_x = 0
     dir_y = 0
     if diff_x != 0:
-        dir_x = diff_x/abs(diff_x)
+        dir_x = diff_x//abs(diff_x)
     if diff_y != 0:
-        dir_y = diff_y/abs(diff_y)
+        dir_y = diff_y//abs(diff_y)
 
     # Objective - Go diagonal until one coordinate matches then straight to destination
     # Diagonal movement
@@ -166,13 +166,13 @@ def _choose_ideal_direction(des_x, des_y, pos_x, pos_y, robot):
     # Movement on x_axis
     if diff_x == 0 and diff_y != 0:
         # If two steps away, move one step so as to not move into occupied
-        if abs(diff_y) <= 2:
+        if abs(diff_y) < 2:
             return (0, dir_y)
         else:
             return (0, 2 * dir_y)
     # Same for y_axis
     if diff_x != 0 and diff_y == 0:
-        if abs(diff_x) <= 2:
+        if abs(diff_x) < 2:
             return (dir_x, 0)
         else:
             return (2 * dir_x, 0)
@@ -201,12 +201,12 @@ def _choose_practical_direction(passable_map, occupied_map, des_x, des_y, pos_x,
                 return (direction[0], - direction[1])
     if direction[0] == 0:
         if abs(direction[1]) > 1:
-            if not utility.is_cell_occupied(occupied_map, pos_x, pos_y + direction[1] / 2):
-                if passable_map[pos_y + direction[1] / 2][pos_x] == 1:
-                    return (0, direction[1] / 2)
+            if not utility.is_cell_occupied(occupied_map, pos_x, pos_y + direction[1] // 2):
+                if passable_map[pos_y + direction[1] // 2][pos_x] == 1:
+                    return (0, direction[1] // 2)
         dir_y = 0
         if abs(direction[1]) == 2:
-            dir_y = direction[1] / 2
+            dir_y = direction[1] // 2
         else:
             dir_y = direction[1]
         if not utility.is_cell_occupied(occupied_map, pos_x + 1, pos_y + dir_y):
@@ -223,12 +223,12 @@ def _choose_practical_direction(passable_map, occupied_map, des_x, des_y, pos_x,
                 return (-2, 0)
     if direction[1] == 0:
         if abs(direction[0]) > 1:
-            if not utility.is_cell_occupied(occupied_map, pos_x + direction[0] / 2, pos_y):
-                if passable_map[pos_y][pos_x + direction[0] / 2] == 1:
-                    return (direction[0] / 2, 0)
+            if not utility.is_cell_occupied(occupied_map, pos_x + direction[0] // 2, pos_y):
+                if passable_map[pos_y][pos_x + direction[0] // 2] == 1:
+                    return (direction[0] // 2, 0)
         dir_x = 0
         if abs(direction[0]) == 2:
-            dir_x = direction[0] / 2
+            dir_x = direction[0] // 2
         else:
             dir_x = direction[0]
         if not utility.is_cell_occupied(occupied_map, pos_x + dir_x, pos_y + 1):
