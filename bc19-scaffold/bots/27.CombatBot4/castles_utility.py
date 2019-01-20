@@ -109,8 +109,8 @@ def _castle_assign_mine_or_scout(robot):
         comms = communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
         return comms
 
-    robot.log(robot.fuel_mine_occupancy_from_this_castle)
-    robot.log(robot.karb_mine_occupancy_from_this_castle)
+    # robot.log(robot.fuel_mine_occupancy_from_this_castle)
+    # robot.log(robot.karb_mine_occupancy_from_this_castle)
     return 0
 
 def _allot_enemy_mine(robot):

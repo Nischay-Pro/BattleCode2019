@@ -77,6 +77,15 @@ def _stop_movement(robot):
         return next_move
     else:
         # TODO: find the possible empty lattice points in the adjacent boxes
+        pos_x, pos_y = robot.me.x, robot.me.y
+        if (pos_x + pos_y) % 2 == 0:
+            return None
+
+        else:
+            for direction in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
+                if (not utility.is_cell_occupied(robot.get_visible_robot_map(), pos_x, pos_y)) and robot.passable_map[pos_y + direction[1]][pos_x + direction[0]]:
+                    return check.move_check(robot, direction[0], direction[1], 18)
+
         robot.current_move_destination = None
         utility.default_movement_variables(robot)
         return None
