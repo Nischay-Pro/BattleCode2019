@@ -7,7 +7,7 @@ import utility
 import vision
 import check
 
-def receive_initial_siganl(robot):
+def receive_initial_signal(robot):
     unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)
     for friendly_unit in friendly_units:
         if friendly_unit.unit == 0 and friendly_unit.signal > 0:
@@ -53,7 +53,8 @@ def give_or_mine(robot):
                             return robot.give(dx, dy, carry_karb, carry_fuel)
 
                     # Convoys
-                    if (robot.step < constants.convoy_age_end_round or (dx + dy) < constants.convoy_distance) and robot.steps_to_mine < constants.convoy_step_limit:
+                    if (robot.step < constants.convoy_age_end_round or (dx + dy) < constants.convoy_radius) and robot.steps_to_mine < constants.convoy_step_limit:
+
                         robot.resource_depot = f_unit
                         dockspots = movement.find_dockspots(robot, robot.resource_depot)
                         # If in near vicinity (one hop)

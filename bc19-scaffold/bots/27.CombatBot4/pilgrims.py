@@ -32,7 +32,7 @@ def pilgrim(robot):
 
     # Receive signal from castle on which mine to go to
     if robot.step == 0:
-        pilgrims_utility.receive_initial_siganl(robot)
+        pilgrims_utility.receive_initial_signal(robot)
 
     if utility.fuel_less_check(robot):
         return None
