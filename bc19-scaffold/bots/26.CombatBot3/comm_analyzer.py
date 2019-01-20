@@ -3,18 +3,19 @@
 
 Reserved Signals
 
-    0 -
-    1 - Built by this unit (Church and Castle Identification Signal)        (Castles, Churches)
-    2 -
-    3 -
-    4 -
-    5 -
-    6 - Castle instructing all units to build Crusaders                     (Castles)
-    7 - Castle instructing all units to build Prophets                      (Castles)
-    8 - Castle instructing all units to build Preachers                     (Castles)
-    9 - Castle instructing all units to build Piligrims                     (Castles)
-    10 - Update ratio Crusader : Prophet make it 2 : 1                      (Castles)
-    11 - Update ratio Crusader : Prophet make it 1 : 2                      (Castles)
+    0 -                                                                     (Mobile Units)
+    1 - Built by this unit (Church and Castle Identification Signal)        (Castles, Churches, Mobile Units)
+    2 -                                                                     (Mobile Units)
+    3 -                                                                     (Mobile Units)
+    4 -                                                                     (Mobile Units)
+    5 -                                                                     (Mobile Units)
+    6 - Castle instructing all units to build Crusaders                     (Castles, Mobile Units)
+    7 - Castle instructing all units to build Prophets                      (Castles, Mobile Units)
+    8 - Castle instructing all units to build Preachers                     (Castles, Mobile Units)
+    9 - Castle instructing all units to build Piligrims                     (Castles, Mobile Units)
+    10 - Update ratio Crusader : Prophet make it 2 : 1                      (Castles, Mobile Units)
+    11 - Update ratio Crusader : Prophet make it 1 : 2                      (Castles, Mobile Units)
+    12 - 4096                                                               (Mobile Units)
 
     65534 - Failed to allocate mine                                         (Castles)
 
