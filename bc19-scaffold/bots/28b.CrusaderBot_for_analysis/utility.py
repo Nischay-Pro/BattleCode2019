@@ -163,6 +163,9 @@ def distance_ratio(robot, destination: tuple,
     start_to_cur = distance(robot, (pos_x, pos_y), robot.our_castle_or_church_base)
     destination_to_cur = distance(robot, (pos_x, pos_y), destination)
     ratio = start_to_cur/(destination_to_cur + start_to_cur)
+    if robot.me.id == 1037:
+        robot.log("Ratio is: " + str(ratio) + ", diff: " + str(abs(ratio-expected_ratio)))
+        robot.log("Ratios are: %d, %d"%(start_to_cur, destination_to_cur))
     ans = True if abs(ratio-expected_ratio) <= delta else False
     # robot.log("Outcome: " + str(ans))
     return ans

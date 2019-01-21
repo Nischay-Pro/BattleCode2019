@@ -1,5 +1,6 @@
 import check
 import constants
+import pathfinding
 import utility
 import vision
 
@@ -221,6 +222,29 @@ def give_crusader_charge_location(robot, visible_enemy_list, visible_enemy_dista
                         min_distance = distance
                         closest_pos = (new_pos_x, new_pos_y)
     return closest_pos
+
+def enemy_direction_guess_and_move(robot, visible_friendly_distance, visible_friendly_list):
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
+    pos_x = robot.me.x
+    pos_y = robot.me.y
+    dirc_x, dirc_y = robot.guessing_in_direction
+    if len(visible_friendly_list) != 0:
+        fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, pos_x + dirc_x, pos_y + dirc_y, pos_x, pos_y)
+        if fin_dir != 0:
+            # TRAVIS MOVE CHECK 21
+            return check.move_check(robot, fin_dir[0], fin_dir[1], 21)
+        else:
+            return None
+    else:
+        fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, pos_x - dirc_x, pos_y - dirc_y, pos_x, pos_y)
+        if fin_dir != 0:
+            # TRAVIS MOVE CHECK 22
+            return check.move_check(robot, fin_dir[0], fin_dir[1], 22)
+        else:
+            return None
+    return None
+
+
 
 def give_stats(unit):
     if unit['unit'] == constants.unit_castle:

@@ -49,9 +49,11 @@ def should_combat_unit_be_at_battle_front(robot) -> bool:
 
 def _move(robot):
     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
+    des_x, des_y = robot.current_move_destination
     pos_x, pos_y = robot.me.x, robot.me.y
     find_dir = 0
-    find_dir = pathfinding.bug_walk_toward(robot, robot.current_move_destination)
+    find_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, des_x,
+            des_y, pos_x, pos_y)
     if robot.me.id == 1037:
         robot.log("Dir is: " + str(find_dir))
     if find_dir != 0:

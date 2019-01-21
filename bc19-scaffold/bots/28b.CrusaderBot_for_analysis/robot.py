@@ -32,8 +32,6 @@ class MyRobot(BCAbstractRobot):
     built_by_a_castle = 0 # Boolean
     built_by_a_church = 0 # Boolean
     our_castle_base_or_church_base = None # Give location of home castle/church -> Tuple
-    bug_walk_index = None # Index of direction in which it's following wall
-    bug_walk_c_w = None # Direction in which it's following wall
 
     friendly_castles = []
     friendly_churches = []
@@ -102,6 +100,9 @@ class MyRobot(BCAbstractRobot):
     previousturn_combat_map = None
 
     # Combat Units
+    has_taken_a_hit = 0
+    combat_broadcast_level = 0
+    guessing_in_direction = None
     is_targeting_robot_with_id = None # Remember robot to kill, after current turn
     current_combat_move_destination = None
     last_attacked_location = None
@@ -150,6 +151,7 @@ class MyRobot(BCAbstractRobot):
         self.delta_fuel_per_turn = self.fuel - self.delta_fuel_per_turn
         self.delta_time_consumed = self.me.time - self.delta_time_consumed
         self.delta_health_reduced = self.me.health - self.unit_health
+        self.combat_broadcast_level -= 1
 
         self.castle_talk(self.me.unit)
 

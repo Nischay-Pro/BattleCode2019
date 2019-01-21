@@ -32,8 +32,6 @@ class MyRobot(BCAbstractRobot):
     built_by_a_castle = 0 # Boolean
     built_by_a_church = 0 # Boolean
     our_castle_base_or_church_base = None # Give location of home castle/church -> Tuple
-    bug_walk_index = None # Index of direction in which it's following wall
-    bug_walk_c_w = None # Direction in which it's following wall
 
     friendly_castles = []
     friendly_churches = []
