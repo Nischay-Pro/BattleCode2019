@@ -23,6 +23,23 @@ def get_map_ratio(x, y, given_map, grid_radius = 2):
 
     return full/((grid_radius * 2 + 1)**2)
 
+def get_area_occupiability(pos_x, pos_y, robot, grid_radius = 2):
+    sub_side = grid_radius * 2 + 1
+    passable_map = robot.get_passable_map()
+    occupied_map = robot.get_visible_robot_map()
+
+    empty = 0
+
+    for i in range(sub_side):
+        for j in range(sub_side):
+            map_dim = len(occupied_map)
+            if pos_x > 0 and pos_y > 0 and pos_x < map_dim and pos_y < map_dim:
+                if occupied_map[pos_y][pos_x] == 0:
+                    if passable_map[pos_y][pos_x] == 1:
+                        empty += 1
+
+    return empty/((grid_radius * 2 + 1)**2)
+
 def analyze_map(given_map, grid_radius = 2):
     sub_side = grid_radius * 2 + 1
     results = []

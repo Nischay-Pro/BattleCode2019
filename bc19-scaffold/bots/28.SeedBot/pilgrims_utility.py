@@ -69,7 +69,7 @@ def give_or_mine(robot):
                             # TRAVIS MOVE CHECK 9
                             return check.move_check(robot, fin_dir[0], fin_dir[1], 9)
                         # Not near vicinity, do bug search
-                        fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y)
+                        fin_dir = pathfinding.bug_walk_toward(robot, (robot.resource_depot.x, robot.resource_depot.y))
                         if fin_dir != 0:
                             # TRAVIS MOVE CHECK 10
                             return check.move_check(robot, fin_dir[0], fin_dir[1], 10)
@@ -91,7 +91,7 @@ def give_or_mine(robot):
         if fin_dir[0] != 0 and fin_dir[1] != 0:
             # TRAVIS MOVE CHECK 11
             return check.move_check(robot, fin_dir[0], fin_dir[1], 11)
-        fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y)
+        fin_dir = pathfinding.bug_walk_toward(robot, (robot.resource_depot.x, robot.resource_depot.y))
         if fin_dir != 0:
             # TRAVIS MOVE CHECK 12
             return check.move_check(robot, fin_dir[0], fin_dir[1], 12)

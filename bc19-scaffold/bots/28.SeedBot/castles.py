@@ -50,12 +50,12 @@ def castle(robot):
 def _castle_initial_check(robot):
     my_x = robot.me['x']
     my_y = robot.me['y']
-    robot.log(str((my_x, my_y)))
+    # robot.log(str((my_x, my_y)))
     if len(robot.fuel_mine_locations_from_this_castle) == 0:
         unused_store, robot.fuel_mine_locations_from_this_castle = utility.get_sorted_list_from_a_point(my_x, my_y, mapping.get_friendly_fuel(robot))
         robot.fuel_mine_occupancy_from_this_castle = [-1 for i in range(len(robot.fuel_mine_locations_from_this_castle))]
-    robot.log(str(mapping.get_friendly_fuel(robot)))
-    robot.log(robot.fuel_mine_locations_from_this_castle)
+    # robot.log(str(mapping.get_friendly_fuel(robot)))
+    # robot.log(robot.fuel_mine_locations_from_this_castle)
 
     if len(robot.karb_mine_locations_from_this_castle) == 0:
         unused_store, robot.karb_mine_locations_from_this_castle = utility.get_sorted_list_from_a_point(my_x, my_y, mapping.get_friendly_karbonite(robot))
