@@ -33,9 +33,9 @@ def get_area_occupiability(pos_x, pos_y, robot, grid_radius = 2):
     for i in range(sub_side):
         for j in range(sub_side):
             map_dim = len(occupied_map)
-            if pos_x > 0 and pos_y > 0 and pos_x < map_dim and pos_y < map_dim:
-                if occupied_map[pos_y][pos_x] == 0:
-                    if passable_map[pos_y][pos_x] == 1:
+            if pos_x - grid_radius + j >= 0 and pos_y - grid_radius + i >= 0 and pos_x - grid_radius + j < map_dim and pos_y - grid_radius + i < map_dim:
+                if passable_map[pos_y - grid_radius + i][pos_x - grid_radius + j] == 1:
+                    if occupied_map[pos_y - grid_radius + i][pos_x - grid_radius + j] == 0:
                         empty += 1
 
     return empty/((grid_radius * 2 + 1)**2)
