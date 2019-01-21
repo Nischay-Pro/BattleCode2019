@@ -92,6 +92,7 @@ def _prophet_combat(robot):
         else:
             # TRAVIS ATTACK CHECK 15
             return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 15, fuel, enemy_unit)
+    return None
 
 def _crusader_combat(robot):
     # combat_utility.fill_combat_map(robot)

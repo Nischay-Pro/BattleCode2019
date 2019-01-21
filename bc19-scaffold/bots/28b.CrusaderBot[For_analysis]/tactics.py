@@ -110,8 +110,6 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
     dest = robot.current_move_destination
     pos_x, pos_y = robot.me.x, robot.me.y
     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
-    if robot.me.id == 1037:
-        robot.log("Current pos: " + str((pos_x, pos_y)))
 
     if robot.lattice_dest and (pos_x + pos_y)%2 == 0:
     # if robot.lattice_dest and str((pos_x, pos_y)) == str(robot.current_move_destination):
@@ -126,7 +124,6 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
         return None
     if not robot.vertical_ratio_satisfied:
         is_combat_unit_at_front = utility.distance_ratio(robot, dest, ratio, delta)
-
         if is_combat_unit_at_front:
             robot.vertical_ratio_satisfied = True
             if (pos_x + pos_y)%2 == 0:
