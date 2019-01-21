@@ -3,6 +3,7 @@ import movement
 import tactics
 
 def crusader(robot):
+
     prophet_attack_aggr_mode = combat_module.give_military_command(robot)
     if prophet_attack_aggr_mode != None:
         return prophet_attack_aggr_mode

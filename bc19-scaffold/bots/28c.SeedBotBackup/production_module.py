@@ -93,7 +93,7 @@ def _build_manager_castle(robot):
                     return castles_utility._castle_build(robot, constants.unit_crusader)
         elif prophet_count < 2 and robot.karbonite >= 25 and robot.step < 10:
             robot.signal(1, 2)
-            return castles_utility._castle_build(robot, constants.unit_crusader)
+            return castles_utility._castle_build(robot, constants.unit_prophet)
 
 def _build_manager_church(robot):
     pos_x = robot.me.x
@@ -104,7 +104,7 @@ def _build_manager_church(robot):
         for direction in directions:
             if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
                 # TRAVIS BUILD CHECK 4
-                return check.build_check(robot, constants.unit_crusader, direction[1], direction[0], 4)
+                return check.build_check(robot, constants.unit_prophet, direction[1], direction[0], 4)
 
     # robot.log("No space to build units anymore for churches")
     return None
