@@ -1,20 +1,16 @@
-import utility
 import combat_module
-import check
+import movement
+import tactics
 
 def crusader(robot):
+
+    prophet_attack_aggr_mode = combat_module.give_military_command(robot)
+    if prophet_attack_aggr_mode != None:
+        return prophet_attack_aggr_mode
+
     return crusader_move(robot)
 
 def crusader_move(robot):
-    pos_x = robot.me.x
-    pos_y = robot.me.y
-    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
-    directions = utility.random_cells_around()
-
-    crusader_is_attacking_or_aggressive_moving = combat_module.give_military_command(robot)
-    if crusader_is_attacking_or_aggressive_moving != None:
-        return crusader_is_attacking_or_aggressive_moving
-    for direction in directions:
-        if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
-            # TRAVIS MOVE CHECK 2
-            return check.move_check(robot, direction[1], direction[0], 2)
+    if robot.current_move_destination != None and not movement.is_completely_surrounded(robot): #and tactics.should_combat_unit_be_at_battle_front(robot):
+        return tactics.send_combat_unit_to_battle_front(robot, 0.35, 0.15)
+    return 0

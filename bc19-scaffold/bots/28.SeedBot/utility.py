@@ -114,7 +114,7 @@ def get_sorted_list_from_a_point(pos_x, pos_y, list_to_check):
     for i in range(len(list_to_check)):
         iter_x = list_to_check[i][0]
         iter_y = list_to_check[i][1]
-        distance.append((iter_x - pos_x)**2 + (iter_x - pos_y)**2)
+        distance.append((iter_x - pos_x)**2 + (iter_y - pos_y)**2)
         queue.append((iter_x, iter_y))
 
     sorted_distance, sorted_tuple = insertionSort(distance, queue)
