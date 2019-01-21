@@ -56,12 +56,7 @@ def _move(robot):
         robot.log("Dir is: " + str(find_dir))
     if find_dir != 0:
         # TRAVIS MOVE CHECK 17
-        new_dest = (pos_x + find_dir[0], pos_y + find_dir[1])
-        if str(robot.bug_nav_prev_coord) == str(new_dest):
-            ans = None
-        else:
-            robot.bug_nav_prev_coord = (pos_x, pos_y)
-            ans = check.move_check(robot, find_dir[0], find_dir[1], 17)
+        ans = check.move_check(robot, find_dir[0], find_dir[1], 17)
     else:
         robot.bug_nav_counter += 1
         ans =  None
@@ -118,8 +113,8 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
         return None
 
     # Safety check
-    #  if ratio + delta >= 1:
-        #  ratio = ratio - delta
+    if ratio + delta >= 1:
+        ratio = ratio - delta
     if robot.fuel <= 30:
         return None
     if not robot.vertical_ratio_satisfied:
