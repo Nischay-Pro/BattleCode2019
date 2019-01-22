@@ -1,5 +1,6 @@
 import check
 import combat_utility
+import communications
 import constants
 import pathfinding
 import tactics
@@ -92,6 +93,7 @@ def _prophet_combat(robot):
         else:
             # TRAVIS ATTACK CHECK 15
             return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 15, fuel, enemy_unit)
+    return None
 
 def _crusader_combat(robot):
     # combat_utility.fill_combat_map(robot)
@@ -108,12 +110,29 @@ def _crusader_combat(robot):
         # Give resources to church/castle/pilgrim/unit via convoy
         return None
 
+    if robot.delta_health_reduced != 0 and robot.step != 0:
+        robot.guessing_in_direction = (robot.me.x - robot.position_at_end_of_turn[0], robot.me.y - robot.position_at_end_of_turn[1])
+        robot.has_taken_a_hit = 3
+    elif robot.delta_health_reduced == 0 and robot.has_taken_a_hit != 0:
+        robot.has_taken_a_hit -= 1
+
     # Attacked by out-of-vision enemy unit
-    if len(visible_enemy_list) == 0 and robot.delta_health_reduced != 0 and robot.step != 0:
-        None
+    if len(visible_enemy_list) == 0 and robot.step != 0 and (robot.delta_health_reduced != 0 or robot.has_taken_a_hit != 0):
+        guess_enemy_direction_and_move = combat_utility.enemy_direction_guess_and_move(robot, visible_friendly_distance, visible_friendly_list)
+        if guess_enemy_direction_and_move != None:
+            return guess_enemy_direction_and_move
 
     # We see an enemy
     if len(visible_enemy_list) != 0:
+
+        # Seen a guessed enemy
+        if robot.has_taken_a_hit != 0:
+            enemy_pox_x = visible_enemy_list[0]['x']
+            enemy_pox_y = visible_enemy_list[0]['y']
+            comms = communications.encode_msg_without_direction(enemy_pox_x, enemy_pox_y)
+            if comms != 0 and robot.combat_broadcast_level <= 0:
+                robot.signal(comms, 8)
+                robot.combat_broadcast_level = constants.combat_broadcast_cooldown
         # In attack range
         for iter_i in range(len(visible_enemy_list)):
             enemy_unit = visible_enemy_list[iter_i]
@@ -125,7 +144,7 @@ def _crusader_combat(robot):
         closest_pos = combat_utility.give_crusader_charge_location(robot, visible_enemy_list, visible_enemy_distance)
         if closest_pos != None:
             # TRAVIS MOVE CHECK 20
-            return check.move_check(robot, closest_pos[0], closest_pos[1], 20)
+            return check.move_check(robot, closest_pos[0] - robot.me.x, closest_pos[1] - robot.me.y, 20)
 
 def _preacher_combat(robot):
     combat_utility.fill_combat_map(robot)

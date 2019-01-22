@@ -52,8 +52,6 @@ def _move(robot):
     pos_x, pos_y = robot.me.x, robot.me.y
     find_dir = 0
     find_dir = pathfinding.bug_walk_toward(robot, robot.current_move_destination)
-    if robot.me.id == 1037:
-        robot.log("Dir is: " + str(find_dir))
     if find_dir != 0:
         # TRAVIS MOVE CHECK 17
         ans = check.move_check(robot, find_dir[0], find_dir[1], 17)
@@ -103,8 +101,6 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
     dest = robot.current_move_destination
     pos_x, pos_y = robot.me.x, robot.me.y
     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
-    if robot.me.id == 1037:
-        robot.log("Current pos: " + str((pos_x, pos_y)))
 
     if robot.lattice_dest and (pos_x + pos_y)%2 == 0:
     # if robot.lattice_dest and str((pos_x, pos_y)) == str(robot.current_move_destination):

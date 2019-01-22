@@ -1,0 +1,816 @@
+diff --git a/28.SeedBot/castles.py b/28b.CrusaderBot_for_analysis/castles.py
+index bfc8565..8fa9ae7 100644
+--- a/28.SeedBot/castles.py
++++ b/28b.CrusaderBot_for_analysis/castles.py
+@@ -50,6 +50,7 @@ def castle(robot):
+ def _castle_initial_check(robot):
+     my_x = robot.me['x']
+     my_y = robot.me['y']
++    robot.log(str((my_x, my_y)))
+     if len(robot.fuel_mine_locations_from_this_castle) == 0:
+         unused_store, robot.fuel_mine_locations_from_this_castle = utility.get_sorted_list_from_a_point(my_x, my_y, mapping.get_friendly_fuel(robot))
+         robot.fuel_mine_occupancy_from_this_castle = [-1 for i in range(len(robot.fuel_mine_locations_from_this_castle))]
+diff --git a/28.SeedBot/check.py b/28b.CrusaderBot_for_analysis/check.py
+index 2b690b5..51acdf2 100644
+--- a/28.SeedBot/check.py
++++ b/28b.CrusaderBot_for_analysis/check.py
+@@ -22,7 +22,9 @@ def move_check(robot, dx, dy, flag):
+             if robot.fuel >= constants.prophet_move_fuel_cost * distance:
+                 return robot.move(dx, dy)
+         else:
+-            robot.log("Move check failed " +  str(flag))
++            # robot.log(constants.crusader_speed)
++            # robot.log(str(dx, dy))
++            # robot.log("Move check failed " +  str(flag))
+             return None
+     if robot.me.unit == constants.unit_preacher:
+         if distance <= constants.prophet_speed:
+@@ -33,6 +35,7 @@ def move_check(robot, dx, dy, flag):
+             return None
+
+ def mine_check(robot, flag):
++    robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
+     if robot.me.unit == constants.unit_pilgrim:
+         if robot.fuel >= 1:
+             return robot.mine()
+@@ -42,6 +45,7 @@ def mine_check(robot, flag):
+
+ def attack_check(robot, dx, dy, flag):
+     distance = dx**2 + dy**2
++    robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
+     if robot.me.unit == constants.unit_prophet:
+         if distance <= constants.prophet_max_attack_range and distance >= constants.prophet_min_attack_range:
+             if robot.fuel >= constants.prophet_attack_fuel_cost:
+@@ -75,6 +79,7 @@ def build_check(robot, build_unit_type, dx, dy, flag):
+     distance = dx**2 + dy**2
+     current_fuel = robot.fuel
+     current_karbonite = robot.karbonite
++    robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
+     if distance <= 2:
+         if build_unit_type == constants.unit_church and current_fuel >= constants.church_construction_fuel and current_karbonite >= constants.church_construction_karbonite:
+             return robot.build_unit(build_unit_type, dx, dy)
+@@ -113,4 +118,5 @@ def build_check(robot, build_unit_type, dx, dy, flag):
+         return None
+
+ def give_check(robot, dx, dy, karbonite, fuel, flag):
++    robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
+     None
+diff --git a/28.SeedBot/churches.py b/28b.CrusaderBot_for_analysis/churches.py
+index e62c972..6a25636 100644
+
+--- a/28.SeedBot/churches.py
++++ b/28b.CrusaderBot_for_analysis/churches.py
+@@ -16,7 +16,7 @@ def church(robot):
+         return production_module.default_production_order(robot)
+     elif robot.step > 250 and robot.karbonite > 100 and robot.fuel > 200:
+         robot.signal(1, 2)
+-        return churches_utility.church_build(robot, constants.unit_prophet)
++        return churches_utility.church_build(robot, constants.unit_crusader)
+     else:
+         None
+         # self.log("Castle health: " + self.me['health'])
+diff --git a/28.SeedBot/churches_utility.py b/28b.CrusaderBot_for_analysis/churches_utility.py
+index 6ab2ba0..012154f 100644
+
+--- a/28.SeedBot/churches_utility.py
++++ b/28b.CrusaderBot_for_analysis/churches_utility.py
+@@ -9,6 +9,8 @@ def recieve_initial_signal(robot):
+     for friendly_unit in friendly_units:
+         if friendly_unit.unit == 2 and friendly_unit.signal > 0:
+             _prophets_initial_check(robot, friendly_unit)
++        elif friendly_unit == 3 and friendly_unit.signal > 0:
++            _prophets_initial_check(robot, friendly_unit)
+             break
+
+ def _prophets_initial_check(robot, friendly_unit):
+diff --git a/28.SeedBot/combat_module.py b/28b.CrusaderBot_for_analysis/combat_module.py
+index 06a34bd..63ee65b 100644
+
+--- a/28.SeedBot/combat_module.py
++++ b/28b.CrusaderBot_for_analysis/combat_module.py
+@@ -1,5 +1,6 @@
+ import check
+ import combat_utility
++import communications
+ import constants
+ import pathfinding
+ import tactics
+@@ -92,6 +93,7 @@ def _prophet_combat(robot):
+         else:
+             # TRAVIS ATTACK CHECK 15
+             return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 15, fuel, enemy_unit)
++    return None
+
+ def _crusader_combat(robot):
+     # combat_utility.fill_combat_map(robot)
+@@ -108,12 +110,29 @@ def _crusader_combat(robot):
+         # Give resources to church/castle/pilgrim/unit via convoy
+         return None
+
++    if robot.delta_health_reduced != 0 and robot.step != 0:
++        robot.guessing_in_direction = (robot.me.x - robot.position_at_end_of_turn[0], robot.me.y - robot.position_at_end_of_turn[1])
++        robot.has_taken_a_hit = 3
++    elif robot.delta_health_reduced == 0 and robot.has_taken_a_hit != 0:
++        robot.has_taken_a_hit -= 1
++
+     # Attacked by out-of-vision enemy unit
+-    if len(visible_enemy_list) == 0 and robot.delta_health_reduced != 0 and robot.step != 0:
+-        None
++    if len(visible_enemy_list) == 0 and robot.step != 0 and (robot.delta_health_reduced != 0 or robot.has_taken_a_hit != 0):
++        guess_enemy_direction_and_move = combat_utility.enemy_direction_guess_and_move(robot, visible_friendly_distance, visible_friendly_list)
++        if guess_enemy_direction_and_move != None:
++            return guess_enemy_direction_and_move
+
+     # We see an enemy
+     if len(visible_enemy_list) != 0:
++
++        # Seen a guessed enemy
++        if robot.has_taken_a_hit != 0:
++            enemy_pox_x = visible_enemy_list[0]['x']
++            enemy_pox_y = visible_enemy_list[0]['y']
++            comms = communications.encode_msg_without_direction(enemy_pox_x, enemy_pox_y)
++            if comms != 0 and robot.combat_broadcast_level <= 0:
++                robot.signal(comms, 8)
++                robot.combat_broadcast_level = constants.combat_broadcast_cooldown
+         # In attack range
+         for iter_i in range(len(visible_enemy_list)):
+             enemy_unit = visible_enemy_list[iter_i]
+@@ -125,7 +144,7 @@ def _crusader_combat(robot):
+         closest_pos = combat_utility.give_crusader_charge_location(robot, visible_enemy_list, visible_enemy_distance)
+         if closest_pos != None:
+             # TRAVIS MOVE CHECK 20
+-            return check.move_check(robot, closest_pos[0], closest_pos[1], 20)
++            return check.move_check(robot, closest_pos[0] - robot.me.x, closest_pos[1] - robot.me.y, 20)
+
+ def _preacher_combat(robot):
+     combat_utility.fill_combat_map(robot)
+diff --git a/28.SeedBot/combat_utility.py b/28b.CrusaderBot_for_analysis/combat_utility.py
+index 6027abb..5da35fb 100644
+
+
+
+
+--- a/28.SeedBot/combat_utility.py
++++ b/28b.CrusaderBot_for_analysis/combat_utility.py
+@@ -1,5 +1,6 @@
+ import check
+ import constants
++import pathfinding
+ import utility
+ import vision
+
+@@ -222,6 +223,29 @@ def give_crusader_charge_location(robot, visible_enemy_list, visible_enemy_dista
+                         closest_pos = (new_pos_x, new_pos_y)
+     return closest_pos
+
++def enemy_direction_guess_and_move(robot, visible_friendly_distance, visible_friendly_list):
++    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
++    pos_x = robot.me.x
++    pos_y = robot.me.y
++    dirc_x, dirc_y = robot.guessing_in_direction
++    if len(visible_friendly_list) != 0:
++        fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, pos_x + dirc_x, pos_y + dirc_y, pos_x, pos_y)
++        if fin_dir != 0:
++            # TRAVIS MOVE CHECK 21
++            return check.move_check(robot, fin_dir[0], fin_dir[1], 21)
++        else:
++            return None
++    else:
++        fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, pos_x - dirc_x, pos_y - dirc_y, pos_x, pos_y)
++        if fin_dir != 0:
++            # TRAVIS MOVE CHECK 22
++            return check.move_check(robot, fin_dir[0], fin_dir[1], 22)
++        else:
++            return None
++    return None
++
++
++
+ def give_stats(unit):
+     if unit['unit'] == constants.unit_castle:
+         return _give_castle_stats()
+diff --git a/28.SeedBot/constants.py b/28b.CrusaderBot_for_analysis/constants.py
+index 3981808..946593a 100644
+
+
+
+
+
+--- a/28.SeedBot/constants.py
++++ b/28b.CrusaderBot_for_analysis/constants.py
+@@ -20,7 +20,7 @@ karbonite_modifier = .05
+ fuel_modifier = .05
+
+ anti_unit_build_factor = 1.2
+-
++combat_broadcast_cooldown = 50
+
+ enemy_unit_priority_for_prophet = [
+     2, # Castle
+@@ -38,47 +38,12 @@ pathfinding_power = 100
+
+ directions = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
+
+-crusader_move_directions = [(0, 3),
+-    (0, 2),
+-    (0, 1),
+-    (1, 2),
+-    (2, 2),
+-    (1, 1),
+-    (2, 1),
+-    (3, 0),
+-    (2, 0),
+-    (1, 0),
+-    (2, -1),
+-    (2, -2),
+-    (1, -1),
+-    (1, -2),
+-    (0, -3),
+-    (0, -2),
+-    (0, -1),
+-    (-1, -2),
+-    (-2, -2),
+-    (-1, -1),
+-    (-2, -1),
+-    (-3, 0),
+-    (-2, 0),
+-    (-1, 0),
+-    (-2, 1),
+-    (-2, 2),
+-    (-1, 1),
+-    (-1, 2)]
+-
+-non_crusader_move_directions = [(0, 2),
+-    (0, 1),
+-    (1, 1),
+-    (2, 0),
+-    (1, 0),
+-    (1, -1),
+-    (0, -2),
+-    (0, -1),
+-    (-1, -1),
+-    (-2, 0),
+-    (-1, 0),
+-    (-1, 1)]
++crusader_move_directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1),
++                (0, 2), (0, -2), (2, 0), (-2, 0), (-1, 2), (1, 2), (1, -2), (-1, -2),
++                (2, -1), (2, 1), (-2, 1), (-2, -1), (2, 2), (2, -2), (-2, 2), (-2, -2),
++                (0, 3), (0, -3), (3, 0), (-3, 0)]
++
++non_crusader_move_directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1), (0, 2), (0, -2), (2, 0), (-2, 0)]
+
+ unit_castle = SPECS['CASTLE']
+ unit_church = SPECS['CHURCH']
+diff --git a/28.SeedBot/crusaders.py b/28b.CrusaderBot_for_analysis/crusaders.py
+index 26738ee..88f321d 100644
+
+
+
+--- a/28.SeedBot/crusaders.py
++++ b/28b.CrusaderBot_for_analysis/crusaders.py
+@@ -1,16 +1,61 @@
++import communications
+ import combat_module
++import constants
++import mapping
+ import movement
+ import tactics
++import vision
+
+ def crusader(robot):
++    if robot.step == 0:
++        receive_initial_signal(robot)
+
+-    prophet_attack_aggr_mode = combat_module.give_military_command(robot)
+-    if prophet_attack_aggr_mode != None:
+-        return prophet_attack_aggr_mode
++
++    crusader_attack_aggr_mode = combat_module.give_military_command(robot)
++    if crusader_attack_aggr_mode != None:
++        return crusader_attack_aggr_mode
+
+     return crusader_move(robot)
+
+ def crusader_move(robot):
+     if robot.current_move_destination != None and not movement.is_completely_surrounded(robot): #and tactics.should_combat_unit_be_at_battle_front(robot):
+-        return tactics.send_combat_unit_to_battle_front(robot, 0.35, 0.15)
++        return tactics.send_combat_unit_to_battle_front(robot, 0.55, 0.15)
+     return 0
++
++def combat_channel(robot):
++    unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)
++    for friendly_unit in friendly_units:
++        if friendly_unit.unit == 3 and friendly_unit.signal > 0:
++            robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
++
++def receive_initial_signal(robot):
++    unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)
++    for friendly_unit in friendly_units:
++        if friendly_unit.unit == 0 and friendly_unit.signal > 0:
++            robot.built_by_a_castle = 1
++            robot.built_by_a_church = 0
++            _crusader_initial_check(robot, friendly_unit)
++        elif friendly_unit.unit == 1 and friendly_unit.signal > 0:
++            robot.built_by_a_castle = 0
++            robot.built_by_a_church = 1
++            _crusader_initial_check(robot, friendly_unit)
++
++def _crusader_initial_check(robot, friendly_unit):
++
++    if robot.built_by_a_castle == 1:
++        robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
++        robot.friendly_castles.append(robot.our_castle_or_church_base)
++    else:
++        robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
++        robot.friendly_churches.append(robot.our_castle_or_church_base)
++
++    if robot.crusader_health == None:
++        robot.crusader_health = constants.crusader_max_health
++
++    if robot.map_symmetry == None:
++        mapping.return_map_symmetry(robot)
++
++    if len(robot.enemy_castles) == 0 and robot.built_by_a_castle == 1:
++        robot.enemy_castles.append(mapping.find_symmetrical_point(robot, friendly_unit['x'], friendly_unit['y'], robot.map_symmetry))
++
++    robot.current_move_destination = mapping.find_symmetrical_point(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1], robot.map_symmetry)
+diff --git a/28.SeedBot/mapping.py b/28b.CrusaderBot_for_analysis/mapping.py
+index 5f9bf54..47316e7 100644
+
+
+--- a/28.SeedBot/mapping.py
++++ b/28b.CrusaderBot_for_analysis/mapping.py
+@@ -23,23 +23,6 @@ def get_map_ratio(x, y, given_map, grid_radius = 2):
+
+     return full/((grid_radius * 2 + 1)**2)
+
+-def get_area_occupiability(pos_x, pos_y, robot, grid_radius = 2):
+-    sub_side = grid_radius * 2 + 1
+-    passable_map = robot.get_passable_map()
+-    occupied_map = robot.get_visible_robot_map()
+-
+-    empty = 0
+-
+-    for i in range(sub_side):
+-        for j in range(sub_side):
+-            map_dim = len(occupied_map)
+-            if pos_x - grid_radius + j >= 0 and pos_y - grid_radius + i >= 0 and pos_x - grid_radius + j < map_dim and pos_y - grid_radius + i < map_dim:
+-                if passable_map[pos_y - grid_radius + i][pos_x - grid_radius + j] == 1:
+-                    if occupied_map[pos_y - grid_radius + i][pos_x - grid_radius + j] == 0:
+-                        empty += 1
+-
+-    return empty/((grid_radius * 2 + 1)**2)
+-
+ def analyze_map(given_map, grid_radius = 2):
+     sub_side = grid_radius * 2 + 1
+     results = []
+diff --git a/28.SeedBot/movement.py b/28b.CrusaderBot_for_analysis/movement.py
+index d11ed76..df46f58 100644
+
+
+--- a/28.SeedBot/movement.py
++++ b/28b.CrusaderBot_for_analysis/movement.py
+@@ -116,7 +116,7 @@ def move_to_destination(robot):
+                             robot.bug_nav_destination = robot.mov_path_between_location_and_destination[iter_i]
+                             robot.bug_nav_index = iter_i
+                             fin_dir = 0
+-                            fin_dir = pathfinding.bug_walk_toward(robot, robot.mov_path_between_location_and_destination[iter_i])
++                            fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
+                             if fin_dir != 0:
+                                 # robot.log("Ninth block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))
+                                 # TRAVIS MOVE CHECK 6
+@@ -144,7 +144,7 @@ def move_to_destination(robot):
+                         robot.bug_nav_index = iter_i
+                         robot.bug_nav_counter = 0
+                         fin_dir = 0
+-                        fin_dir = pathfinding.bug_walk_toward(robot, robot.mov_path_between_location_and_destination[iter_i])
++                        fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, possible_pos_x, possible_pos_y, pos_x, pos_y)
+                         if fin_dir != 0:
+                             # robot.log("Act")
+                             # robot.log("Seventh block list " + str(possible_pos_x) + " " + str(possible_pos_y) + " " + str(robot.bug_nav_destination) + " index " + str(robot.bug_nav_index))
+diff --git a/28.SeedBot/pathfinding.py b/28b.CrusaderBot_for_analysis/pathfinding.py
+index 8591d31..528cc2b 100644
+--- a/28.SeedBot/pathfinding.py
++++ b/28b.CrusaderBot_for_analysis/pathfinding.py
+@@ -1,7 +1,6 @@
+ import math
+ import utility
+ import constants
+-import mapping
+
+ # Since no collection
+ def _is_higher_than(a, b):
+@@ -139,103 +138,17 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
+     #     robot.log("Normal completion " + len(nodes))
+     return retrace_path(pos_initial, pos_final, came_from), 0
+
+-# ONLY FOR NON CRUSADER UNITS
+-def bug_walk_toward(robot, destination):
+-    pos_x, pos_y = robot.me.x, robot.me.y
++#TODO Bug nav follows wall
++def bug_walk_toward(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, robot = None):
++    ideal_toward_direction = _choose_ideal_direction(des_x, des_y, pos_x, pos_y, robot)
++    return _choose_practical_direction(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, ideal_toward_direction)
+
+-    i_direction = _choose_ideal_direction(destination[0], destination[1], pos_x, pos_y, robot)
++def bug_walk_away(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, robot = None):
++    ideal_toward_direction = _choose_ideal_direction(des_x, des_y, pos_x, pos_y, robot)
++    ideal_away_direction = (- ideal_toward_direction[0], - ideal_toward_direction[1])
++    return _choose_practical_direction(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, ideal_away_direction)
+
+-    return _walker(robot, destination, i_direction)
+-
+-def bug_walk_away(robot, destination):
+-    pos_x, pos_y = robot.me.x, robot.me.y
+-
+-    i_direction_toward = _choose_ideal_direction(destination[0], destination[1], pos_x, pos_y, robot)
+-    i_direction = (-i_direction_toward[0], -i_direction_toward[1])
+-
+-    return _walker(robot, destination, i_direction)
+-
+-
+-def _walker(robot, destination, i_direction):
+-    pos_x, pos_y = robot.me.x, robot.me.y
+-    passable_map = robot.get_passable_map()
+-    occupied_map = robot.get_visible_robot_map()
+-
+-    if not utility.is_cell_occupied(occupied_map, pos_x + i_direction[0], pos_y + i_direction[1]):
+-        if passable_map[pos_y + i_direction[1]][pos_x + i_direction[0]] == 1:
+-            robot.bug_walk_index = None
+-            return i_direction
+-
+-    directions = constants.non_crusader_move_directions
+-    if robot.me.unit == constants.unit_crusader:
+-        directions = constants.crusader_move_directions
+-    size = len(directions)
+-    itr_num = size // 2
+-
+-    if robot.bug_walk_index == None:
+-        index = -1
+-
+-        for i in range(size):
+-            if directions[i][0] == i_direction[0] and directions[i][1] == i_direction[1]:
+-                index = i
+-
+-        if index == -1:
+-            return 0
+-
+-        _iter = 0
+-        while _iter < itr_num:
+-            _iter += 1
+-            i = index + _iter
+-            if i >= size:
+-                i -= size
+-            j = index - _iter
+-            if j < 0:
+-                j += size
+-            if not utility.is_cell_occupied(occupied_map, pos_x + directions[i][0], pos_y + directions[i][1]):
+-                if passable_map[pos_y + directions[i][1]][pos_x + directions[i][0]]:
+-                    if not utility.is_cell_occupied(occupied_map, pos_x + directions[j][0], pos_y + directions[j][1]):
+-                        if passable_map[pos_y + directions[j][1]][pos_x + directions[j][0]]:
+-                            a_c_w_occupiability = mapping.get_area_occupiability(pos_x + directions[i][0], pos_y + directions[i][1], robot)
+-                            c_w_occupiability = mapping.get_area_occupiability(pos_x + directions[j][0], pos_y + directions[j][1], robot)
+-                            if a_c_w_occupiability > c_w_occupiability:
+-                                robot.bug_walk_index = i
+-                                robot.bug_walk_c_w = False
+-                                return directions[i]
+-                            else:
+-                                robot.bug_walk_index = j
+-                                robot.bug_walk_c_w = True
+-                                return directions[j]
+-                    robot.bug_walk_index = i
+-                    robot.bug_walk_c_w = False
+-                    return directions[i]
+-            if not utility.is_cell_occupied(occupied_map, pos_x + directions[j][0], pos_y + directions[j][1]):
+-                if passable_map[pos_y + directions[j][1]][pos_x + directions[j][0]]:
+-                    robot.bug_walk_index = j
+-                    robot.bug_walk_c_w = True
+-                    return directions[j]
+-
+-    else:
+-        index = robot.bug_walk_index
+-        _iter = 0
+-        while _iter < itr_num:
+-            _iter += 1
+-            if robot.bug_walk_c_w:
+-                i = index - _iter
+-                if i < 0:
+-                    i += size
+-            else:
+-                i = index + _iter
+-                if i >= size:
+-                    i -= size
+-            if not utility.is_cell_occupied(occupied_map, pos_x + directions[i][0], pos_y + directions[i][1]):
+-                if passable_map[pos_y + directions[i][1]][pos_x + directions[i][0]]:
+-                    robot.bug_walk_index = i
+-                    return (directions[i])
+-
+-    return 0
+-
+-def _choose_ideal_direction(des_x, des_y, pos_x, pos_y, robot = None):
+-    unit_type = None
++def _choose_ideal_direction(des_x, des_y, pos_x, pos_y, robot):
+     diff_x = des_x - pos_x
+     diff_y = des_y - pos_y
+     # Normalise
+@@ -246,39 +159,88 @@ def _choose_ideal_direction(des_x, des_y, pos_x, pos_y, robot = None):
+     if diff_y != 0:
+         dir_y = diff_y//abs(diff_y)
+
+-    if robot != None:
+-        unit_type = robot.me.unit
+-
+     # Objective - Go diagonal until one coordinate matches then straight to destination
+     # Diagonal movement
+     if diff_x != 0 and diff_y != 0:
+-        if unit_type == constants.unit_crusader:
+-            if abs(diff_x) > 1 and abs(diff_y) > 1:
+-                return (dir_x * 2, dir_y * 2)
+-            if abs(diff_x) > 1 and abs(diff_y) == 1:
+-                return (dir_x * 2, dir_y)
+-            if abs(diff_x) == 1 and abs(diff_y) > 1:
+-                return (dir_x, dir_y * 2)
+-        else:
+-            return (dir_x, dir_y)
++        return (dir_x, dir_y)
+     # Movement on x_axis
+     if diff_x == 0 and diff_y != 0:
+         # If two steps away, move one step so as to not move into occupied
+-        if unit_type == constants.unit_crusader:
+-            if abs(diff_y) > 2:
+-                return (0, dir_y * 3)
+-        if abs(diff_y) > 1:
+-            return (0, dir_y * 2)
+-        else:
++        if abs(diff_y) < 2:
+             return (0, dir_y)
++        else:
++            return (0, 2 * dir_y)
+     # Same for y_axis
+     if diff_x != 0 and diff_y == 0:
+-        if unit_type == constants.unit_crusader:
+-            if abs(diff_x) > 2:
+-                return (dir_x * 3, 0)
+-        if abs(diff_x) > 1:
+-            return (dir_x * 2, 0)
+-        else:
++        if abs(diff_x) < 2:
+             return (dir_x, 0)
++        else:
++            return (2 * dir_x, 0)
++
++    return 0
+
+-    return 0
+\ No newline at end of file
++def _choose_practical_direction(passable_map, occupied_map, des_x, des_y, pos_x, pos_y, direction):
++    if direction == 0:
++        return 0
++
++    if not utility.is_cell_occupied(occupied_map, pos_x + direction[0], pos_y + direction[1]):
++        if passable_map[pos_y + direction[1]][pos_x + direction[0]] == 1:
++            return (direction[0], direction[1])
++    if abs(direction[0]) == 1 and abs(direction[1]) == 1:
++        if not utility.is_cell_occupied(occupied_map, pos_x, pos_y + direction[1] * 2):
++            if passable_map[pos_y + direction[1] * 2][pos_x] == 1:
++                return (0, direction[1] * 2)
++        if not utility.is_cell_occupied(occupied_map, pos_x + direction[0] * 2, pos_y):
++            if passable_map[pos_y][pos_x + direction[0] * 2] == 1:
++                return (direction[0] * 2, 0)
++        if not utility.is_cell_occupied(occupied_map, pos_x - direction[0], pos_y + direction[1]):
++            if passable_map[pos_y + direction[1]][pos_x - direction[0]] == 1:
++                return (- direction[0], direction[1])
++        if not utility.is_cell_occupied(occupied_map, pos_x + direction[0], pos_y - direction[1]):
++            if passable_map[pos_y - direction[1]][pos_x + direction[0]] == 1:
++                return (direction[0], - direction[1])
++    if direction[0] == 0:
++        if abs(direction[1]) > 1:
++            if not utility.is_cell_occupied(occupied_map, pos_x, pos_y + direction[1] // 2):
++                if passable_map[pos_y + direction[1] // 2][pos_x] == 1:
++                    return (0, direction[1] // 2)
++        dir_y = 0
++        if abs(direction[1]) == 2:
++            dir_y = direction[1] // 2
++        else:
++            dir_y = direction[1]
++        if not utility.is_cell_occupied(occupied_map, pos_x + 1, pos_y + dir_y):
++            if passable_map[pos_y + dir_y][pos_x + 1] == 1:
++                return (1, dir_y)
++        if not utility.is_cell_occupied(occupied_map, pos_x - 1, pos_y + dir_y):
++            if passable_map[pos_y + dir_y][pos_x - 1] == 1:
++                return (-1, dir_y)
++        if not utility.is_cell_occupied(occupied_map, pos_x + 2, pos_y):
++            if passable_map[pos_y][pos_x + 2] == 1:
++                return (2, 0)
++        if not utility.is_cell_occupied(occupied_map, pos_x - 2, pos_y):
++            if passable_map[pos_y][pos_x - 2] == 1:
++                return (-2, 0)
++    if direction[1] == 0:
++        if abs(direction[0]) > 1:
++            if not utility.is_cell_occupied(occupied_map, pos_x + direction[0] // 2, pos_y):
++                if passable_map[pos_y][pos_x + direction[0] // 2] == 1:
++                    return (direction[0] // 2, 0)
++        dir_x = 0
++        if abs(direction[0]) == 2:
++            dir_x = direction[0] // 2
++        else:
++            dir_x = direction[0]
++        if not utility.is_cell_occupied(occupied_map, pos_x + dir_x, pos_y + 1):
++            if passable_map[pos_y + 1][pos_x + dir_x] == 1:
++                return (dir_x, 1)
++        if not utility.is_cell_occupied(occupied_map, pos_x + dir_x, pos_y - 1):
++            if passable_map[pos_y - 1][pos_x + dir_x] == 1:
++                return (dir_x, -1)
++        if not utility.is_cell_occupied(occupied_map, pos_x, pos_y + 2):
++            if passable_map[pos_y + 2][pos_x] == 1:
++                return (0, 2)
++        if not utility.is_cell_occupied(occupied_map, pos_x, pos_y - 2):
++            if passable_map[pos_y - 2][pos_x] == 1:
++                return (0, -2)
++    return 0
+diff --git a/28.SeedBot/pilgrims_utility.py b/28b.CrusaderBot_for_analysis/pilgrims_utility.py
+index e62f203..d39033c 100644
+
+
+--- a/28.SeedBot/pilgrims_utility.py
++++ b/28b.CrusaderBot_for_analysis/pilgrims_utility.py
+@@ -69,7 +69,7 @@ def give_or_mine(robot):
+                             # TRAVIS MOVE CHECK 9
+                             return check.move_check(robot, fin_dir[0], fin_dir[1], 9)
+                         # Not near vicinity, do bug search
+-                        fin_dir = pathfinding.bug_walk_toward(robot, (robot.resource_depot.x, robot.resource_depot.y))
++                        fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y)
+                         if fin_dir != 0:
+                             # TRAVIS MOVE CHECK 10
+                             return check.move_check(robot, fin_dir[0], fin_dir[1], 10)
+@@ -91,7 +91,7 @@ def give_or_mine(robot):
+         if fin_dir[0] != 0 and fin_dir[1] != 0:
+             # TRAVIS MOVE CHECK 11
+             return check.move_check(robot, fin_dir[0], fin_dir[1], 11)
+-        fin_dir = pathfinding.bug_walk_toward(robot, (robot.resource_depot.x, robot.resource_depot.y))
++        fin_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, robot.resource_depot.x, robot.resource_depot.y, pos_x, pos_y)
+         if fin_dir != 0:
+             # TRAVIS MOVE CHECK 12
+             return check.move_check(robot, fin_dir[0], fin_dir[1], 12)
+diff --git a/28.SeedBot/production_module.py b/28b.CrusaderBot_for_analysis/production_module.py
+index 291a1a6..c8d1dc4 100644
+--- a/28.SeedBot/production_module.py
++++ b/28b.CrusaderBot_for_analysis/production_module.py
+@@ -52,9 +52,9 @@ def _build_manager_castle(robot):
+         # Peaceful Conditions
+         if robot.step >= 3:
+             if robot.karbonite >= 15 and robot.fuel > 100 and pilgrim_count < (total_fuel + total_karbonite) * .35 and robot.step < 60:
+-                if prophet_count < pilgrim_count/2:
++                if crusader_count < pilgrim_count/2:
+                     robot.signal(1, 2)
+-                    return castles_utility._castle_build(robot, constants.unit_prophet)
++                    return castles_utility._castle_build(robot, constants.unit_crusader)
+                 else:
+                     robot.pilgrim_build_number += 1
+                     temp_store = castles_utility._castle_assign_mine_or_scout(robot)
+@@ -70,9 +70,9 @@ def _build_manager_castle(robot):
+                 # elif (preacher_count * 2) < crusader_count:
+                 #     # robot.signal(robot.me.signal + 1, 2)
+                 #     return castle_build(robot, constants.unit_preacher)
+-                if prophet_count < pilgrim_count and robot.step > 60 and robot.fuel > 600:
++                if crusader_count < pilgrim_count and robot.step > 60 and robot.fuel > 600:
+                     robot.signal(1, 2)
+-                    return castles_utility._castle_build(robot, constants.unit_prophet)
++                    return castles_utility._castle_build(robot, constants.unit_crusader)
+                 if pilgrim_count < (total_fuel + total_karbonite) * .55:
+                     robot.pilgrim_build_number += 1
+                     temp_store = castles_utility._castle_assign_mine_or_scout(robot)
+@@ -83,17 +83,17 @@ def _build_manager_castle(robot):
+                         robot.signal(65534, 2)
+                 elif robot.step > 300 and robot.karbonite > 600 and robot.fuel > 600:
+                     robot.signal(1, 2)
+-                    return castles_utility._castle_build(robot, constants.unit_prophet)
++                    return castles_utility._castle_build(robot, constants.unit_crusader)
+                 elif robot.step > 500 and robot.step < 800 and robot.karbonite > 300 and robot.fuel > 300:
+                     robot.signal(1, 2)
+-                    return castles_utility._castle_build(robot, constants.unit_prophet)
++                    return castles_utility._castle_build(robot, constants.unit_crusader)
+                 elif robot.step >= 800:
+                     #TODO At war change production status
+                     robot.signal(1, 2)
+                     return castles_utility._castle_build(robot, constants.unit_crusader)
+-        elif prophet_count < 2 and robot.karbonite >= 25 and robot.step < 10:
+-            robot.signal(1, 2)
+-            return castles_utility._castle_build(robot, constants.unit_prophet)
++        # elif prophet_count < 2 and robot.karbonite >= 25 and robot.step < 10:
++        #     robot.signal(1, 2)
++        #     return castles_utility._castle_build(robot, constants.unit_crusader)
+
+ def _build_manager_church(robot):
+     pos_x = robot.me.x
+@@ -104,7 +104,7 @@ def _build_manager_church(robot):
+         for direction in directions:
+             if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
+                 # TRAVIS BUILD CHECK 4
+-                return check.build_check(robot, constants.unit_prophet, direction[1], direction[0], 4)
++                return check.build_check(robot, constants.unit_crusader, direction[1], direction[0], 4)
+
+     # robot.log("No space to build units anymore for churches")
+     return None
+diff --git a/28.SeedBot/robot.py b/28b.CrusaderBot_for_analysis/robot.py
+index 37eb8dc..ff1aa9f 100644
+
+
+--- a/28.SeedBot/robot.py
++++ b/28b.CrusaderBot_for_analysis/robot.py
+@@ -32,8 +32,6 @@ class MyRobot(BCAbstractRobot):
+     built_by_a_castle = 0 # Boolean
+     built_by_a_church = 0 # Boolean
+     our_castle_base_or_church_base = None # Give location of home castle/church -> Tuple
+-    bug_walk_index = None # Index of direction in which it's following wall
+-    bug_walk_c_w = None # Direction in which it's following wall
+
+     friendly_castles = []
+     friendly_churches = []
+@@ -102,6 +100,9 @@ class MyRobot(BCAbstractRobot):
+     previousturn_combat_map = None
+
+     # Combat Units
++    has_taken_a_hit = 0
++    combat_broadcast_level = 0
++    guessing_in_direction = None
+     is_targeting_robot_with_id = None # Remember robot to kill, after current turn
+     current_combat_move_destination = None
+     last_attacked_location = None
+@@ -150,6 +151,7 @@ class MyRobot(BCAbstractRobot):
+         self.delta_fuel_per_turn = self.fuel - self.delta_fuel_per_turn
+         self.delta_time_consumed = self.me.time - self.delta_time_consumed
+         self.delta_health_reduced = self.me.health - self.unit_health
++        self.combat_broadcast_level -= 1
+
+         self.castle_talk(self.me.unit)
+
+diff --git a/28.SeedBot/tactics.py b/28b.CrusaderBot_for_analysis/tactics.py
+index 94e29b8..2405a4b 100644
+
+
+--- a/28.SeedBot/tactics.py
++++ b/28b.CrusaderBot_for_analysis/tactics.py
+@@ -49,14 +49,21 @@ def should_combat_unit_be_at_battle_front(robot) -> bool:
+
+ def _move(robot):
+     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
++    des_x, des_y = robot.current_move_destination
+     pos_x, pos_y = robot.me.x, robot.me.y
+     find_dir = 0
+-    find_dir = pathfinding.bug_walk_toward(robot, robot.current_move_destination)
++    find_dir = pathfinding.bug_walk_toward(passable_map, occupied_map, des_x,
++            des_y, pos_x, pos_y)
+     if robot.me.id == 1037:
+         robot.log("Dir is: " + str(find_dir))
+     if find_dir != 0:
+         # TRAVIS MOVE CHECK 17
+-        ans = check.move_check(robot, find_dir[0], find_dir[1], 17)
++        new_dest = (pos_x + find_dir[0], pos_y + find_dir[1])
++        if str(robot.bug_nav_prev_coord) == str(new_dest):
++            ans = None
++        else:
++            robot.bug_nav_prev_coord = (pos_x, pos_y)
++            ans = check.move_check(robot, find_dir[0], find_dir[1], 17)
+     else:
+         robot.bug_nav_counter += 1
+         ans =  None
+@@ -103,8 +110,6 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
+     dest = robot.current_move_destination
+     pos_x, pos_y = robot.me.x, robot.me.y
+     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
+-    if robot.me.id == 1037:
+-        robot.log("Current pos: " + str((pos_x, pos_y)))
+
+     if robot.lattice_dest and (pos_x + pos_y)%2 == 0:
+     # if robot.lattice_dest and str((pos_x, pos_y)) == str(robot.current_move_destination):
+@@ -113,13 +118,12 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
+         return None
+
+     # Safety check
+-    if ratio + delta >= 1:
+-        ratio = ratio - delta
++    #  if ratio + delta >= 1:
++        #  ratio = ratio - delta
+     if robot.fuel <= 30:
+         return None
+     if not robot.vertical_ratio_satisfied:
+         is_combat_unit_at_front = utility.distance_ratio(robot, dest, ratio, delta)
+-
+         if is_combat_unit_at_front:
+             robot.vertical_ratio_satisfied = True
+             if (pos_x + pos_y)%2 == 0:
+diff --git a/28.SeedBot/utility.py b/28b.CrusaderBot_for_analysis/utility.py
+index abd626c..2295992 100644
+--- a/28.SeedBot/utility.py
++++ b/28b.CrusaderBot_for_analysis/utility.py
+@@ -163,6 +163,9 @@ def distance_ratio(robot, destination: tuple,
+     start_to_cur = distance(robot, (pos_x, pos_y), robot.our_castle_or_church_base)
+     destination_to_cur = distance(robot, (pos_x, pos_y), destination)
+     ratio = start_to_cur/(destination_to_cur + start_to_cur)
++    if robot.me.id == 1037:
++        robot.log("Ratio is: " + str(ratio) + ", diff: " + str(abs(ratio-expected_ratio)))
++        robot.log("Ratios are: %d, %d"%(start_to_cur, destination_to_cur))
+     ans = True if abs(ratio-expected_ratio) <= delta else False
+     # robot.log("Outcome: " + str(ans))
+     return ans

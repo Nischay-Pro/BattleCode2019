@@ -102,6 +102,9 @@ class MyRobot(BCAbstractRobot):
     previousturn_combat_map = None
 
     # Combat Units
+    has_taken_a_hit = 0
+    combat_broadcast_level = 0
+    guessing_in_direction = None
     is_targeting_robot_with_id = None # Remember robot to kill, after current turn
     current_combat_move_destination = None
     last_attacked_location = None
@@ -150,6 +153,7 @@ class MyRobot(BCAbstractRobot):
         self.delta_fuel_per_turn = self.fuel - self.delta_fuel_per_turn
         self.delta_time_consumed = self.me.time - self.delta_time_consumed
         self.delta_health_reduced = self.me.health - self.unit_health
+        self.combat_broadcast_level -= 1
 
         self.castle_talk(self.me.unit)
 

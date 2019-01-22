@@ -9,6 +9,8 @@ def recieve_initial_signal(robot):
     for friendly_unit in friendly_units:
         if friendly_unit.unit == 2 and friendly_unit.signal > 0:
             _prophets_initial_check(robot, friendly_unit)
+        elif friendly_unit == 3 and friendly_unit.signal > 0:
+            _crusaders_initial_check(robot, friendly_unit)
             break
 
 def _prophets_initial_check(robot, friendly_unit):
@@ -17,6 +19,18 @@ def _prophets_initial_check(robot, friendly_unit):
     else:
         robot.our_castle_or_church_base = communications.decode_msg_without_direction(friendly_unit.signal)
         # robot.log("Base castle is "  + str(robot.our_castle_or_church_base))
+
+    if robot.map_symmetry == None:
+        mapping.return_map_symmetry(robot)
+
+    if len(robot.enemy_castles) == 0 and robot.built_by_a_castle == 1:
+        robot.enemy_castles.append(mapping.find_symmetrical_point(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1], robot.map_symmetry))
+
+def _crusaders_initial_check(robot, friendly_unit):
+    if friendly_unit.signal == 65534:
+        robot.our_castle_or_church_base = None
+    else:
+        robot.our_castle_or_church_base = communications.decode_msg_without_direction(friendly_unit.signal)
 
     if robot.map_symmetry == None:
         mapping.return_map_symmetry(robot)

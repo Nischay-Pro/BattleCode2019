@@ -20,7 +20,7 @@ karbonite_modifier = .05
 fuel_modifier = .05
 
 anti_unit_build_factor = 1.2
-
+combat_broadcast_cooldown = 50
 
 enemy_unit_priority_for_prophet = [
     2, # Castle

@@ -33,6 +33,7 @@ def move_check(robot, dx, dy, flag):
             return None
 
 def mine_check(robot, flag):
+    robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
     if robot.me.unit == constants.unit_pilgrim:
         if robot.fuel >= 1:
             return robot.mine()
@@ -42,6 +43,7 @@ def mine_check(robot, flag):
 
 def attack_check(robot, dx, dy, flag):
     distance = dx**2 + dy**2
+    robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
     if robot.me.unit == constants.unit_prophet:
         if distance <= constants.prophet_max_attack_range and distance >= constants.prophet_min_attack_range:
             if robot.fuel >= constants.prophet_attack_fuel_cost:
@@ -73,6 +75,7 @@ def attack_check(robot, dx, dy, flag):
 
 def build_check(robot, build_unit_type, dx, dy, flag):
     distance = dx**2 + dy**2
+    robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
     current_fuel = robot.fuel
     current_karbonite = robot.karbonite
     if distance <= 2:
@@ -113,4 +116,5 @@ def build_check(robot, build_unit_type, dx, dy, flag):
         return None
 
 def give_check(robot, dx, dy, karbonite, fuel, flag):
+    robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
     None
