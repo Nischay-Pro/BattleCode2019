@@ -103,111 +103,33 @@ def _build_manager_castle(robot):
     
     elif robot.step >= constants.age_two and robot.step < constants.age_three:
         if robot.rush_mode == False:
-            if robot.karbonite >= 100 and robot.fuel >= 100:
-                if pilgrim_count < (total_fuel + total_karbonite) * 0.65:
-                    if castles_utility.did_we_max_out_initial_karb_sending(robot):
-                        assignment = castles_utility._get_closest_karb_mine_never_sent(robot)
-                        if assignment != None:
-                            signal_to_broadcast = communications.encode_msg_without_direction(assignment[0], assignment[1])
-                            robot.signal(signal_to_broadcast, 2)
-                            castles_utility._update_karb_mine_pilgrim_assignment(robot, assignment)
-                            robot.pilgrim_build_number += 1
-                            return castles_utility._castle_build(robot, constants.unit_pilgrim)
-                        else:
-                            if castles_utility.did_we_max_out_initial_fuel_sending(robot):
-                                assignment = castles_utility._get_closest_fuel_mine_never_sent(robot)
-                                if assignment != None:
-                                    signal_to_broadcast = communications.encode_msg_without_direction(assignment[0], assignment[1])
-                                    robot.signal(signal_to_broadcast, 2)
-                                    castles_utility._update_karb_mine_pilgrim_assignment(robot, assignment)
-                                    robot.pilgrim_build_number += 1
-                                    return castles_utility._castle_build(robot, constants.unit_pilgrim)
+            if pilgrim_count < (total_fuel + total_karbonite) * 0.50 and castles_utility.can_build_pilgrim(robot):
+                if castles_utility.did_we_max_out_initial_karb_sending(robot):
+                    if castles_utility.did_we_max_out_initial_fuel_sending(robot):
+                        robot.signal(1, 2)
+                        return castles_utility._castle_build(robot, robot.default_unit)  
                     else:
-                        assignment = castles_utility._get_closest_our_side_unoccupied_karb_mine(robot)
-                        if assignment != None:
-                            signal_to_broadcast = communications.encode_msg_without_direction(assignment[0], assignment[1])
-                            robot.signal(signal_to_broadcast, 2)
-                            castles_utility._update_karb_mine_pilgrim_assignment(robot, assignment)
+                        allotment = castles_utility._get_closest_our_side_unoccupied_fuel_mine(robot)
+                        if allotment != None:
+                            temp_store = communications.encode_msg_without_direction(allotment[0], allotment[1])
+                            robot.signal(temp_store, 2)
                             robot.pilgrim_build_number += 1
+                            castles_utility._update_fuel_mine_pilgrim_assignment(robot, allotment)
                             return castles_utility._castle_build(robot, constants.unit_pilgrim)
-                        else:
-                            if castles_utility.did_we_max_out_initial_fuel_sending(robot):
-                                robot.signal(2, 1)
-                                return castles_utility._castle_build(robot, robot.default_unit)                                
-                            else:
-                                assignment = castles_utility._get_closest_our_side_unoccupied_fuel_mine(robot)
-                                if assignment != None:
-                                    signal_to_broadcast = communications.encode_msg_without_direction(assignment[0], assignment[1])
-                                    robot.signal(signal_to_broadcast, 2)
-                                    castles_utility._update_fuel_mine_pilgrim_assignment(robot, assignment)
-                                    robot.pilgrim_build_number += 1
-                                    return castles_utility._castle_build(robot, constants.unit_pilgrim) 
                 else:
+                    allotment = castles_utility._get_closest_our_side_unoccupied_karb_mine(robot)
+                    if allotment != None:
+                        temp_store = communications.encode_msg_without_direction(allotment[0], allotment[1])
+                        robot.signal(temp_store, 2)
+                        robot.pilgrim_build_number += 1
+                        castles_utility._update_karb_mine_pilgrim_assignment(robot, allotment)
+                        return castles_utility._castle_build(robot, constants.unit_pilgrim)
+            else:
+                if robot.karbonite > 100 and robot.fuel > 100:
                     robot.signal(1, 2)
                     return castles_utility._castle_build(robot, robot.default_unit)
 
-            else:
-                if robot.karbonite <= 100 and robot.fuel >= 100:
-                    if castles_utility.did_we_max_out_initial_karb_sending(robot):
-                        assignment = castles_utility._get_closest_karb_mine_never_sent(robot)
-                        if assignment != None:
-                            signal_to_broadcast = communications.encode_msg_without_direction(assignment[0], assignment[1])
-                            robot.signal(signal_to_broadcast, 2)
-                            castles_utility._update_karb_mine_pilgrim_assignment(robot, assignment)
-                            robot.pilgrim_build_number += 1
-                            return castles_utility._castle_build(robot, constants.unit_pilgrim)
-                        else:
-                            None
-                            #TODO Troop Building or send a purge request?
-                    else:
-                        assignment = castles_utility._get_closest_our_side_unoccupied_karb_mine(robot)
-                        if assignment != None:
-                            signal_to_broadcast = communications.encode_msg_without_direction(assignment[0], assignment[1])
-                            robot.signal(signal_to_broadcast, 2)
-                            castles_utility._update_karb_mine_pilgrim_assignment(robot, assignment)
-                            robot.pilgrim_build_number += 1
-                            return castles_utility._castle_build(robot, constants.unit_pilgrim)
-                elif robot.karbonite >= 100 and robot.fuel <= 100:
-                    if castles_utility.did_we_max_out_initial_fuel_sending(robot):
-                        assignment = castles_utility._get_closest_fuel_mine_never_sent(robot)
-                        if assignment != None:
-                            signal_to_broadcast = communications.encode_msg_without_direction(assignment[0], assignment[1])
-                            robot.signal(signal_to_broadcast, 2)
-                            castles_utility._update_karb_mine_pilgrim_assignment(robot, assignment)
-                            robot.pilgrim_build_number += 1
-                            return castles_utility._castle_build(robot, constants.unit_pilgrim)
-                    else:
-                        assignment = castles_utility._get_closest_our_side_unoccupied_fuel_mine(robot)
-                        if assignment != None:
-                            signal_to_broadcast = communications.encode_msg_without_direction(assignment[0], assignment[1])
-                            robot.signal(signal_to_broadcast, 2)
-                            castles_utility._update_fuel_mine_pilgrim_assignment(robot, assignment)
-                            robot.pilgrim_build_number += 1
-                            return castles_utility._castle_build(robot, constants.unit_pilgrim) 
-                elif robot.karbonite <= 100 and robot.fuel <= 100:
-                    if castles_utility.did_we_max_out_initial_karb_sending(robot):
-                        if castles_utility.did_we_max_out_initial_fuel_sending(robot):
-                            assignment = castles_utility._get_closest_fuel_mine_never_sent(robot)
-                            if assignment != None:
-                                signal_to_broadcast = communications.encode_msg_without_direction(assignment[0], assignment[1])
-                                robot.signal(signal_to_broadcast, 2)
-                                castles_utility._update_karb_mine_pilgrim_assignment(robot, assignment)
-                                robot.pilgrim_build_number += 1
-                                return castles_utility._castle_build(robot, constants.unit_pilgrim)
-                        else:
-                            assignment = castles_utility._get_closest_our_side_unoccupied_fuel_mine(robot)
-                            if assignment != None:
-                                signal_to_broadcast = communications.encode_msg_without_direction(assignment[0], assignment[1])
-                                robot.signal(signal_to_broadcast, 2)
-                                castles_utility._update_fuel_mine_pilgrim_assignment(robot, assignment)
-                                robot.pilgrim_build_number += 1
-                                return castles_utility._castle_build(robot, constants.unit_pilgrim) 
-                    else:
-                        None
-        else:
-            if robot.karbonite >= 15 and robot.fuel > 50 and pilgrim_count > (total_fuel + total_karbonite) * (1 - constants.age_two_economy_under_rush_scale):
-                robot.signal(1, 2)
-                return castles_utility._castle_build(robot, robot.default_unit)
+
             
     elif robot.step >= constants.age_three and robot.step < constants.age_four:
 

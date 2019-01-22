@@ -100,12 +100,14 @@ def _castle_assign_mine_or_scout(robot):
     if (robot.pilgrim_build_number % 2 == 1 or fuel_mine_assigned == -1) and karb_mine_assigned != -1:
         robot.karb_mine_occupancy_from_this_castle[karb_mine_assigned] = 0
         mine_pos = robot.karb_mine_locations_from_this_castle[karb_mine_assigned]
+        _update_karb_mine_pilgrim_assignment(robot, mine_pos)
         comms = communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
         return comms
     # Build a fuel mine
     elif (robot.pilgrim_build_number % 2 == 0 or karb_mine_assigned == -1) and fuel_mine_assigned !=-1:
         robot.fuel_mine_occupancy_from_this_castle[fuel_mine_assigned] = 0
         mine_pos = robot.fuel_mine_locations_from_this_castle[fuel_mine_assigned]
+        _update_fuel_mine_pilgrim_assignment(robot, mine_pos)
         comms = communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
         return comms
 
@@ -139,7 +141,7 @@ def _check_if_co_ordinate_exists_in_karb_manager(robot, with_what, also_who):
     keys_to_check = list(robot.karb_manager.keys())
     for i in range(len(keys_to_check)):
         if keys_to_check[i] == with_what:
-            robot.karb_manager[with_what] = [also_who, True, False]
+            robot.karb_manager[with_what] = [also_who, True, True]
             return True
     return False
 
@@ -147,7 +149,7 @@ def _check_if_co_ordinate_exists_in_fuel_manager(robot, with_what, also_who):
     keys_to_check = list(robot.fuel_manager.keys())
     for i in range(len(keys_to_check)):
         if keys_to_check[i] == with_what:
-            robot.fuel_manager[with_what] = [also_who, True, False]
+            robot.fuel_manager[with_what] = [also_who, True, True]
             return True
     return False
 
@@ -186,7 +188,7 @@ def _get_controlled_karb_mines(robot):
     if len(karbs) > 0:
         for i in range(len(robot.karb_manager)):
             data = karbs[keys_to_check[i]]
-            if data[0] != 0 and data[1] == False and data[2] == True:
+            if data[0] != 0 and data[1] == True and data[2] == True:
                 mines.append((int(keys_to_check[i].split(",")[0]), int(keys_to_check[i].split(",")[1])))
     return mines
 
@@ -197,24 +199,26 @@ def _get_controlled_fuel_mines(robot):
     if len(fuels) > 0:
         for i in range(len(robot.fuel_manager)):
             data = fuels[keys_to_check[i]]
-            if data[0] != 0 and data[1] == False and data[2] == True:
+            if data[0] != 0 and data[1] == True and data[2] == True:
                 mines.append((int(keys_to_check[i].split(",")[0]), int(keys_to_check[i].split(",")[1])))
     return mines
 
 def _get_closest_fuel_mine_never_sent(robot):
     mines = _get_free_fuel_mines_never_sent(robot)
     if len(mines) > 0:
-        mines = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mines)
+        temp, mines = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mines)
         for i in range(len(mines)):
             if am_i_the_nearest_castle_to_this(robot, mines[i][0], mines[i][1]):
                 return mines[i]
+        return None
     else:
         return None
 
 def _update_fuel_mine_pilgrim_assignment(robot, fuel_mine):
     fuel_keys = list(robot.fuel_manager.keys())
     for i in range(len(fuel_keys)):
-        if fuel_keys[i] == str(fuel_mine[0]) + "," + str(fuel_mine[1]):
+        if str(fuel_keys[i]) == str(fuel_mine[0]) + "," + str(fuel_mine[1]):
+            robot.fuel_manager[fuel_keys[i]][1] = True
             robot.fuel_manager[fuel_keys[i]][2] = True
             break    
 
@@ -232,17 +236,19 @@ def _get_free_fuel_mines_never_sent(robot):
 def _get_closest_karb_mine_never_sent(robot):
     mines = _get_free_karb_mines_never_sent(robot)
     if len(mines) > 0:
-        mines = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mines)
+        temp, mines = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mines)
         for i in range(len(mines)):
             if am_i_the_nearest_castle_to_this(robot, mines[i][0], mines[i][1]):
                 return mines[i]
+        return None
     else:
         return None
 
 def _update_karb_mine_pilgrim_assignment(robot, karb_mine):
     karb_keys = list(robot.karb_manager.keys())
     for i in range(len(karb_keys)):
-        if karb_keys[i] == str(karb_mine[0]) + "," + str(karb_mine[1]):
+        if str(karb_keys[i]) == str(karb_mine[0]) + "," + str(karb_mine[1]):
+            robot.karb_manager[karb_keys[i]][1] = True
             robot.karb_manager[karb_keys[i]][2] = True
             break        
 
@@ -297,7 +303,7 @@ def _get_unoccupied_fuel_in_general(robot):
     if len(fuels) > 0:
         for i in range(len(robot.fuel_manager)):
             data = fuels[keys_to_check[i]]
-            if data[0] == 0 and data[2] == False:
+            if data[0] == 0 and data[1] == False and data[2] == False:
                 mines.append((int(keys_to_check[i].split(",")[0]), int(keys_to_check[i].split(",")[1])))
     return mines
 
@@ -306,42 +312,43 @@ def _is_fuel_mine_occupied_or_allocated(robot, cord_x, cord_y):
     fuel_keys = list(fuel.keys())
     cord_comb = str(cord_x) + "," + str(cord_y)
     for i in range(len(fuel_keys)):
-        if fuel_keys[i] == cord_comb:
+        if str(fuel_keys[i]) == cord_comb:
             selected_fuel = fuel[fuel_keys[i]]
-            if selected_fuel[0] != 0 and selected_fuel[2] != True:
-                return True
-            else:
+            if selected_fuel[0] == 0 and selected_fuel[1] == False and selected_fuel[2] == False:
                 return False
+            else:
+                return True
             break
 
 def _get_closest_our_side_unoccupied_fuel_mine(robot):
     our_side_fuel_mines = mapping.get_friendly_fuel(robot)
-    our_side_fuel_mines = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], our_side_fuel_mines)
+    temp, our_side_fuel_mines = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], our_side_fuel_mines)
     for i in range(len(our_side_fuel_mines)):
-        if not _is_fuel_mine_occupied_or_allocated(robot, our_side_fuel_mines[i][0], our_side_fuel_mines[i][1]):
+        if (not _is_fuel_mine_occupied_or_allocated(robot, our_side_fuel_mines[i][0], our_side_fuel_mines[i][1])) and am_i_the_nearest_castle_to_this(robot, our_side_fuel_mines[i][0], our_side_fuel_mines[i][1]):
             return our_side_fuel_mines[i]
     return None
 
 def _is_karb_mine_occupied_or_allocated(robot, cord_x, cord_y):
     karbs = robot.karb_manager
-    karb_keys = list(karbs.keys())
+    karb_keys = list(karbs.keys()) 
     cord_comb = str(cord_x) + "," + str(cord_y)
     for i in range(len(karb_keys)):
-        if karb_keys[i] == cord_comb:
+        if str(karb_keys[i]) == cord_comb:
             selected_karb = karbs[karb_keys[i]]
-            if selected_karb[0] != 0 and selected_karb[2] != True:
-                return True
-            else:
+            if selected_karb[0] == 0 and selected_karb[1] == False and selected_karb[2] == False:
                 return False
+            else:
+                return True
             break
 
 def _get_closest_our_side_unoccupied_karb_mine(robot):
     our_side_karb_mines = mapping.get_friendly_karbonite(robot)
-    our_side_karb_mines = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], our_side_karb_mines)
+    temp, our_side_karb_mines = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], our_side_karb_mines)
     if len(our_side_karb_mines) > 0:
         for i in range(len(our_side_karb_mines)):
-            if not _is_karb_mine_occupied_or_allocated(robot, our_side_karb_mines[i][0], our_side_karb_mines[i][1]):
+           if (not _is_karb_mine_occupied_or_allocated(robot, our_side_karb_mines[i][0], our_side_karb_mines[i][1])) and am_i_the_nearest_castle_to_this(robot, our_side_karb_mines[i][0], our_side_karb_mines[i][1]):
                 return our_side_karb_mines[i]
+        return None
     return None
 
 
@@ -509,3 +516,9 @@ def _castle_monitor_mode(robot):
                 unit_type == constants.unit_preacher
             robot.enemy_unit_locker.append(unit_type)
     enemy_unit_locker_turn += 1
+
+def can_build_pilgrim(robot):
+    if robot.karbonite >= 15 and robot.fuel >= 50:
+        return True
+    else: 
+        return False

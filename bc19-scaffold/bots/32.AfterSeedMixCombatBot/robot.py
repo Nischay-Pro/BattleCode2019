@@ -71,6 +71,7 @@ class MyRobot(BCAbstractRobot):
     resource_depot = None
     piligrim_did_i_shout_my_x_cord = False
     piligrim_did_i_shout_my_y_cord = False
+    pilgrim_warned = False
 
     # Castles
     castle_unit_build_log = [] # Maintain the ids of robots, pop and push every turn
