@@ -18,6 +18,9 @@ def pilgrim(robot):
         # robot.log("Nearing capacity")
         return pilgrim_full(robot)
 
+    if robot.step > 210 and robot.step <230:
+        robot.log(str((robot.me.x, robot.me.y)) + " " + str(robot.step))
+
     # The pilgrim checks if it has a mine on it's current position
     pilgrim_is_mining = pilgrim_mine(robot)
     if pilgrim_is_mining !=0 and robot.fuel > 1 and robot.step > 1:
@@ -33,9 +36,6 @@ def pilgrim(robot):
     # Receive signal from castle on which mine to go to
     if robot.step == 0:
         pilgrims_utility.receive_initial_signal(robot)
-
-    if utility.fuel_less_check(robot):
-        return None
 
     # Move Section
     pilgrim_is_moving = pilgrim_move(robot)
@@ -68,15 +68,15 @@ def pilgrim_move(robot):
 
     # TODO - Make into scout if too old, which will scout enemy bases
     # If the mine is already occupied
-    pilgrims_utility.is_pilgrim_scavenging(robot)
+    # pilgrims_utility.is_pilgrim_scavenging(robot)
 
     # Just move
     if not movement.is_completely_surrounded(robot):
+        if robot.current_move_destination == None and robot.pilgrim_mine_ownership != None:
+            robot.current_move_destination = robot.pilgrim_mine_ownership
         move_command = movement.move_to_destination(robot)
         if move_command != None:
             return move_command
-        elif robot.current_move_destination == None and robot.pilgrim_mine_ownership != None:
-            robot.current_move_destination = robot.pilgrim_mine_ownership
 
         # Random Movement when not enough time
         # for direction in random_directions:

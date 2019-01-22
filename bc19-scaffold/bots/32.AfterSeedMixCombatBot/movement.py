@@ -71,9 +71,9 @@ def move_to_destination(robot):
                 if assumed_pos_x != pos_x or assumed_pos_y != pos_y:
                     utility.default_movement_variables(robot)
 
-        if robot.bug_nav_counter > 5:
+        if robot.bug_nav_counter > 5 and robot.pilgrim_mine_ownership == None:
             robot.mov_path_between_location_and_destination = None
-        elif robot.bug_nav_counter > 10:
+        elif robot.bug_nav_counter > 10 and robot.pilgrim_mine_ownership == None :
             robot.current_move_destination = None
             utility.default_movement_variables(robot)
             return None
