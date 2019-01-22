@@ -145,7 +145,7 @@ def bug_walk_toward(robot, destination):
 
     i_direction = _choose_ideal_direction(destination[0], destination[1], pos_x, pos_y, robot)
 
-    return _walker(robot, destination, i_direction)
+    return _walker(robot, i_direction)
 
 def bug_walk_away(robot, destination):
     pos_x, pos_y = robot.me.x, robot.me.y
@@ -153,10 +153,13 @@ def bug_walk_away(robot, destination):
     i_direction_toward = _choose_ideal_direction(destination[0], destination[1], pos_x, pos_y, robot)
     i_direction = (-i_direction_toward[0], -i_direction_toward[1])
 
-    return _walker(robot, destination, i_direction)
+    return _walker(robot, i_direction)
 
 
-def _walker(robot, destination, i_direction):
+def _walker(robot, i_direction):
+    if i_direction == 0:
+        return 0
+
     pos_x, pos_y = robot.me.x, robot.me.y
     passable_map = robot.get_passable_map()
     occupied_map = robot.get_visible_robot_map()
