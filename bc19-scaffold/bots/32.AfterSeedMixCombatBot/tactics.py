@@ -39,11 +39,7 @@ def should_combat_unit_be_at_battle_front(robot) -> bool:
     birth by castle and it has a destination.
     '''
     robot.log("Destination " + str(robot.current_move_destination))
-    # robot.log(str(robot.mov_path_between_location_and_destination))
-    # robot.log("Build by castle: " + str(robot.built_by_a_castle))
-    # robot.log("Home loc: " + str(robot.our_castle_or_church_base))
     if not robot.current_move_destination: return False
-    # elif not robot.mov_path_between_location_and_destination: return False
     elif robot.built_by_a_church: return False
     else: return True
 
@@ -58,28 +54,7 @@ def _move(robot):
     else:
         robot.bug_nav_counter += 1
         ans =  None
-    # ans = movement.move_to_destination(robot)
-    # robot.log("Return value: " + str(ans))
     return ans
-
-def _stop_movement(robot):
-    next_move = _move(robot)
-    if next_move:
-        return next_move
-    else:
-        # TODO: find the possible empty lattice points in the adjacent boxes
-        pos_x, pos_y = robot.me.x, robot.me.y
-        if (pos_x + pos_y) % 2 == 0:
-            return None
-
-        else:
-            for direction in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
-                if (not utility.is_cell_occupied(robot.get_visible_robot_map(), pos_x, pos_y)) and robot.passable_map[pos_y + direction[1]][pos_x + direction[0]]:
-                    return check.move_check(robot, direction[0], direction[1], 18)
-
-        robot.current_move_destination = None
-        utility.default_movement_variables(robot)
-        return None
 
 # Need to optimize
 def find_lattice_point(robot):
@@ -102,8 +77,7 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
     pos_x, pos_y = robot.me.x, robot.me.y
     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
 
-    if robot.lattice_dest and (pos_x + pos_y)%2 == 0:
-    # if robot.lattice_dest and str((pos_x, pos_y)) == str(robot.current_move_destination):
+    if robot.lattice_dest and str((pos_x, pos_y)) == str(robot.current_move_destination):
         robot.current_move_destination = None
         utility.default_movement_variables(robot)
         return None
@@ -123,16 +97,15 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
                 utility.default_movement_variables(robot)
             return None # we have reached to battle front, don't move
         else:
-            return _stop_movement(robot)
+            return _move(robot)
     elif robot.vertical_ratio_satisfied and not robot.even_rule_satisfied:
         if not robot.lattice_dest: # First time
             coordinate = find_lattice_point(robot)
             if coordinate:
-                # robot.log("Current pos 1: " + str((pos_x, pos_y)))
                 x, y = coordinate
                 robot.current_move_destination = (x, y)
                 robot.lattice_dest = True
-                return _stop_movement(robot)
+                return _move(robot)
         else:
             next_move = None
             if occupied_map[dest[1]][dest[0]] > 0:
@@ -140,7 +113,7 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
                 if coordinate:
                     x, y = coordinate
                     robot.current_move_destination = (x, y)
-                    # robot.log("Current pos 2: " + str((pos_x, pos_y)))
-                    return _stop_movement(robot)
+                    return _move(robot)
                 return None
-            return _stop_movement(robot)
+            return _move(robot)
+
