@@ -27,12 +27,12 @@ def get_area_occupiability(pos_x, pos_y, robot, grid_radius = 2):
     sub_side = grid_radius * 2 + 1
     passable_map = robot.get_passable_map()
     occupied_map = robot.get_visible_robot_map()
+    map_dim = len(occupied_map)
 
     empty = 0
 
     for i in range(sub_side):
         for j in range(sub_side):
-            map_dim = len(occupied_map)
             if pos_x - grid_radius + j >= 0 and pos_y - grid_radius + i >= 0 and pos_x - grid_radius + j < map_dim and pos_y - grid_radius + i < map_dim:
                 if passable_map[pos_y - grid_radius + i][pos_x - grid_radius + j] == 1:
                     if occupied_map[pos_y - grid_radius + i][pos_x - grid_radius + j] == 0:
@@ -399,6 +399,7 @@ def get_contested_fuel(castle, delta = constants.contested_delta):
 
 def get_friendly_influence(robot):
     visible_map = robot.get_visible_robot_map()
+    passable_map = robot.get_passable_map()
     pos_x = robot.me.x
     pos_y = robot.me.y
     side = len(visible_map)
@@ -409,15 +410,17 @@ def get_friendly_influence(robot):
     for i in range(side):
         for j in range(side):
             if visible_map[i][j] > -1:
-                visible_area += 1
-                if visible_map[i][j] > 0:
-                    if robot.get_robot(visible_map[i][j]).team == robot.me.team:
-                        visible_friendlies += 1
+                if passable_map[i][j] == 1:
+                    visible_area += 1
+                    if visible_map[i][j] > 0:
+                        if robot.get_robot(visible_map[i][j]).team == robot.me.team:
+                            visible_friendlies += 1
 
-    return visible_friendlies // visible_area
+    return visible_friendlies / visible_area
 
 def get_enemy_influence(robot):
     visible_map = robot.get_visible_robot_map()
+    passable_map = robot.get_passable_map()
     pos_x = robot.me.x
     pos_y = robot.me.y
     side = len(visible_map)
@@ -428,30 +431,38 @@ def get_enemy_influence(robot):
     for i in range(side):
         for j in range(side):
             if visible_map[i][j] > -1:
-                visible_area += 1
-                if visible_map[i][j] > 0:
-                    if robot.get_robot(visible_map[i][j]).team != robot.me.team:
-                        visible_enemies += 1
+                if passable_map[i][j] == 1:
+                    visible_area += 1
+                    if visible_map[i][j] > 0:
+                        if robot.get_robot(visible_map[i][j]).team != robot.me.team:
+                            visible_enemies += 1
 
-    return visible_enemies // visible_area
+    return visible_enemies / visible_area
 
-def get_tension(robot):
+def get_corner_friendly_influence(robot, grid_radius = 2):
+    diagonal_directions = [(1, 1), (1, -1), (-1, -1), (-1, 1)]
+    sub_side = grid_radius * 2 + 1
     visible_map = robot.get_visible_robot_map()
-    pos_x = robot.me.x
-    pos_y = robot.me.y
-    side = len(visible_map)
+    passable_map = robot.get_passable_map()
+    p_x = robot.me.x
+    p_y = robot.me.y
+    map_dim = len(visible_map)
 
-    visible_area = 0
-    visible_friendlies = 0
+    influences = []
 
-    for i in range(side):
-        for j in range(side):
-            if visible_map[i][j] > -1:
-                visible_area += 1
-                if visible_map[i][j] > 0:
-                    if robot.get_robot(visible_map[i][j]).team == robot.me.team:
-                        visible_friendlies += 1
-                    else:
-                        visible_friendlies -= 1
+    for d_dir in diagonal_directions:
+        pos_x = p_x + d_dir[0]
+        pos_y = p_y + d_dir[1]
+        visible_area = 0
+        visible_friends = 0
+        for i in range(sub_side):
+            for j in range(sub_side):
+                if pos_x - grid_radius + j >= 0 and pos_y - grid_radius + i >= 0 and pos_x - grid_radius + j < map_dim and pos_y - grid_radius + i < map_dim:
+                    if passable_map[pos_y - grid_radius + i][pos_x - grid_radius + j] == 1:
+                        visible_area += 1
+                        if visible_map[pos_y - grid_radius + i][pos_x - grid_radius + j] > 0:
+                            if robot.get_robot(visible_map[pos_y - grid_radius + i][pos_x - grid_radius + j]).team == robot.me.team:
+                                visible_friends += 1
+        influences.append((d_dir[0], d_dir[1], visible_friends / visible_area))
 
-    return visible_friendlies // visible_area
+    return influences
