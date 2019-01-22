@@ -157,7 +157,6 @@ def get_friendly_karbonite(castle):
 
     side = len(karbonite_map)
     mid = side // 2
-    coord = 1
     init = 0
     fin = mid + 1
     final = []
@@ -187,7 +186,6 @@ def get_friendly_fuel(castle):
 
     side = len(fuel_map)
     mid = side // 2
-    coord = 1
     init = 0
     fin = mid + 1
     final = []
@@ -218,7 +216,6 @@ def get_friendly_resources(castle):
 
     side = len(karbonite_map)
     mid = side // 2
-    coord = 1
     init = 0
     fin = mid + 1
     final = []
@@ -248,7 +245,6 @@ def get_enemy_karbonite(castle):
 
     side = len(karbonite_map)
     mid = side // 2
-    coord = 1
     init = 0
     fin = mid
     final = []
@@ -278,7 +274,6 @@ def get_enemy_fuel(castle):
 
     side = len(fuel_map)
     mid = side // 2
-    coord = 1
     init = 0
     fin = mid
     final = []
@@ -309,7 +304,6 @@ def get_enemy_resources(castle):
 
     side = len(karbonite_map)
     mid = side // 2
-    coord = 1
     init = 0
     fin = mid
     final = []
@@ -329,6 +323,76 @@ def get_enemy_resources(castle):
         for i in range(side):
             for j in range(init, fin):
                 if karbonite_map[i][j] == 1 or fuel_map[i][j] == 1:
+                    final.append((j, i))
+
+    return final
+
+def get_contested_resources(castle, delta = constants.contested_delta):
+    fuel_map = castle.get_fuel_map()
+    karbonite_map = castle.get_karbonite_map()
+    hoz_symmetry = check_hoz_symmetry(karbonite_map)
+
+    side = len(karbonite_map)
+    mid = side // 2
+    init = mid - (side * delta)
+    fin = mid + (side * delta)
+    final = []
+
+    if hoz_symmetry:
+        for i in range(init, fin):
+            for j in range(side):
+                if karbonite_map[i][j] == 1 or fuel_map[i][j] == 1:
+                    final.append((j, i))
+    else:
+        for i in range(side):
+            for j in range(init, fin):
+                if karbonite_map[i][j] == 1 or fuel_map[i][j] == 1:
+                    final.append((j, i))
+
+    return final
+
+def get_contested_karbonite(castle, delta = constants.contested_delta):
+    karbonite_map = castle.get_karbonite_map()
+    hoz_symmetry = check_hoz_symmetry(karbonite_map)
+
+    side = len(karbonite_map)
+    mid = side // 2
+    init = mid - (side * delta)
+    fin = mid + (side * delta)
+    final = []
+
+    if hoz_symmetry:
+        for i in range(init, fin):
+            for j in range(side):
+                if karbonite_map[i][j] == 1:
+                    final.append((j, i))
+    else:
+        for i in range(side):
+            for j in range(init, fin):
+                if karbonite_map[i][j] == 1:
+                    final.append((j, i))
+
+    return final
+
+def get_contested_fuel(castle, delta = constants.contested_delta):
+    fuel_map = castle.get_fuel_map()
+    hoz_symmetry = check_hoz_symmetry(fuel_map)
+
+    side = len(fuel_map)
+    mid = side // 2
+    init = mid - (side * delta)
+    fin = mid + (side * delta)
+    final = []
+
+    if hoz_symmetry:
+        for i in range(init, fin):
+            for j in range(side):
+                if fuel_map[i][j] == 1:
+                    final.append((j, i))
+    else:
+        for i in range(side):
+            for j in range(init, fin):
+                if fuel_map[i][j] == 1:
                     final.append((j, i))
 
     return final

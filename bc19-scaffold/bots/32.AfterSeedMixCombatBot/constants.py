@@ -15,7 +15,7 @@ pilgrim_burnout_period = 5
 prophet_burnout_period = 5
 
 chokepoint_modifier = .4
-
+contested_delta = .1
 karbonite_modifier = .05
 fuel_modifier = .05
 
