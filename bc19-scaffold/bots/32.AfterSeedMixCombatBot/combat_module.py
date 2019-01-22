@@ -133,6 +133,7 @@ def _crusader_combat(robot):
             if comms != 0 and robot.combat_broadcast_level <= 0:
                 robot.signal(comms, 8)
                 robot.combat_broadcast_level = constants.combat_broadcast_cooldown
+
         # In attack range
         for iter_i in range(len(visible_enemy_list)):
             enemy_unit = visible_enemy_list[iter_i]

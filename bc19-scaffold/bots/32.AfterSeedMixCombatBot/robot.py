@@ -103,7 +103,7 @@ class MyRobot(BCAbstractRobot):
     crusader_unit_history = []
     prophet_unit_history = []
     preacher_unit_history = []
-    default_unit = constants.unit_prophet
+    default_unit = constants.unit_crusader
 
     karb_fail_turns = 0
     fuel_fail_turns = 0

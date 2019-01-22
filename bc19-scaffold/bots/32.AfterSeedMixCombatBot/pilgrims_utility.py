@@ -37,6 +37,9 @@ def give_or_mine(robot):
     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
     directions = constants.directions
 
+    # if robot.current_move_destination == None:
+    #     robot.current_move_destination = robot.pilgrim_mine_ownership
+
     if utility.is_cell_resourceful(karb_map, fuel_map, pos_x, pos_y):
         unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)
         # Give resources to church or castleS

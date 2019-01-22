@@ -56,9 +56,9 @@ def _build_manager_castle(robot):
 
     if robot.step >= constants.dark_age and robot.step < constants.age_one:
         if robot.karbonite >= 15 and robot.fuel > 100 and pilgrim_count >= (total_fuel + total_karbonite) * .35:
-            if prophet_count < pilgrim_count/2:
+            if crusader_count < pilgrim_count/2:
                 robot.signal(1, 2)
-                return castles_utility._castle_build(robot, constants.unit_prophet)
+                return castles_utility._castle_build(robot, constants.unit_crusader)
             else:
                 robot.pilgrim_build_number += 1
                 temp_store = castles_utility._castle_assign_mine_or_scout(robot)
@@ -71,7 +71,7 @@ def _build_manager_castle(robot):
     elif robot.step >= constants.age_one and robot.step < constants.age_two:
         if robot.rush_mode == False:
             if robot.karbonite >= 15 and robot.fuel > 100 and pilgrim_count < (total_fuel + total_karbonite) * .50 * robot.multiplier:
-                if prophet_count < pilgrim_count:
+                if crusader_count < pilgrim_count:
                     robot.signal(1, 2)
                     return castles_utility._castle_build(robot, robot.default_unit)
                 else:
@@ -88,7 +88,7 @@ def _build_manager_castle(robot):
 
         else:
             if robot.karbonite >= 25 and robot.fuel > 100 and pilgrim_count < (total_fuel + total_karbonite) * .50 * constants.age_one_economy_under_rush_scale:
-                if prophet_count < pilgrim_count:
+                if crusader_count < pilgrim_count:
                     robot.signal(1, 2)
                     return castles_utility._castle_build(robot, robot.default_unit)
                 else:
@@ -100,14 +100,14 @@ def _build_manager_castle(robot):
                     else:
                         robot.pilgrim_build_number -= 1
                         robot.signal(65534, 2)
-    
+
     elif robot.step >= constants.age_two and robot.step < constants.age_three:
         if robot.rush_mode == False:
-            if pilgrim_count < (total_fuel + total_karbonite) * 0.50 and castles_utility.can_build_pilgrim(robot):
+            if pilgrim_count < (total_fuel + total_karbonite) * 0.70 and castles_utility.can_build_pilgrim(robot):
                 if castles_utility.did_we_max_out_initial_karb_sending(robot):
                     if castles_utility.did_we_max_out_initial_fuel_sending(robot):
                         robot.signal(1, 2)
-                        return castles_utility._castle_build(robot, robot.default_unit)  
+                        return castles_utility._castle_build(robot, robot.default_unit)
                     else:
                         allotment = castles_utility._get_closest_our_side_unoccupied_fuel_mine(robot)
                         if allotment != None:
@@ -130,7 +130,7 @@ def _build_manager_castle(robot):
                     return castles_utility._castle_build(robot, robot.default_unit)
 
 
-            
+
     elif robot.step >= constants.age_three and robot.step < constants.age_four:
 
         None
@@ -138,9 +138,6 @@ def _build_manager_castle(robot):
         if robot.karbonite >= 100 and robot.fuel >= 500:
             robot.signal(1, 2)
             return castles_utility._castle_build(robot, robot.default_unit)
-                
-
-
 
 
     # if robot.castle_under_attack > 0:
@@ -202,7 +199,7 @@ def _build_manager_church(robot):
         for direction in directions:
             if (not utility.is_cell_occupied(occupied_map, pos_x + direction[1],  pos_y + direction[0])) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
                 # TRAVIS BUILD CHECK 4
-                return check.build_check(robot, constants.unit_prophet, direction[1], direction[0], 4)
+                return check.build_check(robot, constants.unit_crusader, direction[1], direction[0], 4)
 
     # robot.log("No space to build units anymore for churches")
     return None
