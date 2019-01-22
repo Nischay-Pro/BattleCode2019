@@ -277,7 +277,7 @@ def _walker(robot, i_direction):
 
     else:
         index = robot.bug_walk_index
-        _iter = 0
+        _iter = -1
         while _iter < itr_num:
             _iter += 1
             if robot.bug_walk_c_w:
