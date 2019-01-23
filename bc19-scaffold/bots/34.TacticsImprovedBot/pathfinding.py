@@ -142,11 +142,11 @@ def astar_search(robot, pos_initial, pos_final, unit_type_move = 2):
 # ONLY FOR NON CRUSADER UNITS
 def bug_walk_toward(robot, destination):
     pos_x, pos_y = robot.me.x, robot.me.y
-    robot.log("pos " + str((pos_x, pos_y)))
-    robot.log("des " + str(destination))
+    # robot.log("pos " + str((pos_x, pos_y)))
+    # robot.log("des " + str(destination))
 
     i_direction = _choose_ideal_direction(destination[0], destination[1], pos_x, pos_y, robot)
-    robot.log("idir " + str(i_direction))
+    # robot.log("idir " + str(i_direction))
 
     return _walker(robot, i_direction)
 
@@ -209,7 +209,7 @@ def _choose_ideal_direction(des_x, des_y, pos_x, pos_y, robot = None):
 
 def _walker(robot, i_direction):
     if i_direction == 0:
-        robot.log("0 " + 0)
+        # robot.log("0 " + 0)
         return 0
 
     pos_x, pos_y = robot.me.x, robot.me.y
@@ -221,7 +221,7 @@ def _walker(robot, i_direction):
             if passable_map[pos_y + i_direction[1]][pos_x + i_direction[0]] == 1:
                 robot.bug_walk_index = None
                 robot.bug_walk_c_w = None
-                robot.log("1 " + str(i_direction))
+                # robot.log("1 " + str(i_direction))
                 return i_direction
 
     directions = constants.non_crusader_move_directions
@@ -238,7 +238,7 @@ def _walker(robot, i_direction):
                 index = i
 
         if index == -1:
-            robot.log("2 " + 0)
+            # robot.log("2 " + 0)
             return 0
 
         robot.bug_walk_index = index
@@ -259,19 +259,19 @@ def _walker(robot, i_direction):
                             c_w_occupiability = mapping.get_area_occupiability(pos_x + directions[j][0], pos_y + directions[j][1], robot)
                             if a_c_w_occupiability > c_w_occupiability:
                                 robot.bug_walk_c_w = False
-                                robot.log("3 " + str(directions[i]))
+                                # robot.log("3 " + str(directions[i]))
                                 return directions[i]
                             else:
                                 robot.bug_walk_c_w = True
-                                robot.log("4 " + str(directions[j]))
+                                # robot.log("4 " + str(directions[j]))
                                 return directions[j]
                     robot.bug_walk_c_w = False
-                    robot.log("5 " + str(directions[i]))
+                    # robot.log("5 " + str(directions[i]))
                     return directions[i]
             if not utility.is_cell_occupied(occupied_map, pos_x + directions[j][0], pos_y + directions[j][1]):
                 if passable_map[pos_y + directions[j][1]][pos_x + directions[j][0]]:
                     robot.bug_walk_c_w = True
-                    robot.log("6 " + str(directions[j]))
+                    # robot.log("6 " + str(directions[j]))
                     return directions[j]
 
     else:
@@ -291,7 +291,7 @@ def _walker(robot, i_direction):
                 if passable_map[pos_y + directions[i][1]][pos_x + directions[i][0]]:
                     if _iter == 0:
                         robot.bug_walk_c_w = None
-                    robot.log("7 " + str(directions[i]))
+                    # robot.log("7 " + str(directions[i]))
                     return (directions[i])
 
         index = robot.bug_walk_index
@@ -312,8 +312,8 @@ def _walker(robot, i_direction):
                     if _iter == 0:
                         robot.bug_walk_c_w = None
                     robot.bug_walk_c_w = not robot.bug_walk_c_w
-                    robot.log("9 " + str(directions[i]))
+                    # robot.log("8 " + str(directions[i]))
                     return (directions[i])
 
-    robot.log("8 " + 0)
+    # robot.log("9 " + 0)
     return 0
