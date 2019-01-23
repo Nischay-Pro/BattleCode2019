@@ -8,6 +8,8 @@ def pilgrim(robot):
     if robot.pilgrim_mine_ownership == None:
         robot.steps_to_mine += 1
 
+    pilgrims_utility.detect_and_warn(robot)
+
     # communications.self_communicate_loop(robot)
     # robot.log("Pilgrims current move destination is " + robot.current_move_destination)
     carry_karb = robot.me.karbonite

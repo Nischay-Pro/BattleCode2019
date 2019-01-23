@@ -72,6 +72,9 @@ class MyRobot(BCAbstractRobot):
     piligrim_did_i_shout_my_x_cord = False
     piligrim_did_i_shout_my_y_cord = False
     pilgrim_warned = False
+    pilgrim_warning_cooldown = 0
+    karb_miner = False
+    fuel_miner = False
 
     # Castles
     castle_unit_build_log = [] # Maintain the ids of robots, pop and push every turn
@@ -105,9 +108,8 @@ class MyRobot(BCAbstractRobot):
     preacher_unit_history = []
     default_unit = constants.unit_crusader
 
-    karb_fail_turns = 0
-    fuel_fail_turns = 0
     multiplier = 1
+    last_built_fuel = True
 
 
     # Church
@@ -178,7 +180,13 @@ class MyRobot(BCAbstractRobot):
         self.delta_health_reduced = self.me.health - self.unit_health
         self.combat_broadcast_level -= 1
 
-        self.castle_talk(self.me.unit)
+        if unit_type == constants.unit_pilgrim:
+            if self.karb_miner == False and self.fuel_miner == False:
+                self.castle_talk(self.me.unit)
+            elif self.karb_miner == True and self.fuel_miner == False:
+                self.castle_talk(7)
+            elif self.karb_miner == False and self.fuel_miner == True:
+                self.castle_talk(6)
 
         if self.delta_time_consumed > 100:
             self.burned_out = 1

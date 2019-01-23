@@ -45,7 +45,8 @@ def castle(robot):
     if response != None:
         return response
 
-    return production_module.default_production_order(robot)
+    a = production_module.default_production_order(robot)
+    return a
 
     # robot.log(str(robot.me.signal))
 

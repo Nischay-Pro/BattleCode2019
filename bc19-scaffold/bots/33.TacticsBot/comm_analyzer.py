@@ -28,6 +28,8 @@ Reserved Castle Talk
     3 - Crusader Identification Signal                                      (Crusader)
     4 - Prophet Identification Signal                                       (Prophet)
     5 - Preacher Identification Signal                                      (Preacher)
+    6 - Pilgrim Fuel Miner Signal                                           (Pilgrim)
+    7 - Pilgrim Karbonite Miner Signal                                      (Pilgrim)
 
     64 - 127 - Reserved for positions                                      (All Units)
 

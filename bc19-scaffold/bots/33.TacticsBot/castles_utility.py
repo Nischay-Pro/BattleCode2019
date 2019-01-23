@@ -83,31 +83,41 @@ def _castle_assign_mine_or_scout(robot):
 
     for iter_i in range(len(robot.karb_mine_occupancy_from_this_castle)):
         if robot.karb_mine_occupancy_from_this_castle[iter_i] == -1:
-            if am_i_the_nearest_castle_to_this(robot, robot.karb_mine_locations_from_this_castle[iter_i][0], robot.karb_mine_locations_from_this_castle[iter_i][1]):
+            if robot.step >= 3:
+                if am_i_the_nearest_castle_to_this(robot, robot.karb_mine_locations_from_this_castle[iter_i][0], robot.karb_mine_locations_from_this_castle[iter_i][1]):
+                    karb_mine_assigned = iter_i
+                    break
+                else:
+                    robot.karb_mine_occupancy_from_this_castle[iter_i] = 0
+            else:
                 karb_mine_assigned = iter_i
                 break
-            else:
-                robot.karb_mine_occupancy_from_this_castle[iter_i] = 0
 
     for iter_j in range(len(robot.fuel_mine_occupancy_from_this_castle)):
         if robot.fuel_mine_occupancy_from_this_castle[iter_j] == -1:
-            if am_i_the_nearest_castle_to_this(robot, robot.fuel_mine_locations_from_this_castle[iter_j][0], robot.fuel_mine_locations_from_this_castle[iter_j][1]):
-                fuel_mine_assigned = iter_j
-                break
+            if robot.step >= 3:
+                if am_i_the_nearest_castle_to_this(robot, robot.fuel_mine_locations_from_this_castle[iter_j][0], robot.fuel_mine_locations_from_this_castle[iter_j][1]):
+                    fuel_mine_assigned = iter_j
+                    break
+                else:
+                    robot.karb_mine_occupancy_from_this_castle[iter_i] = 0
             else:
-                robot.karb_mine_occupancy_from_this_castle[iter_i] = 0
+                fuel_mine_assigned = iter_j
+                break    
 
     if (robot.pilgrim_build_number % 2 == 1 or fuel_mine_assigned == -1) and karb_mine_assigned != -1:
         robot.karb_mine_occupancy_from_this_castle[karb_mine_assigned] = 0
         mine_pos = robot.karb_mine_locations_from_this_castle[karb_mine_assigned]
-        _update_karb_mine_pilgrim_assignment(robot, mine_pos)
+        # if robot.step >= 3:
+        #     _update_karb_mine_pilgrim_assignment(robot, mine_pos)
         comms = communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
         return comms
     # Build a fuel mine
     elif (robot.pilgrim_build_number % 2 == 0 or karb_mine_assigned == -1) and fuel_mine_assigned !=-1:
         robot.fuel_mine_occupancy_from_this_castle[fuel_mine_assigned] = 0
         mine_pos = robot.fuel_mine_locations_from_this_castle[fuel_mine_assigned]
-        _update_fuel_mine_pilgrim_assignment(robot, mine_pos)
+        # if robot.step >= 3:
+        #     _update_fuel_mine_pilgrim_assignment(robot, mine_pos)
         comms = communications.encode_msg_without_direction(mine_pos[0], mine_pos[1])
         return comms
 
@@ -130,7 +140,9 @@ def _check_if_piligrim_spoke_with_me_already(robot, id):
     if len(keys_to_check) > 0:
         for i in range(len(keys_to_check)):
             if keys_to_check[i] == id:
-                return True
+                if robot.co_ordinate_storage_locker[id][0] != -1 and robot.co_ordinate_storage_locker[id][1] != -1:
+                    return True
+                return None
         return None
     else:
         return None
@@ -141,7 +153,7 @@ def _check_if_co_ordinate_exists_in_karb_manager(robot, with_what, also_who):
     keys_to_check = list(robot.karb_manager.keys())
     for i in range(len(keys_to_check)):
         if keys_to_check[i] == with_what:
-            robot.karb_manager[with_what] = [also_who, True, True]
+            robot.karb_manager[with_what] = [also_who, True, False]
             return True
     return False
 
@@ -149,7 +161,7 @@ def _check_if_co_ordinate_exists_in_fuel_manager(robot, with_what, also_who):
     keys_to_check = list(robot.fuel_manager.keys())
     for i in range(len(keys_to_check)):
         if keys_to_check[i] == with_what:
-            robot.fuel_manager[with_what] = [also_who, True, True]
+            robot.fuel_manager[with_what] = [also_who, True, False]
             return True
     return False
 
@@ -175,7 +187,7 @@ def _castle_mine_and_karb_processor(robot):
                             # mi casa es su casa
                             None
                         else:
-                            robot.log("This shouldn't have happened")
+                            robot.log("This shouldn't have happened in processor")
 
                     else:
                         # My man you did not speak to me so I guess you are shouting the x coords. I shall handle them gladly.
@@ -351,6 +363,138 @@ def _get_closest_our_side_unoccupied_karb_mine(robot):
         return None
     return None
 
+## New
+
+def _is_karb_mine_alloted(robot, karb_mine):
+    karbs = robot.karb_manager
+    karb_keys = list(karbs.keys()) 
+    cord_comb = str(karb_mine[0]) + "," + str(karb_mine[1])
+    for i in range(len(karb_keys)):
+        if str(karb_keys[i]) == cord_comb:
+            selected_karb = karbs[karb_keys[i]]
+            if selected_karb[0] == 0 and selected_karb[1] == False:
+                return False
+            else:
+                return True
+            break
+
+def _get_closest_unassigned_karbonite_in_castle_vision(robot):
+    distances, karbs = utility.get_relative_karbonite_mine_positions(robot)
+    for i in range(len(distances)):
+        if distances[i] <= constants.convoy_radius:
+            if not _is_karb_mine_alloted(robot, karbs[i]):
+                return karbs[i]
+
+def _any_unalloted_karbonite_in_castle_vision(robot):
+    distances, karbs = utility.get_relative_karbonite_mine_positions(robot)
+    for i in range(len(distances)):
+        if distances[i] <= constants.convoy_radius:
+            if not _is_karb_mine_alloted(robot, karbs[i]):
+                return True
+    return False
+
+def allot_karbonite_mine_to_pilgrim(robot, karb_mine):
+    karb_keys = list(robot.karb_manager.keys())
+    for i in range(len(karb_keys)):
+        if str(karb_keys[i]) == str(karb_mine[0]) + "," + str(karb_mine[1]):
+            robot.karb_manager[karb_keys[i]][1] = True
+            break  
+
+def _any_unalloted_karbonite_in_friendly(robot):
+    distances, karbs = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mapping.get_friendly_karbonite(robot))
+    for i in range(len(distances)):
+        if not _is_karb_mine_alloted(robot, karbs[i]):
+            if am_i_the_nearest_castle_to_this(robot, karbs[i][0], karbs[i][1]):
+                return True
+    return False
+
+def _get_closest_friendly_side_karbonite(robot):
+    distances, karbs = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mapping.get_friendly_karbonite(robot))
+    for i in range(len(distances)):
+        if not _is_karb_mine_alloted(robot, karbs[i]):
+            if am_i_the_nearest_castle_to_this(robot, karbs[i][0], karbs[i][1]):
+                return karbs[i]       
+
+def _any_unalloted_karbonite_in_contested(robot):
+    distances, karbs = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mapping.get_contested_karbonite(robot))
+    for i in range(len(distances)):
+        if not _is_karb_mine_alloted(robot, karbs[i]):
+            if am_i_the_nearest_castle_to_this(robot, karbs[i][0], karbs[i][1]):
+                return True
+    return False
+
+def _get_closest_contested_side_karbonite(robot):
+    distances, karbs = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mapping.get_contested_karbonite(robot))
+    for i in range(len(distances)):
+        if not _is_karb_mine_alloted(robot, karbs[i]):
+            if am_i_the_nearest_castle_to_this(robot, karbs[i][0], karbs[i][1]):
+                return karbs[i]    
+
+def _is_fuel_mine_alloted(robot, fuel_mine):
+    fuel = robot.fuel_manager
+    fuel_keys = list(fuel.keys()) 
+    cord_comb = str(fuel_mine[0]) + "," + str(fuel_mine[1])
+    for i in range(len(fuel_keys)):
+        if str(fuel_keys[i]) == cord_comb:
+            selected_fuel = fuel[fuel_keys[i]]
+            if selected_fuel[0] == 0 and selected_fuel[1] == False:
+                return False
+            else:
+                return True
+            break
+
+def _get_closest_unassigned_fuel_in_castle_vision(robot):
+    distances, fuel = utility.get_relative_fuel_mine_positions(robot)
+    for i in range(len(distances)):
+        if distances[i] <= constants.convoy_radius:
+            if not _is_fuel_mine_alloted(robot, fuel[i]):
+                return fuel[i]
+
+def _any_unalloted_fuel_in_castle_vision(robot):
+    distances, fuel = utility.get_relative_fuel_mine_positions(robot)
+    for i in range(len(distances)):
+        if distances[i] <= constants.convoy_radius:
+            if not _is_fuel_mine_alloted(robot, fuel[i]):
+                return True
+    return False
+
+def allot_fuel_mine_to_pilgrim(robot, fuel_mine):
+    fuel_keys = list(robot.fuel_manager.keys())
+    for i in range(len(fuel_keys)):
+        if str(fuel_keys[i]) == str(fuel_mine[0]) + "," + str(fuel_mine[1]):
+            robot.fuel_manager[fuel_keys[i]][1] = True
+            break        
+
+def _any_unalloted_fuel_in_friendly(robot):
+    distances, fuel = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mapping.get_friendly_fuel(robot))
+    for i in range(len(distances)):
+        if not _is_fuel_mine_alloted(robot, fuel[i]):
+            if am_i_the_nearest_castle_to_this(robot, fuel[i][0], fuel[i][1]):
+                return True
+    return False
+
+def _get_closest_friendly_side_fuel(robot):
+    distances, fuel = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mapping.get_friendly_fuel(robot))
+    for i in range(len(distances)):
+        if not _is_fuel_mine_alloted(robot, fuel[i]):
+            if am_i_the_nearest_castle_to_this(robot, fuel[i][0], fuel[i][1]):
+                return fuel[i] 
+
+def _any_unalloted_fuel_in_contested(robot):
+    distances, fuel = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mapping.get_contested_fuel(robot))
+    for i in range(len(distances)):
+        if not _is_fuel_mine_alloted(robot, fuel[i]):
+            if am_i_the_nearest_castle_to_this(robot, fuel[i][0], fuel[i][1]):
+                return True
+    return False
+
+def _get_closest_contested_side_fuel(robot):
+    distances, fuel = utility.get_sorted_list_from_a_point(robot.me['x'], robot.me['y'], mapping.get_contested_fuel(robot))
+    for i in range(len(distances)):
+        if not _is_fuel_mine_alloted(robot, fuel[i]):
+            if am_i_the_nearest_castle_to_this(robot, fuel[i][0], fuel[i][1]):
+                return fuel[i] 
+
 
 def _castle_attack_when_attack_range(robot):
     enemies_dist, enemies = vision.sort_visible_enemies_by_distance(robot)
@@ -377,8 +521,7 @@ def am_i_the_nearest_castle_to_this(robot, xcord, ycord):
                 am_i_the_closest = False
         return am_i_the_closest
     else:
-        # This shouldn't have happened
-        robot.log("This shouldn't have happened")
+        robot.log("Wuut?")
 
 def nicely_push_into_storage_lockers(robot, value_to_push, locker):
     if locker == 1:
@@ -518,7 +661,31 @@ def _castle_monitor_mode(robot):
     enemy_unit_locker_turn += 1
 
 def can_build_pilgrim(robot):
-    if robot.karbonite >= 15 and robot.fuel >= 50:
+    if robot.karbonite >= 15 and robot.fuel >= 52:
         return True
     else: 
         return False
+
+def _pilgrim_warned(robot, id):
+    keys_to_check = list(robot.co_ordinate_storage_locker.keys())
+    if len(keys_to_check) > 0:
+        for i in range(len(keys_to_check)):
+            if keys_to_check[i] == id:
+                robot.co_ordinate_storage_locker[keys_to_check[i]] = [-1, -1]
+    fuel = robot.fuel_manager
+    karb = robot.karb_manager
+    fuel_keys = list(fuel.keys())
+    karb_keys = list(karb.keys())
+    for i in range(len(fuel_keys)):
+        if fuel[fuel_keys[i]][0] == id:
+            robot.log(robot.fuel_manager[fuel_keys[i]])
+            robot.fuel_manager[fuel_keys[i]][0] = 0
+            robot.fuel_manager[fuel_keys[i]][2] = False
+            robot.log(robot.fuel_manager[fuel_keys[i]])
+            return None
+    for i in range(len(karb_keys)):
+        if karb[karb_keys[i]][0] == id:
+            robot.karb_manager[karb_keys[i]][0] = 0
+            robot.karb_manager[karb_keys[i]][2] = False
+            robot.log(robot.karb_manager[karb_keys[i]])
+            return None
