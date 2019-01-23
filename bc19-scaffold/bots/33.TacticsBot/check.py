@@ -138,3 +138,10 @@ def give_check(robot, dx, dy, karbonite, fuel, flag):
     robot.delta_time_consumed = robot.me.time
     robot.unit_health = robot.me.health
     None
+
+def signal_check(robot, signal_value, radius):
+    # Dont add the above variables
+    if robot.fuel > radius:
+        robot.signal(signal_value, radius)
+    else:
+        robot.log("Signal check failed")

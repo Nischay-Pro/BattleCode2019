@@ -16,6 +16,7 @@ Reserved Signals
     10 - Update ratio Crusader : Prophet make it 2 : 1                      (Castles)
     11 - Update ratio Crusader : Prophet make it 1 : 2                      (Castles)
 
+    65533 - Crusader Core Ready                                             (Crusader)
     65534 - Failed to allocate mine                                         (Castles)
 
 

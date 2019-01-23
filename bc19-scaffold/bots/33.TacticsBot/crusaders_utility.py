@@ -7,8 +7,9 @@ import tactics
 import vision
 
 def crusader_move(robot):
-    if robot.current_move_destination != None and robot.core_is_ready == 1:
-        return tactics.send_combat_unit_to_battle_front(robot, 0.9, 0.1)
+    if robot.current_move_destination != None and (robot.core_is_ready == 1 or robot.following_crusader_command == 1):
+        # robot.log("Check1 " + str(robot.step))
+        return tactics.send_combat_unit_to_battle_front(robot, 1, 0.05)
     if robot.current_move_destination != None and not movement.is_completely_surrounded(robot): #and tactics.should_combat_unit_be_at_battle_front(robot):
         return tactics.send_combat_unit_to_battle_front(robot, 0.55, 0.15)
     return 0
@@ -16,8 +17,12 @@ def crusader_move(robot):
 def combat_channel(robot):
     unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)
     for friendly_unit in friendly_units:
-        if friendly_unit.unit == 3 and friendly_unit.signal > 0:
-            robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
+        if friendly_unit.unit == 3 and friendly_unit.signal > 0 and friendly_unit.id != robot.me.id:
+            if friendly_unit.signal == 65533:
+                robot.core_is_ready = 1
+            else:
+                robot.following_crusader_command = 1
+                robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
 
 def receive_initial_signal(robot):
     unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)

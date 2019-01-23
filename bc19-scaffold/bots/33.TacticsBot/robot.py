@@ -136,7 +136,7 @@ class MyRobot(BCAbstractRobot):
     bug_nav_prev_coord = None
 
     # Crusader
-
+    following_crusader_command = 0
 
     # Prophet
 

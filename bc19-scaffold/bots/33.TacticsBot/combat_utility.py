@@ -1,5 +1,6 @@
 import check
 import constants
+import mapping
 import pathfinding
 import utility
 import vision
@@ -228,29 +229,43 @@ def enemy_direction_guess_and_move(robot, visible_friendly_distance, visible_fri
     pos_x = robot.me.x
     pos_y = robot.me.y
     dirc_x, dirc_y = robot.guessing_in_direction
-    if str(dirc_x, dirc_y) == str(0,0):
-        robot.log("Is happening")
-    if len(visible_friendly_list) != 0:
-        fin_dir = pathfinding.bug_walk_toward(robot, (pos_x + dirc_x, pos_y + dirc_y))
-        if fin_dir != 0:
-            # TRAVIS MOVE CHECK 21
-            return check.move_check(robot, fin_dir[0], fin_dir[1], 21)
-        else:
-            return None
+    if str(dirc_x, dirc_y) == str(0,0) and robot.current_combat_move_destination != None:
+        dirc_x, dirc_y = robot.current_move_destination
+    fin_dir = pathfinding.bug_walk_toward(robot, (pos_x + dirc_x, pos_y + dirc_y))
+    if fin_dir != 0:
+        # TRAVIS MOVE CHECK 21
+        return check.move_check(robot, fin_dir[0], fin_dir[1], 21)
     else:
-        fin_dir = pathfinding.bug_walk_toward(robot, (pos_x - dirc_x, pos_y - dirc_y))
-        if fin_dir != 0:
-            # TRAVIS MOVE CHECK 22
-            return check.move_check(robot, fin_dir[0], fin_dir[1], 22)
-        else:
-            return None
+        return None
     return None
 
 def radio_friends_enemy_location(robot, enemy_pos_x, enemy_pos_y):
     comms = communications.encode_msg_without_direction(enemy_pos_x, enemy_pos_y)
     if comms != 0 and robot.combat_broadcast_level <= 0:
-        robot.signal(comms, 8)
+        check.signal_check(robot, comms, 64)
         robot.combat_broadcast_level = constants.combat_broadcast_cooldown
+
+def radio_friends_charge_order(robot):
+    comms = 65533
+    if comms != 0 and robot.combat_broadcast_level <= 0:
+        check.signal_check(robot, comms, 10)
+        robot.core_is_ready = 1
+        robot.combat_broadcast_level = constants.combat_broadcast_cooldown
+
+def get_min_friendly_influence_direction(robot, visible_friendly_distance, visible_friendly_list):
+    influences_value, influences = mapping.get_corner_friendly_influence(robot)
+    sorted_influences_value, sorted_influences = utility.insertionSort(influences_value, influences)
+    pos_x = robot.me.x
+    pos_y = robot.me.y
+    dirc_x, dirc_y = sorted_influences[0]
+    fin_dir = pathfinding.bug_walk_toward(robot, (pos_x + dirc_x, pos_y + dirc_y))
+    if fin_dir != 0:
+        # TRAVIS MOVE CHECK 23
+        return check.move_check(robot, fin_dir[0], fin_dir[1], 23)
+    else:
+        return None
+
+    # robot.log(str((sorted_influences_value, sorted_influences)))
 
 
 def spot_the_weakness_charge(robot):
@@ -288,6 +303,21 @@ def does_enemy_contain_preacher_units(enemy_list):
         if unit['unit'] == constants.unit_preacher:
             return 1
     return 0
+
+def give_crusader_number(friendly_list):
+    crusader_count = 0
+    for unit in friendly_list:
+        if unit['unit'] == constants.unit_crusader:
+            crusader_count +=1
+    return crusader_count
+
+def is_crusader_raiding_core_ready(friendly_list):
+    crusader_count = give_crusader_number(friendly_list)
+    if crusader_count > 6:
+        return True
+    else:
+        return False
+
 
 def _give_castle_stats():
     attack_damage = constants.castle_attack_damage

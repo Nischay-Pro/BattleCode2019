@@ -440,7 +440,7 @@ def get_enemy_influence(robot):
     return visible_enemies / visible_area
 
 def get_corner_friendly_influence(robot, grid_radius = 2):
-    diagonal_directions = [(1, 1), (1, -1), (-1, -1), (-1, 1)]
+    diagonal_directions = [(2, 2), (2, -2), (-2, -2), (-2, 2)]
     sub_side = grid_radius * 2 + 1
     visible_map = robot.get_visible_robot_map()
     passable_map = robot.get_passable_map()
@@ -449,7 +449,7 @@ def get_corner_friendly_influence(robot, grid_radius = 2):
     map_dim = len(visible_map)
 
     influences = []
-
+    influences_value = []
     for d_dir in diagonal_directions:
         pos_x = p_x + d_dir[0]
         pos_y = p_y + d_dir[1]
@@ -463,6 +463,6 @@ def get_corner_friendly_influence(robot, grid_radius = 2):
                         if visible_map[pos_y - grid_radius + i][pos_x - grid_radius + j] > 0:
                             if robot.get_robot(visible_map[pos_y - grid_radius + i][pos_x - grid_radius + j]).team == robot.me.team:
                                 visible_friends += 1
-        influences.append((d_dir[0], d_dir[1], visible_friends / visible_area))
-
-    return influences
+        influences_value.append(visible_friends / visible_area)
+        influences.append((d_dir[0], d_dir[1]))
+    return influences_value, influences

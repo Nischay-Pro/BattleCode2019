@@ -44,8 +44,6 @@ def should_combat_unit_be_at_battle_front(robot) -> bool:
     else: return True
 
 def _move(robot):
-    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
-    pos_x, pos_y = robot.me.x, robot.me.y
     find_dir = 0
     find_dir = pathfinding.bug_walk_toward(robot, robot.current_move_destination)
     if find_dir != 0:
@@ -116,4 +114,3 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
                     return _move(robot)
                 return None
             return _move(robot)
-

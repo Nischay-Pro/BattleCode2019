@@ -112,12 +112,16 @@ def _crusader_combat(robot):
 
     if robot.delta_health_reduced != 0 and robot.step != 0:
         robot.guessing_in_direction = (robot.me.x - robot.position_at_end_of_turn[0], robot.me.y - robot.position_at_end_of_turn[1])
-        robot.has_taken_a_hit = 3
+        robot.has_taken_a_hit = 2
     elif robot.delta_health_reduced == 0 and robot.has_taken_a_hit != 0:
         robot.has_taken_a_hit -= 1
 
     # Attacked by out-of-vision enemy unit
     if len(visible_enemy_list) == 0 and robot.step != 0 and (robot.delta_health_reduced != 0 or robot.has_taken_a_hit != 0):
+        if combat_utility.give_crusader_number(visible_friendly_list) > 1:
+            guess_enemy_direction_and_move_via_friends = combat_utility.get_min_friendly_influence_direction(robot, visible_friendly_distance, visible_friendly_list)
+            if guess_enemy_direction_and_move_via_friends != None:
+                return guess_enemy_direction_and_move_via_friends
         guess_enemy_direction_and_move = combat_utility.enemy_direction_guess_and_move(robot, visible_friendly_distance, visible_friendly_list)
         if guess_enemy_direction_and_move != None:
             return guess_enemy_direction_and_move
@@ -126,7 +130,7 @@ def _crusader_combat(robot):
     if len(visible_enemy_list) != 0:
 
         # Seen a guessed enemy
-        if robot.has_taken_a_hit != 0:
+        if robot.has_taken_a_hit != 0 and robot.core_is_ready != 1 and len(visible_friendly_list) > 2:
             enemy_pos_x = visible_enemy_list[0]['x']
             enemy_pos_y = visible_enemy_list[0]['y']
             combat_utility.radio_friends_enemy_location(robot, enemy_pos_x, enemy_pos_y)
@@ -144,7 +148,13 @@ def _crusader_combat(robot):
             # TRAVIS MOVE CHECK 20
             return check.move_check(robot, closest_pos[0] - robot.me.x, closest_pos[1] - robot.me.y, 20)
 
+    # elif len(visible_friendly_list) != 0 and robot.core_is_ready!= 1:
+    #     if combat_utility.is_crusader_raiding_core_ready(visible_friendly_list):
+    #         robot.log("Charge at" + str(robot.current_move_destination))
+    #         combat_utility.radio_friends_charge_order(robot)
+
         # spot_the_weakness_charge(robot)
+    return None
 
 def _preacher_combat(robot):
     combat_utility.fill_combat_map(robot)
