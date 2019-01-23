@@ -138,7 +138,6 @@ def create_lattice_around_a_point(robot, destination=None):
         robot.current_move_destination = destination
 
     des_x, des_y = robot.current_move_destination
-    robot.current_move_destination = dest_coord
     pos_x, pos_y = robot.me.x, robot.me.y
     passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
 
@@ -158,7 +157,7 @@ def create_lattice_around_a_point(robot, destination=None):
                 robot.lattice_dest = True
                 return _move(robot)
         else:
-            if occupied_map[dest[1]][dest[0]] > 0:
+            if occupied_map[des_y][des_x] > 0:
                 coordinate = find_lattice_point(robot)
                 if coordinate:
                     x, y = coordinate
