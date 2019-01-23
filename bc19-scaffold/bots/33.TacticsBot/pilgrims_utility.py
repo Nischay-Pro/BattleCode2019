@@ -14,6 +14,7 @@ def receive_initial_signal(robot):
             robot.built_by_a_castle = 1
             robot.built_by_a_church = 0
             _pilgrims_initial_check(robot, friendly_unit)
+            robot.actual_round_number = friendly_unit.turn
             break
 
 def _pilgrims_initial_check(robot, friendly_unit):

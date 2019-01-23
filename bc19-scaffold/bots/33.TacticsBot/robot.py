@@ -26,7 +26,7 @@ def find_unit_type(self, map):
 class MyRobot(BCAbstractRobot):
 
     step = -1
-
+    actual_round_number = None
     unit_spawn_loc = None # Give location of unit spwaned -> Tuple
     current_move_destination = None # Give the current destination to move to -> Tuple
     built_by_a_castle = 0 # Boolean
@@ -117,8 +117,10 @@ class MyRobot(BCAbstractRobot):
     # Combat Zone
     combat_map = None
     previousturn_combat_map = None
+    core_is_ready = 0
 
     # Combat Units
+    is_rush_bot = 0
     has_taken_a_hit = 0
     combat_broadcast_level = 0
     guessing_in_direction = None
@@ -134,6 +136,7 @@ class MyRobot(BCAbstractRobot):
     bug_nav_prev_coord = None
 
     # Crusader
+
 
     # Prophet
 
@@ -164,6 +167,9 @@ class MyRobot(BCAbstractRobot):
 
         if self.unit_health is None:
             self.unit_health = self.me.health
+
+        if not self.actual_round_number is None:
+            self.actual_round_number += 1
 
         # Note that on the first turn these will be not zero as they are being initialised
         self.delta_karbonite_per_turn = self.karbonite - self.delta_karbonite_per_turn

@@ -55,7 +55,7 @@ def _build_manager_castle(robot):
     # robot.log(str(robot.me.signal))
 
     if robot.step >= constants.dark_age and robot.step < constants.age_one:
-        if robot.karbonite >= 15 and robot.fuel > 100 and pilgrim_count >= (total_fuel + total_karbonite) * .35:
+        if robot.karbonite >= 15 and robot.fuel > 100 and pilgrim_count <= (total_fuel + total_karbonite) * .35:
             if crusader_count < pilgrim_count/2:
                 robot.signal(1, 2)
                 return castles_utility._castle_build(robot, constants.unit_crusader)

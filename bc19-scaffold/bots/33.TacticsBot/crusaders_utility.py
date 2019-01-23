@@ -7,6 +7,8 @@ import tactics
 import vision
 
 def crusader_move(robot):
+    if robot.current_move_destination != None and robot.core_is_ready == 1:
+        return tactics.send_combat_unit_to_battle_front(robot, 0.9, 0.1)
     if robot.current_move_destination != None and not movement.is_completely_surrounded(robot): #and tactics.should_combat_unit_be_at_battle_front(robot):
         return tactics.send_combat_unit_to_battle_front(robot, 0.55, 0.15)
     return 0
@@ -24,6 +26,8 @@ def receive_initial_signal(robot):
             robot.built_by_a_castle = 1
             robot.built_by_a_church = 0
             _crusader_initial_check(robot, friendly_unit)
+            robot.actual_round_number = friendly_unit.turn
+            # robot.log(str(robot.actual_round_number))
         elif friendly_unit.unit == 1 and friendly_unit.signal > 0:
             robot.built_by_a_castle = 0
             robot.built_by_a_church = 1

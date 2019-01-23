@@ -243,6 +243,10 @@ def enemy_direction_guess_and_move(robot, visible_friendly_distance, visible_fri
             return None
     return None
 
+def spot_the_weakness_charge(robot):
+    if robot.actual_round_number == 10:
+        None
+
 def give_stats(unit):
     if unit['unit'] == constants.unit_castle:
         return _give_castle_stats()

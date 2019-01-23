@@ -147,6 +147,8 @@ def _crusader_combat(robot):
             # TRAVIS MOVE CHECK 20
             return check.move_check(robot, closest_pos[0] - robot.me.x, closest_pos[1] - robot.me.y, 20)
 
+        # spot_the_weakness_charge(robot)
+
 def _preacher_combat(robot):
     combat_utility.fill_combat_map(robot)
     visible_enemy_distance, visible_enemy_list = vision.sort_visible_enemies_by_distance(robot)
