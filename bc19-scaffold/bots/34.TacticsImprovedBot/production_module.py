@@ -80,7 +80,7 @@ def _build_manager_castle(robot):
             if castles_utility.can_build_crusader(robot):
                 robot.signal(1, 2)
                 return castles_utility._castle_build(robot, robot.default_unit)
-        
+
     elif robot.step >= constants.age_one and robot.step < constants.age_two:
         if castles_utility._any_unalloted_karbonite_in_castle_vision(robot) and robot.last_built_fuel == True and robot.pilgrim_train_count < 2:
             if castles_utility.can_build_pilgrim(robot):
@@ -141,7 +141,7 @@ def _build_manager_castle(robot):
                 robot.pilgrim_train_count = 0
                 robot.signal(1, 2)
                 return castles_utility._castle_build(robot, robot.default_unit)
-    
+
     elif robot.step >= constants.age_two and robot.step < constants.age_three:
         if castles_utility._any_unalloted_karbonite_in_castle_vision(robot):
             if castles_utility.can_build_pilgrim(robot):
@@ -195,7 +195,7 @@ def _build_manager_castle(robot):
             if castles_utility.can_build_crusader(robot):
                 robot.signal(1, 2)
                 return castles_utility._castle_build(robot, robot.default_unit)
-    
+
     elif robot.step >= constants.age_three and robot.step < constants.age_four:
         if castles_utility._any_unalloted_karbonite_in_castle_vision(robot):
             if castles_utility.can_build_pilgrim(robot):
