@@ -216,11 +216,13 @@ def _walker(robot, i_direction):
     passable_map = robot.get_passable_map()
     occupied_map = robot.get_visible_robot_map()
 
-    if not utility.is_cell_occupied(occupied_map, pos_x + i_direction[0], pos_y + i_direction[1]):
-        if passable_map[pos_y + i_direction[1]][pos_x + i_direction[0]] == 1:
-            robot.bug_walk_index = None
-            # robot.log("1 " + str(i_direction))
-            return i_direction
+    if robot.bug_walk_c_w == None:
+        if not utility.is_cell_occupied(occupied_map, pos_x + i_direction[0], pos_y + i_direction[1]):
+            if passable_map[pos_y + i_direction[1]][pos_x + i_direction[0]] == 1:
+                robot.bug_walk_index = None
+                robot.bug_walk_c_w = None
+                # robot.log("1 " + str(i_direction))
+                return i_direction
 
     directions = constants.non_crusader_move_directions
     if robot.me.unit == constants.unit_crusader:
@@ -239,6 +241,7 @@ def _walker(robot, i_direction):
             # robot.log("2 " + 0)
             return 0
 
+        robot.bug_walk_index = index
         _iter = 0
         while _iter < itr_num:
             _iter += 1
@@ -255,22 +258,18 @@ def _walker(robot, i_direction):
                             a_c_w_occupiability = mapping.get_area_occupiability(pos_x + directions[i][0], pos_y + directions[i][1], robot)
                             c_w_occupiability = mapping.get_area_occupiability(pos_x + directions[j][0], pos_y + directions[j][1], robot)
                             if a_c_w_occupiability > c_w_occupiability:
-                                robot.bug_walk_index = i
                                 robot.bug_walk_c_w = False
                                 # robot.log("3 " + str(directions[i]))
                                 return directions[i]
                             else:
-                                robot.bug_walk_index = j
                                 robot.bug_walk_c_w = True
                                 # robot.log("4 " + str(directions[j]))
                                 return directions[j]
-                    robot.bug_walk_index = i
                     robot.bug_walk_c_w = False
                     # robot.log("5 " + str(directions[i]))
                     return directions[i]
             if not utility.is_cell_occupied(occupied_map, pos_x + directions[j][0], pos_y + directions[j][1]):
                 if passable_map[pos_y + directions[j][1]][pos_x + directions[j][0]]:
-                    robot.bug_walk_index = j
                     robot.bug_walk_c_w = True
                     # robot.log("6 " + str(directions[j]))
                     return directions[j]
@@ -290,7 +289,8 @@ def _walker(robot, i_direction):
                     i -= size
             if not utility.is_cell_occupied(occupied_map, pos_x + directions[i][0], pos_y + directions[i][1]):
                 if passable_map[pos_y + directions[i][1]][pos_x + directions[i][0]]:
-                    robot.bug_walk_index = i
+                    if _iter == 0:
+                        robot.bug_walk_c_w = None
                     # robot.log("7 " + str(directions[i]))
                     return (directions[i])
 
