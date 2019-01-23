@@ -21,7 +21,7 @@ fuel_modifier = .05
 
 anti_unit_build_factor = 1.2
 
-dark_age = 3
+dark_age = 0
 age_one = 10
 age_one_economy_under_rush_scale = 0.5
 age_two = 50

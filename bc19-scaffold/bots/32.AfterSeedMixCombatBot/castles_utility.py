@@ -130,7 +130,9 @@ def _check_if_piligrim_spoke_with_me_already(robot, id):
     if len(keys_to_check) > 0:
         for i in range(len(keys_to_check)):
             if keys_to_check[i] == id:
-                return True
+                if robot.co_ordinate_storage_locker[id][0] != -1 and robot.co_ordinate_storage_locker[id][1] != -1:
+                    return True
+                return None
         return None
     else:
         return None
@@ -175,7 +177,10 @@ def _castle_mine_and_karb_processor(robot):
                             # mi casa es su casa
                             None
                         else:
-                            robot.log("This shouldn't have happened")
+                            if piligrim_x_cord == piligrim_y_cord:
+                                _pilgrim_warned(robot, current_unit['id'])
+                            else:
+                                robot.log("This shouldn't have happened")
 
                     else:
                         # My man you did not speak to me so I guess you are shouting the x coords. I shall handle them gladly.
@@ -522,3 +527,27 @@ def can_build_pilgrim(robot):
         return True
     else: 
         return False
+
+def _pilgrim_warned(robot, id):
+    keys_to_check = list(robot.co_ordinate_storage_locker.keys())
+    if len(keys_to_check) > 0:
+        for i in range(len(keys_to_check)):
+            if keys_to_check[i] == id:
+                robot.co_ordinate_storage_locker[keys_to_check[i]] = [-1, -1]
+    fuel = robot.fuel_manager
+    karb = robot.karb_manager
+    fuel_keys = list(fuel.keys())
+    karb_keys = list(karb.keys())
+    for i in range(len(fuel_keys)):
+        if fuel[fuel_keys[i]][0] == id:
+            robot.log(robot.fuel_manager[fuel_keys[i]])
+            robot.fuel_manager[fuel_keys[i]][0] = 0
+            robot.fuel_manager[fuel_keys[i]][2] = False
+            robot.log(robot.fuel_manager[fuel_keys[i]])
+            return None
+    for i in range(len(karb_keys)):
+        if karb[karb_keys[i]][0] == id:
+            robot.karb_manager[karb_keys[i]][0] = 0
+            robot.karb_manager[karb_keys[i]][2] = False
+            robot.log(robot.karb_manager[karb_keys[i]])
+            return None

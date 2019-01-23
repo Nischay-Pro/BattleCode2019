@@ -20,14 +20,15 @@ def pilgrim(robot):
 
     # The pilgrim checks if it has a mine on it's current position
     pilgrim_is_mining = pilgrim_mine(robot)
-    if pilgrim_is_mining !=0 and robot.fuel > 1 and robot.step > 1:
-        if robot.piligrim_did_i_shout_my_x_cord == False:
-            robot.castle_talk(robot.me.x + 64)
-            robot.piligrim_did_i_shout_my_x_cord = True
-        else:
-            if robot.piligrim_did_i_shout_my_y_cord == False:
-                robot.castle_talk(robot.me.y + 64)
-                robot.piligrim_did_i_shout_my_y_cord = True
+    if pilgrim_is_mining !=0 and robot.fuel > 1 and robot.actual_round_number != None:
+        if robot.actual_round_number >= 6:
+            if robot.piligrim_did_i_shout_my_x_cord == False:
+                robot.castle_talk(robot.me.x + 64)
+                robot.piligrim_did_i_shout_my_x_cord = True
+            else:
+                if robot.piligrim_did_i_shout_my_y_cord == False:
+                    robot.castle_talk(robot.me.y + 64)
+                    robot.piligrim_did_i_shout_my_y_cord = True
         return pilgrim_is_mining
 
     # Receive signal from castle on which mine to go to
@@ -92,6 +93,14 @@ def pilgrim_mine(robot):
 
     if utility.is_cell_resourceful(karb_map, fuel_map, pos_x, pos_y):
         robot.signal(0, 0)
+        if utility.is_cell_fuel(fuel_map, pos_x, pos_y):
+            robot.karb_miner = False
+            robot.fuel_miner = True
+            robot.castle_talk(6)
+        elif utility.is_cell_karbonite(karb_map, pos_x, pos_y):
+            robot.karb_miner = True
+            robot.fuel_miner = False
+            robot.castle_talk(7)
         # TRAVIS CHECK MINE 1
         robot.pilgrim_mine_ownership = (pos_x, pos_y)
         return check.mine_check(robot, 1)
