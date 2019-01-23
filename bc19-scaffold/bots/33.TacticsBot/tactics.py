@@ -70,6 +70,8 @@ def find_lattice_point(robot):
                     coord = (j, i)
     return coord
 
+
+
 def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
     dest = robot.current_move_destination
     pos_x, pos_y = robot.me.x, robot.me.y
@@ -106,6 +108,56 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
                 return _move(robot)
         else:
             next_move = None
+            if occupied_map[dest[1]][dest[0]] > 0:
+                coordinate = find_lattice_point(robot)
+                if coordinate:
+                    x, y = coordinate
+                    robot.current_move_destination = (x, y)
+                    return _move(robot)
+                return None
+            return _move(robot)
+
+def find_lattice_point_for_point(robot, dest):
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
+    des_x, des_y = dest
+    n = len(occupied_map)
+    dist = 10**5
+    coord = None
+    for i in range(n):
+        for j in range(n):
+            if not utility.is_out_of_bounds(n, j, i) and occupied_map[i][j] == 0 and (i+j)%2 == 0 and passable_map[i][j] == 1:
+                cur_distance = utility.distance(robot, (des_x, des_y), (j, i))
+                if cur_distance < dist:
+                    dist = cur_distance
+                    coord = (j, i)
+    return coord
+
+def create_lattice_around_a_point(robot, destination=None):
+    if destination == None and robot.current_move_destination == None: return None
+    if destination != None and robot.current_move_destination == None:
+        robot.current_move_destination = destination
+
+    des_x, des_y = robot.current_move_destination
+    robot.current_move_destination = dest_coord
+    pos_x, pos_y = robot.me.x, robot.me.y
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
+
+    if str(robot.current_move_destination) == str((robot.me.x, robot.me.y)):
+        robot.current_move_destination = None
+        utility.default_movement_variables(robot)
+        return None
+
+    if occupied_map[des_y][des_x] == -1 or occupied_map[des_y][des_x] == 0:
+        return _move(robot)
+    else:
+        if not robot.lattice_dest:
+            coordinate = find_lattice_point_for_point(robot, robot.current_move_destination)
+            if coordinate:
+                x, y = coordinate
+                robot.current_move_destination = (x, y)
+                robot.lattice_dest = True
+                return _move(robot)
+        else:
             if occupied_map[dest[1]][dest[0]] > 0:
                 coordinate = find_lattice_point(robot)
                 if coordinate:
