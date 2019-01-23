@@ -3,6 +3,7 @@ import constants
 import pathfinding
 import utility
 import vision
+import communications
 
 def command_flow(robot):
     None
@@ -227,6 +228,8 @@ def enemy_direction_guess_and_move(robot, visible_friendly_distance, visible_fri
     pos_x = robot.me.x
     pos_y = robot.me.y
     dirc_x, dirc_y = robot.guessing_in_direction
+    if str(dirc_x, dirc_y) == str(0,0):
+        robot.log("Is happening")
     if len(visible_friendly_list) != 0:
         fin_dir = pathfinding.bug_walk_toward(robot, (pos_x + dirc_x, pos_y + dirc_y))
         if fin_dir != 0:
@@ -242,6 +245,13 @@ def enemy_direction_guess_and_move(robot, visible_friendly_distance, visible_fri
         else:
             return None
     return None
+
+def radio_friends_enemy_location(robot, enemy_pos_x, enemy_pos_y):
+    comms = communications.encode_msg_without_direction(enemy_pos_x, enemy_pos_y)
+    if comms != 0 and robot.combat_broadcast_level <= 0:
+        robot.signal(comms, 8)
+        robot.combat_broadcast_level = constants.combat_broadcast_cooldown
+
 
 def spot_the_weakness_charge(robot):
     if robot.actual_round_number == 10:

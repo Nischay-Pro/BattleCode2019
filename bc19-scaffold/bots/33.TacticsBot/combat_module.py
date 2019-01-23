@@ -127,12 +127,9 @@ def _crusader_combat(robot):
 
         # Seen a guessed enemy
         if robot.has_taken_a_hit != 0:
-            enemy_pox_x = visible_enemy_list[0]['x']
-            enemy_pox_y = visible_enemy_list[0]['y']
-            comms = communications.encode_msg_without_direction(enemy_pox_x, enemy_pox_y)
-            if comms != 0 and robot.combat_broadcast_level <= 0:
-                robot.signal(comms, 8)
-                robot.combat_broadcast_level = constants.combat_broadcast_cooldown
+            enemy_pos_x = visible_enemy_list[0]['x']
+            enemy_pos_y = visible_enemy_list[0]['y']
+            combat_utility.radio_friends_enemy_location(robot, enemy_pos_x, enemy_pos_y)
 
         # In attack range
         for iter_i in range(len(visible_enemy_list)):

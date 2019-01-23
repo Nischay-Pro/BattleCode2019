@@ -2,6 +2,10 @@ import constants
 
 def move_check(robot, dx, dy, flag):
     distance = dx**2 + dy**2
+    robot.delta_karbonite_per_turn = robot.karbonite
+    robot.delta_fuel_per_turn = robot.fuel
+    robot.delta_time_consumed = robot.me.time
+    robot.unit_health = robot.me.health
     robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
     if robot.me.unit == constants.unit_pilgrim:
         if distance <= constants.pilgrim_speed:
@@ -34,6 +38,10 @@ def move_check(robot, dx, dy, flag):
 
 def mine_check(robot, flag):
     robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
+    robot.delta_karbonite_per_turn = robot.karbonite
+    robot.delta_fuel_per_turn = robot.fuel
+    robot.delta_time_consumed = robot.me.time
+    robot.unit_health = robot.me.health
     if robot.me.unit == constants.unit_pilgrim:
         if robot.fuel >= 1:
             return robot.mine()
@@ -44,6 +52,10 @@ def mine_check(robot, flag):
 def attack_check(robot, dx, dy, flag):
     distance = dx**2 + dy**2
     robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
+    robot.delta_karbonite_per_turn = robot.karbonite
+    robot.delta_fuel_per_turn = robot.fuel
+    robot.delta_time_consumed = robot.me.time
+    robot.unit_health = robot.me.health
     if robot.me.unit == constants.unit_prophet:
         if distance <= constants.prophet_max_attack_range and distance >= constants.prophet_min_attack_range:
             if robot.fuel >= constants.prophet_attack_fuel_cost:
@@ -78,6 +90,10 @@ def build_check(robot, build_unit_type, dx, dy, flag):
     robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
     current_fuel = robot.fuel
     current_karbonite = robot.karbonite
+    robot.delta_karbonite_per_turn = robot.karbonite
+    robot.delta_fuel_per_turn = robot.fuel
+    robot.delta_time_consumed = robot.me.time
+    robot.unit_health = robot.me.health
     if distance <= 2:
         if build_unit_type == constants.unit_church and current_fuel >= constants.church_construction_fuel and current_karbonite >= constants.church_construction_karbonite:
             return robot.build_unit(build_unit_type, dx, dy)
@@ -117,4 +133,8 @@ def build_check(robot, build_unit_type, dx, dy, flag):
 
 def give_check(robot, dx, dy, karbonite, fuel, flag):
     robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
+    robot.delta_karbonite_per_turn = robot.karbonite
+    robot.delta_fuel_per_turn = robot.fuel
+    robot.delta_time_consumed = robot.me.time
+    robot.unit_health = robot.me.health
     None
