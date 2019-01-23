@@ -661,7 +661,13 @@ def _castle_monitor_mode(robot):
     enemy_unit_locker_turn += 1
 
 def can_build_pilgrim(robot):
-    if robot.karbonite >= 15 and robot.fuel >= 52:
+    if robot.karbonite >= constants.pilgrim_construction_karbonite and robot.fuel >= constants.pilgrim_construction_fuel + 2:
+        return True
+    else: 
+        return False
+
+def can_build_crusader(robot):
+    if robot.karbonite >= constants.crusader_construction_karbonite and robot.fuel >= constants.crusader_construction_fuel + 2:
         return True
     else: 
         return False

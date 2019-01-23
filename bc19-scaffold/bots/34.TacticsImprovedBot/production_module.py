@@ -54,19 +54,13 @@ def _build_manager_castle(robot):
     castles_utility.nicely_push_into_storage_lockers(robot, preacher_count, 7)
     castles_utility.nicely_push_into_storage_lockers(robot, prophet_count, 6)
 
-    """ Building units -
-        Start with 2 pilgrims per castle (as long as karbonite after building remains above 50).
-        If sufficient resources(>100 karb, >200 fuel), build, in order -
-            1 crusader per 3 pilgrims
-            1 preacher per 2 crusaders (per 6 pilgrims)
-            1 prophet per 3 crusaders (per 9 pilgrims)
-            1 prophet per 2 resources on map
-    """
-
     # robot.log(str(robot.me.signal))
 
     if robot.step >= constants.dark_age and robot.step < constants.age_one:
-        if castles_utility._any_unalloted_karbonite_in_castle_vision(robot) and robot.last_built_fuel == True:
+        if crusader_count < 4 and robot.karbonite > 40 and robot.fuel > 100:
+            robot.signal(1, 2)
+            return castles_utility._castle_build(robot, constants.unit_crusader)
+        elif castles_utility._any_unalloted_karbonite_in_castle_vision(robot) and robot.last_built_fuel == True:
             if castles_utility.can_build_pilgrim(robot):
                 karb_mine = castles_utility._get_closest_unassigned_karbonite_in_castle_vision(robot)
                 signal = communications.encode_msg_without_direction(karb_mine[0], karb_mine[1])
@@ -83,61 +77,70 @@ def _build_manager_castle(robot):
                 robot.last_built_fuel = True
                 return castles_utility._castle_build(robot, constants.unit_pilgrim)
         else:
-            robot.signal(1, 2)
-            return castles_utility._castle_build(robot, robot.default_unit)
+            if castles_utility.can_build_crusader(robot):
+                robot.signal(1, 2)
+                return castles_utility._castle_build(robot, robot.default_unit)
         
     elif robot.step >= constants.age_one and robot.step < constants.age_two:
-        if castles_utility._any_unalloted_karbonite_in_castle_vision(robot) and robot.last_built_fuel == True:
+        if castles_utility._any_unalloted_karbonite_in_castle_vision(robot) and robot.last_built_fuel == True and robot.pilgrim_train_count < 2:
             if castles_utility.can_build_pilgrim(robot):
                 karb_mine = castles_utility._get_closest_unassigned_karbonite_in_castle_vision(robot)
                 signal = communications.encode_msg_without_direction(karb_mine[0], karb_mine[1])
                 castles_utility.allot_karbonite_mine_to_pilgrim(robot, karb_mine)
                 robot.signal(signal, 2)
                 robot.last_built_fuel = False
+                robot.pilgrim_train_count += 1
                 return castles_utility._castle_build(robot, constants.unit_pilgrim)
-        elif castles_utility._any_unalloted_fuel_in_castle_vision(robot) and robot.last_built_fuel == False:
+        elif castles_utility._any_unalloted_fuel_in_castle_vision(robot) and robot.last_built_fuel == False and robot.pilgrim_train_count < 2:
             if castles_utility.can_build_pilgrim(robot):
                 fuel_mine = castles_utility._get_closest_unassigned_fuel_in_castle_vision(robot)
                 signal = communications.encode_msg_without_direction(fuel_mine[0], fuel_mine[1])
                 castles_utility.allot_fuel_mine_to_pilgrim(robot, fuel_mine)
                 robot.signal(signal, 2)
                 robot.last_built_fuel = True
+                robot.pilgrim_train_count += 1
                 return castles_utility._castle_build(robot, constants.unit_pilgrim)
-        elif castles_utility._any_unalloted_karbonite_in_contested(robot) and robot.last_built_fuel == True:
+        elif castles_utility._any_unalloted_karbonite_in_contested(robot) and robot.last_built_fuel == True and robot.pilgrim_train_count < 2:
             if castles_utility.can_build_pilgrim(robot):
                 karb_mine = castles_utility._get_closest_contested_side_karbonite(robot)
                 signal = communications.encode_msg_without_direction(karb_mine[0], karb_mine[1])
                 castles_utility.allot_karbonite_mine_to_pilgrim(robot, karb_mine)
                 robot.signal(signal, 2)
                 robot.last_built_fuel = False
+                robot.pilgrim_train_count += 1
                 return castles_utility._castle_build(robot, constants.unit_pilgrim)
-        elif castles_utility._any_unalloted_fuel_in_contested(robot) and robot.last_built_fuel == False:
+        elif castles_utility._any_unalloted_fuel_in_contested(robot) and robot.last_built_fuel == False and robot.pilgrim_train_count < 2:
             if castles_utility.can_build_pilgrim(robot):
                 fuel_mine = castles_utility._get_closest_contested_side_fuel(robot)
                 signal = communications.encode_msg_without_direction(fuel_mine[0], fuel_mine[1])
                 castles_utility.allot_fuel_mine_to_pilgrim(robot, fuel_mine)
                 robot.signal(signal, 2)
                 robot.last_built_fuel = True
+                robot.pilgrim_train_count += 1
                 return castles_utility._castle_build(robot, constants.unit_pilgrim)
-        elif castles_utility._any_unalloted_karbonite_in_friendly(robot) and robot.last_built_fuel == True:
+        elif castles_utility._any_unalloted_karbonite_in_friendly(robot) and robot.last_built_fuel == True and robot.pilgrim_train_count < 2:
             if castles_utility.can_build_pilgrim(robot):
                 karb_mine = castles_utility._get_closest_friendly_side_karbonite(robot)
                 signal = communications.encode_msg_without_direction(karb_mine[0], karb_mine[1])
                 castles_utility.allot_karbonite_mine_to_pilgrim(robot, karb_mine)
                 robot.signal(signal, 2)
                 robot.last_built_fuel = False
+                robot.pilgrim_train_count += 1
                 return castles_utility._castle_build(robot, constants.unit_pilgrim)
-        elif castles_utility._any_unalloted_fuel_in_friendly(robot) and robot.last_built_fuel == False:
+        elif castles_utility._any_unalloted_fuel_in_friendly(robot) and robot.last_built_fuel == False and robot.pilgrim_train_count < 2:
             if castles_utility.can_build_pilgrim(robot):
                 fuel_mine = castles_utility._get_closest_friendly_side_fuel(robot)
                 signal = communications.encode_msg_without_direction(fuel_mine[0], fuel_mine[1])
                 castles_utility.allot_fuel_mine_to_pilgrim(robot, fuel_mine)
                 robot.signal(signal, 2)
                 robot.last_built_fuel = True
+                robot.pilgrim_train_count += 1
                 return castles_utility._castle_build(robot, constants.unit_pilgrim)
         else:
-            robot.signal(1, 2)
-            return castles_utility._castle_build(robot, robot.default_unit)
+            if castles_utility.can_build_crusader(robot):
+                robot.pilgrim_train_count = 0
+                robot.signal(1, 2)
+                return castles_utility._castle_build(robot, robot.default_unit)
     
     elif robot.step >= constants.age_two and robot.step < constants.age_three:
         if castles_utility._any_unalloted_karbonite_in_castle_vision(robot) and robot.last_built_fuel == True:
@@ -189,8 +192,9 @@ def _build_manager_castle(robot):
                 robot.last_built_fuel = True
                 return castles_utility._castle_build(robot, constants.unit_pilgrim)
         else:
-            robot.signal(1, 2)
-            return castles_utility._castle_build(robot, robot.default_unit)
+            if castles_utility.can_build_crusader(robot):
+                robot.signal(1, 2)
+                return castles_utility._castle_build(robot, robot.default_unit)
     
     elif robot.step >= constants.age_three and robot.step < constants.age_four:
         if castles_utility._any_unalloted_karbonite_in_castle_vision(robot) and robot.last_built_fuel == True:
@@ -242,11 +246,12 @@ def _build_manager_castle(robot):
                 robot.last_built_fuel = True
                 return castles_utility._castle_build(robot, constants.unit_pilgrim)
         else:
-            robot.signal(1, 2)
-            return castles_utility._castle_build(robot, robot.default_unit)
+            if castles_utility.can_build_crusader(robot):
+                robot.signal(1, 2)
+                return castles_utility._castle_build(robot, robot.default_unit)
 
     elif robot.step >= constants.age_four:
-        if robot.karbonite >= 50 and robot.fuel >= 100:
+        if robot.karbonite >= 50 and robot.fuel >= 100 and castles_utility.can_build_crusader(robot):
             robot.signal(1, 2)
             return castles_utility._castle_build(robot, robot.default_unit)
 
@@ -322,3 +327,6 @@ def default_production_order(robot):
         return _build_manager_church(robot)
     if unit_type == constants.unit_castle:
         return _build_manager_castle(robot)
+
+def age_one(robot):
+    None

@@ -108,6 +108,7 @@ class MyRobot(BCAbstractRobot):
     preacher_unit_history = []
     default_unit = constants.unit_crusader
 
+    pilgrim_train_count = 0
     multiplier = 1
     last_built_fuel = True
 
