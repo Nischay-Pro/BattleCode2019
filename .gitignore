@@ -1,4 +1,5 @@
 .vscode
+.vscode/
 
 *.bc19
 !bc19-scaffold/replays/*.bc19
