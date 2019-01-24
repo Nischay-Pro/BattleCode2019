@@ -159,7 +159,7 @@ def _crusader_combat(robot):
     if len(visible_friendly_list) != 0 and robot.core_is_ready == 1 and robot.targeted_enemy_mine != None and robot.combat_broadcast_leve <= 0:
         # robot.log("888 Check")
         if utility.distance(robot, (robot.me.x, robot.me.y), robot.targeted_enemy_mine) < constants.crusader_vision_range:
-            robot.log("*** Refurbish")
+            # robot.log("*** Refurbish")
             robot.core_is_ready = 0
     if len(visible_friendly_list) != 0 and robot.core_is_ready!= 1:
         if combat_utility.is_crusader_raiding_core_ready(visible_friendly_list) == 1 and combat_utility.is_robot_the_oldest_crusader_in_range(robot, visible_friendly_list):
