@@ -46,6 +46,7 @@ def should_combat_unit_be_at_battle_front(robot) -> bool:
 def _move(robot):
     find_dir = 0
     find_dir = pathfinding.bug_walk_toward(robot, robot.current_move_destination)
+    # robot.log("Dir is " + str(find_dir))
     if find_dir != 0:
         # TRAVIS MOVE CHECK 17
         ans = check.move_check(robot, find_dir[0], find_dir[1], 17)
@@ -69,8 +70,6 @@ def find_lattice_point(robot):
                     dist = cur_distance
                     coord = (j, i)
     return coord
-
-
 
 def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
     dest = robot.current_move_destination
@@ -133,6 +132,7 @@ def find_lattice_point_for_point(robot, dest):
     return coord
 
 def create_lattice_around_a_point(robot, destination=None):
+    # robot.log("Test")
     if destination == None and robot.current_move_destination == None: return None
     if destination != None and robot.current_move_destination == None:
         robot.current_move_destination = destination
@@ -148,6 +148,7 @@ def create_lattice_around_a_point(robot, destination=None):
         return None
 
     if occupied_map[des_y][des_x] == -1 or occupied_map[des_y][des_x] == 0:
+        # robot.log("ABC")
         return _move(robot)
     else:
         if not robot.lattice_dest:

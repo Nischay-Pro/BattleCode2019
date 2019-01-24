@@ -106,9 +106,9 @@ def _crusader_combat(robot):
     target_robot_id = robot.is_targeting_robot_with_id
 
     # Move to near lattice point if no enemies visibles and no damage taken
-    if len(visible_enemy_list) == 0 and robot.delta_health_reduced == 0 and robot.step != 0:
-        # Give resources to church/castle/pilgrim/unit via convoy
-        return None
+    # if len(visible_enemy_list) == 0 and robot.delta_health_reduced == 0 and robot.step != 0:
+    #     # Give resources to church/castle/pilgrim/unit via convoy
+    #     return None
 
     if robot.delta_health_reduced != 0 and robot.step != 0:
         robot.guessing_in_direction = (robot.me.x - robot.position_at_end_of_turn[0], robot.me.y - robot.position_at_end_of_turn[1])
@@ -135,7 +135,15 @@ def _crusader_combat(robot):
             enemy_pos_y = visible_enemy_list[0]['y']
             combat_utility.radio_friends_enemy_location(robot, enemy_pos_x, enemy_pos_y)
 
-        # In attack range
+        # In attack range and attacked once
+        if robot.is_targeting_robot_with_id != None:
+            for iter_i in range(len(visible_enemy_list)):
+                enemy_unit = visible_enemy_list[iter_i]
+                if visible_enemy_distance[iter_i] <= constants.crusader_max_attack_range and enemy_unit['id'] == robot.is_targeting_robot_with_id:
+                    # TRAVIS ATTACK CHECK 15
+                    return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 15, fuel, enemy_unit)
+
+        # In attack range and attacked once
         for iter_i in range(len(visible_enemy_list)):
             enemy_unit = visible_enemy_list[iter_i]
             if visible_enemy_distance[iter_i] <= constants.crusader_max_attack_range:
@@ -149,11 +157,9 @@ def _crusader_combat(robot):
             return check.move_check(robot, closest_pos[0] - robot.me.x, closest_pos[1] - robot.me.y, 20)
 
     elif len(visible_friendly_list) != 0 and robot.core_is_ready!= 1:
-        if combat_utility.is_crusader_raiding_core_ready(visible_friendly_list) and combat_utility.is_robot_the_oldest_crusader_in_range(robot, visible_friendly_list):
+        if combat_utility.is_crusader_raiding_core_ready(visible_friendly_list) == 1 and combat_utility.is_robot_the_oldest_crusader_in_range(robot, visible_friendly_list):
             # robot.log("Charge at" + str(robot.current_move_destination))
             combat_utility.radio_friends_charge_order(robot)
-
-        # spot_the_weakness_charge(robot)
     return None
 
 def _preacher_combat(robot):

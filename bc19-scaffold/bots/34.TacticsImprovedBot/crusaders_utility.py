@@ -9,7 +9,7 @@ import vision
 def crusader_move(robot):
     if robot.current_move_destination != None and robot.core_is_ready == 1:
         # robot.log("Check1 " + str(robot.step))
-        robot.current_move_destination = mapping.find_symmetrical_point(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1], robot.map_symmetry)
+        # robot.log("Move dest is " + str(robot.current_move_destination))
         return tactics.create_lattice_around_a_point(robot)
     if robot.current_move_destination != None and robot.following_crusader_command == 1:
         return tactics.send_combat_unit_to_battle_front(robot, 0.95, 0.05)
@@ -22,7 +22,9 @@ def combat_channel(robot):
     for friendly_unit in friendly_units:
         if friendly_unit.unit == 3 and friendly_unit.signal > 0 and friendly_unit.id != robot.me.id:
             if friendly_unit.signal == 65533:
+                # robot.log("Core is ready charge")
                 robot.core_is_ready = 1
+                robot.current_move_destination = mapping.find_symmetrical_point(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1], robot.map_symmetry)
             else:
                 robot.following_crusader_command = 1
                 robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
