@@ -26,8 +26,10 @@ def combat_channel(robot):
                 robot.core_is_ready = 1
                 robot.current_move_destination = mapping.find_symmetrical_point(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1], robot.map_symmetry)
             else:
+                robot.combat_broadcast_level = constants.combat_broadcast_cooldown
                 robot.following_crusader_command = 1
                 robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
+                # robot.log(str(robot.current_move_destination))
                 robot.targeted_enemy_mine = robot.current_move_destination
 
 def receive_initial_signal(robot):

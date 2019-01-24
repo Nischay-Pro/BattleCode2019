@@ -14,7 +14,7 @@ def pilgrim(robot):
     carry_fuel = robot.me.fuel
 
     # The pilgrim is on a mine and wants to deposit resources
-    if carry_fuel > 80 or carry_karb > 18:
+    if carry_fuel > 90 or carry_karb > 18:
         # robot.log("Nearing capacity")
         return pilgrim_full(robot)
 
