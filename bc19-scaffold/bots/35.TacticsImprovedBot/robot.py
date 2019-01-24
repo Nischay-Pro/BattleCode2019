@@ -75,7 +75,7 @@ class MyRobot(BCAbstractRobot):
     pilgrim_warning_cooldown = 0
     karb_miner = False
     fuel_miner = False
-
+    pilgrim_full_and_idle = 0
     # Castles
     castle_unit_build_log = [] # Maintain the ids of robots, pop and push every turn
     fuel_mine_locations_from_this_castle = [] # Compute once and store forever

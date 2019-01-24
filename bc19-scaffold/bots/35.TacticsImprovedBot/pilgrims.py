@@ -117,4 +117,7 @@ def pilgrim_full(robot):
     if robot.karbonite > 50 and robot.fuel > 200:
         return pilgrims_utility.make_church(robot)
 
+    robot.pilgrim_full_and_idle += 1
+    if robot.pilgrim_full_and_idle > 5:
+        robot.castle_talk(14)
     return None

@@ -48,6 +48,11 @@ def _build_manager_castle(robot):
         elif f_unit.castle_talk == 12:
             pilgrim_count+= 1
             castles_utility._pilgrim_warned(robot, f_unit['id'])
+        elif f_unit.castle_talk == 14:
+            pilgrim_count += 1
+            if (robot.karbonite < 70 or robot.fuel < 250) and robot.step > 10:
+                robot.log("Waiting for karb and fuel stockpile to build church")
+                return None
 
     # Pushing stuff into lockers
     castles_utility.nicely_push_into_storage_lockers(robot, robot.fuel, 2)

@@ -54,6 +54,7 @@ def give_or_mine(robot):
                         if direction[1] == dx and direction[0] == dy:
                             robot.signal(0, 0)
                             robot.current_move_destination = robot.pilgrim_mine_ownership
+                            robot.pilgrim_full_and_idle = 0
                             return robot.give(dx, dy, carry_karb, carry_fuel)
 
                     # Convoys
@@ -89,6 +90,7 @@ def give_or_mine(robot):
             if pos_x == robot.resource_depot.x + direction[0] and pos_y == robot.resource_depot.y + direction[1]:
                 robot.current_move_destination = robot.pilgrim_mine_ownership
                 # robot.log("5")
+                robot.pilgrim_full_and_idle = 0
                 return robot.give(-direction[0], -direction[1], carry_karb, carry_fuel)
         dockspots = movement.find_dockspots(robot, robot.resource_depot)
         fin_dir = (0, 0)
@@ -181,6 +183,7 @@ def make_church(robot):
             robot.signal(65534, 2)
         robot.pilgrim_has_built_a_church = 1
         # TRAVIS BUILD CHECK 3
+        robot.pilgrim_full_and_idle = 0
         return check.build_check(robot, constants.unit_church, max_resource_pos[1], max_resource_pos[0], 3)
 
 def did_pilgrim_burn_out(robot):
