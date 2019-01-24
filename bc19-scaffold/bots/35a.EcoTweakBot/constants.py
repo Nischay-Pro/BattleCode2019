@@ -34,7 +34,7 @@ resource_locker_capacity = 10
 unit_locker_capacity = 10
 enemy_locker_capacity = 5
 
-combat_broadcast_cooldown = 30
+combat_broadcast_cooldown = 40
 
 enemy_unit_priority_for_prophet = [
     2, # Castle
