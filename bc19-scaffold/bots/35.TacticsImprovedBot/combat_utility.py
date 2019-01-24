@@ -246,6 +246,15 @@ def radio_friends_enemy_location(robot, enemy_pos_x, enemy_pos_y):
         robot.combat_broadcast_level = constants.combat_broadcast_cooldown
 
 def radio_friends_charge_order(robot):
+    mine_location = None
+    mine_location = charge_to_nearest_enemy_mine(robot)
+    if mine_location != None:
+        comms = communications.encode_msg_without_direction(mine_location[0], mine_location[1])
+        if comms != 0 and robot.combat_broadcast_level <= 0:
+            # robot.log("Charging mine")
+            check.signal_check(robot, comms, 64)
+            robot.core_is_ready = 1
+            robot.combat_broadcast_level = constants.combat_broadcast_cooldown
     comms = 65533
     if comms != 0 and robot.combat_broadcast_level <= 0:
         check.signal_check(robot, comms, 64)
@@ -271,20 +280,6 @@ def get_min_friendly_influence_direction(robot, visible_friendly_distance, visib
 def spot_the_weakness_charge(robot):
     if robot.actual_round_number == 10:
         None
-
-def give_stats(unit):
-    if unit['unit'] == constants.unit_castle:
-        return _give_castle_stats()
-    elif unit['unit'] ==  constants.unit_church:
-        return _give_church_stats()
-    elif unit['unit'] == constants.unit_pilgrim:
-        return _give_pilgrim_stats()
-    elif unit['unit'] == constants.unit_prophet:
-        return _give_prophet_stats()
-    elif unit['unit'] == constants.unit_crusader:
-        return _give_crusader_stats()
-    elif unit['unit'] == constants.unit_preacher:
-        return _give_preacher_stats()
 
 def does_enemy_contain_prophet_units(enemy_list):
     for unit in enemy_list:
@@ -318,7 +313,7 @@ def is_robot_the_oldest_crusader_in_range(robot, friendly_list):
             if unit['turn'] > turn_number + 5:
                 # robot.log(" ID is " + str(robot.me.id) + " Old " + str(unit['turn']) + " New " + str(turn_number))
                 return 0
-    robot.log('Oldest')
+    # robot.log('Oldest')
     return 1
 
 def is_crusader_raiding_core_ready(friendly_list):
@@ -329,6 +324,31 @@ def is_crusader_raiding_core_ready(friendly_list):
     else:
         return 0
 
+def charge_to_nearest_enemy_mine(robot):
+    enemy_locations = mapping.get_on_the_ground_enemy_resources(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1])
+    min_distance = 999
+    targeted_mine = None
+    for iter_i in range(len(enemy_locations)):
+        enemy_mine_distance = utility.distance(robot, (robot.me.x, robot.me.y), enemy_locations[iter_i])
+        if enemy_mine_distance > constants.crusader_vision_range:
+            if enemy_mine_distance < min_distance:
+                min_distance = enemy_mine_distance
+                targeted_mine = enemy_locations[iter_i]
+    return targeted_mine
+
+def give_stats(unit):
+    if unit['unit'] == constants.unit_castle:
+        return _give_castle_stats()
+    elif unit['unit'] ==  constants.unit_church:
+        return _give_church_stats()
+    elif unit['unit'] == constants.unit_pilgrim:
+        return _give_pilgrim_stats()
+    elif unit['unit'] == constants.unit_prophet:
+        return _give_prophet_stats()
+    elif unit['unit'] == constants.unit_crusader:
+        return _give_crusader_stats()
+    elif unit['unit'] == constants.unit_preacher:
+        return _give_preacher_stats()
 
 def _give_castle_stats():
     attack_damage = constants.castle_attack_damage

@@ -28,6 +28,7 @@ def combat_channel(robot):
             else:
                 robot.following_crusader_command = 1
                 robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
+                robot.targeted_enemy_mine = robot.current_move_destination
 
 def receive_initial_signal(robot):
     unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)

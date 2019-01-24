@@ -140,7 +140,7 @@ class MyRobot(BCAbstractRobot):
 
     # Crusader
     following_crusader_command = 0
-
+    targeted_enemy_mine = None
     # Prophet
 
     prophet_attack_range_max = constants.prophet_max_attack_range
