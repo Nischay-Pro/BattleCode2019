@@ -21,8 +21,8 @@ def castle(robot):
 
     if robot.step < 1:
         _castle_initial_check(robot)
-        robot.log(len(mapping.get_friendly_fuel(robot)))
-        robot.log(len(mapping.get_friendly_karbonite(robot)))
+        # robot.log(len(mapping.get_friendly_fuel(robot)))
+        # robot.log(len(mapping.get_friendly_karbonite(robot)))
 
     if robot.step < 3:
         comm_analyzer.broadcast_castle_position(robot)
