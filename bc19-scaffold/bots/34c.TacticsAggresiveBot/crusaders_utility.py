@@ -14,7 +14,7 @@ def crusader_move(robot):
     if robot.current_move_destination != None and robot.following_crusader_command == 1:
         return tactics.send_combat_unit_to_battle_front(robot, 0.95, 0.05)
     if robot.current_move_destination != None and not movement.is_completely_surrounded(robot): #and tactics.should_combat_unit_be_at_battle_front(robot):
-        return tactics.send_combat_unit_to_battle_front(robot, 0.25, 0.15)
+        return tactics.send_combat_unit_to_battle_front(robot, 0.55, 0.15)
     return 0
 
 def combat_channel(robot):

@@ -6,15 +6,15 @@ import movement
 import tactics
 import vision
 
-def crusader_move(robot):
+def preachers_move(robot):
     if robot.current_move_destination != None and robot.core_is_ready == 1:
         # robot.log("Check1 " + str(robot.step))
         robot.current_move_destination = mapping.find_symmetrical_point(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1], robot.map_symmetry)
-        return tactics.create_lattice_around_a_point(robot)
+        return tactics.send_combat_unit_to_battle_front(robot, 1, 0.05)
     if robot.current_move_destination != None and robot.following_crusader_command == 1:
-        return tactics.send_combat_unit_to_battle_front(robot, 0.95, 0.05)
+        return tactics.send_combat_unit_to_battle_front(robot, 1, 0.05)
     if robot.current_move_destination != None and not movement.is_completely_surrounded(robot): #and tactics.should_combat_unit_be_at_battle_front(robot):
-        return tactics.send_combat_unit_to_battle_front(robot, 0.25, 0.15)
+        return tactics.send_combat_unit_to_battle_front(robot, 0.55, 0.15)
     return 0
 
 def combat_channel(robot):
@@ -33,15 +33,15 @@ def receive_initial_signal(robot):
         if friendly_unit.unit == 0 and friendly_unit.signal > 0:
             robot.built_by_a_castle = 1
             robot.built_by_a_church = 0
-            _crusader_initial_check(robot, friendly_unit)
+            _preacher_initial_check(robot, friendly_unit)
             robot.actual_round_number = friendly_unit.turn
             # robot.log(str(robot.actual_round_number))
         elif friendly_unit.unit == 1 and friendly_unit.signal > 0:
             robot.built_by_a_castle = 0
             robot.built_by_a_church = 1
-            _crusader_initial_check(robot, friendly_unit)
+            _preacher_initial_check(robot, friendly_unit)
 
-def _crusader_initial_check(robot, friendly_unit):
+def _preacher_initial_check(robot, friendly_unit):
 
     if robot.built_by_a_castle == 1:
         robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
@@ -50,8 +50,8 @@ def _crusader_initial_check(robot, friendly_unit):
         robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
         robot.friendly_churches.append(robot.our_castle_or_church_base)
 
-    if robot.crusader_health == None:
-        robot.crusader_health = constants.crusader_max_health
+    if robot.preacher_health == None:
+        robot.preacher_health = constants.preacher_max_health
 
     if robot.map_symmetry == None:
         mapping.return_map_symmetry(robot)

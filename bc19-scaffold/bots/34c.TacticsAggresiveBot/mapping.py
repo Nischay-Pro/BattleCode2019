@@ -466,6 +466,3 @@ def get_corner_friendly_influence(robot, grid_radius = 2):
         influences_value.append(visible_friends / visible_area)
         influences.append((d_dir[0], d_dir[1]))
     return influences_value, influences
-
-def get_farthest_enemy_mine(robot, castle_locations): #castle_locations is a list of tuples
-    return None
