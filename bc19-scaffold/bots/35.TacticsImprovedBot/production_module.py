@@ -80,9 +80,6 @@ def _build_manager_castle(robot):
             if robot.step % skip_turn == 0:
                 return None
 
-    if robot.step == 5:
-        robot.log(castles_utility.get_farthest_enemy_mine(robot))
-
     if robot.step >= constants.dark_age and robot.step < constants.age_one:
         if crusader_count < 4 and robot.karbonite > 40 and robot.fuel > 100:
             robot.signal(1, 2)

@@ -121,8 +121,10 @@ class MyRobot(BCAbstractRobot):
     combat_map = None
     previousturn_combat_map = None
     core_is_ready = 0
+    bequeathed_mine = None
 
     # Combat Units
+    switch_core_off = 0
     is_rush_bot = 0
     has_taken_a_hit = 0
     combat_broadcast_level = 0

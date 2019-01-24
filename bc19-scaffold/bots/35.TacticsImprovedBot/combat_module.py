@@ -110,6 +110,9 @@ def _crusader_combat(robot):
     #     # Give resources to church/castle/pilgrim/unit via convoy
     #     return None
 
+    if robot.bequeathed_mine != None:
+        combat_utility.bequeath_thee_mine_to_theeself(robot)
+
     if robot.delta_health_reduced != 0 and robot.step != 0:
         robot.guessing_in_direction = (robot.me.x - robot.position_at_end_of_turn[0], robot.me.y - robot.position_at_end_of_turn[1])
         robot.has_taken_a_hit = 2
@@ -156,15 +159,20 @@ def _crusader_combat(robot):
             # TRAVIS MOVE CHECK 20
             return check.move_check(robot, closest_pos[0] - robot.me.x, closest_pos[1] - robot.me.y, 20)
 
-    if len(visible_friendly_list) != 0 and robot.core_is_ready == 1 and robot.targeted_enemy_mine != None and robot.combat_broadcast_leve <= 0:
-        # robot.log("888 Check")
-        if utility.distance(robot, (robot.me.x, robot.me.y), robot.targeted_enemy_mine) < constants.crusader_vision_range:
-            # robot.log("*** Refurbish")
-            robot.core_is_ready = 0
-    if len(visible_friendly_list) != 0 and robot.core_is_ready!= 1:
+
+    if len(visible_friendly_list) != 0 and robot.core_is_ready!= 1 and robot.fuel > 8:
         if combat_utility.is_crusader_raiding_core_ready(visible_friendly_list) == 1 and combat_utility.is_robot_the_oldest_crusader_in_range(robot, visible_friendly_list):
             # robot.log("Charge at" + str(robot.current_move_destination))
             combat_utility.radio_friends_charge_order(robot)
+    if len(visible_friendly_list) != 0 and robot.core_is_ready == 1 and robot.targeted_enemy_mine != None:
+        # robot.log("888 Check")
+        robot.switch_core_off +=1
+        if robot.switch_core_off == 3:
+            robot.bequeathed_mine = robot.targeted_enemy_mine
+        if utility.distance(robot, (robot.me.x, robot.me.y), robot.targeted_enemy_mine) < constants.crusader_vision_range and robot.switch_core_off > 4:
+            # robot.log("*** Refurbish")
+            robot.core_is_ready = 0
+            robot.switch_core_off = 0
     return None
 
 def _preacher_combat(robot):

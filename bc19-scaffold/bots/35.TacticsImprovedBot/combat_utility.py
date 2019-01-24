@@ -330,11 +330,37 @@ def charge_to_nearest_enemy_mine(robot):
     targeted_mine = None
     for iter_i in range(len(enemy_locations)):
         enemy_mine_distance = utility.distance(robot, (robot.me.x, robot.me.y), enemy_locations[iter_i])
-        if enemy_mine_distance > constants.crusader_vision_range:
-            if enemy_mine_distance < min_distance:
-                min_distance = enemy_mine_distance
-                targeted_mine = enemy_locations[iter_i]
+        if enemy_mine_distance > constants.crusader_vision_range and enemy_mine_distance < min_distance:
+            min_distance = enemy_mine_distance
+            targeted_mine = enemy_locations[iter_i]
     return targeted_mine
+
+def bequeath_thee_mine_to_theeself(robot):
+    enemy_locations = mapping.get_on_the_ground_enemy_resources(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1])
+    check_mine = 0
+    for iter_i in range(len(enemy_locations)):
+        if str(robot.targeted_enemy_mine) == str(enemy_locations[iter_i]):
+            check_mine = 1
+            # robot.log("This is the mine **** " + str(robot.bequeathed_mine))
+    if check_mine == 0:
+        return None
+    mine_location_x = robot.bequeathed_mine[0]
+    mine_location_y = robot.bequeathed_mine[1]
+    if robot.piligrim_did_i_shout_my_x_cord == False:
+        # robot.log(" abc" + str(mine_location_x + 64))
+        robot.castle_talk(mine_location_x + 64)
+        robot.piligrim_did_i_shout_my_x_cord = True
+    elif robot.piligrim_did_i_shout_my_y_cord == False:
+        # robot.log("cde " + str(mine_location_y + 64))
+        robot.castle_talk(mine_location_y + 64)
+        robot.piligrim_did_i_shout_my_y_cord = True
+        robot.bequeathed_mine = None
+    else:
+        robot.piligrim_did_i_shout_my_x_cord == False
+        robot.piligrim_did_i_shout_my_y_cord == False
+
+
+
 
 def give_stats(unit):
     if unit['unit'] == constants.unit_castle:
