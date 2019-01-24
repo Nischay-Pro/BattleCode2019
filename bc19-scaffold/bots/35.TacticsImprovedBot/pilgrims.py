@@ -8,6 +8,8 @@ def pilgrim(robot):
     if robot.pilgrim_mine_ownership == None:
         robot.steps_to_mine += 1
 
+    pilgrims_utility.detect_and_warn(robot)
+
     # communications.self_communicate_loop(robot)
     # robot.log("Pilgrims current move destination is " + robot.current_move_destination)
     carry_karb = robot.me.karbonite
@@ -21,7 +23,7 @@ def pilgrim(robot):
     # The pilgrim checks if it has a mine on it's current position
     pilgrim_is_mining = pilgrim_mine(robot)
     if pilgrim_is_mining !=0 and robot.fuel > 1 and robot.actual_round_number != None:
-        if robot.actual_round_number >= 6:
+        if robot.actual_round_number >= 6 and robot.pilgrim_warned == True:
             if robot.piligrim_did_i_shout_my_x_cord == False:
                 robot.castle_talk(robot.me.x + 64)
                 robot.piligrim_did_i_shout_my_x_cord = True

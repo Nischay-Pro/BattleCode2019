@@ -71,12 +71,28 @@ def _castle_initial_check(robot):
         mapping.return_map_symmetry(robot)
 
     temp, fuel = utility.get_relative_fuel_mine_positions(robot)
+    enemy_fuel = mapping.get_enemy_fuel(robot)
     for i in range(len(fuel)):
-        robot.fuel_manager[fuel[i]] = [0, False, False]
+        addable = True
+        for j in range(len(enemy_fuel)):
+            if fuel[i][0] == enemy_fuel[j][0] and fuel[i][1] == enemy_fuel[j][1]:
+                addable = False
+        if addable:
+            robot.fuel_manager[fuel[i]] = [0, False, False]
+        else:
+            robot.fuel_manager[fuel[i]] = [0, False, True]
 
     temp, karb = utility.get_relative_karbonite_mine_positions(robot)
+    enemy_karb = mapping.get_enemy_karbonite(robot)
     for i in range(len(karb)):
-        robot.karb_manager[karb[i]] = [0, False, False]
+        addable = True
+        for j in range(len(enemy_karb)):
+            if karb[i][0] == enemy_karb[j][0] and karb[i][1] == enemy_karb[j][1]:
+                addable = False
+        if addable:
+            robot.karb_manager[karb[i]] = [0, False, False]
+        else:
+            robot.karb_manager[karb[i]] = [0, False, True]
 
     # if len(robot.enemy_castles) == 0:
     #     robot.enemy_castles.append(mapping.find_symmetrical_point(robot, robot.me.x, robot.me.y, robot.map_symmetry))

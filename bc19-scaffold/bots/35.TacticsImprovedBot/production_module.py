@@ -260,6 +260,22 @@ def _build_manager_castle(robot):
                 robot.signal(signal, 2)
                 robot.last_built_fuel = True
                 return castles_utility._castle_build(robot, constants.unit_pilgrim)
+        elif castles_utility._any_safe_karbonite_in_enemy(robot):
+            if castles_utility.can_build_pilgrim(robot):
+                karb_mine = castles_utility._get_closest_enemy_side_karbonite(robot)
+                signal = communications.encode_msg_without_direction(karb_mine[0], karb_mine[1])
+                castles_utility.allot_karbonite_mine_to_pilgrim(robot, karb_mine)
+                robot.signal(signal, 2)
+                robot.last_built_fuel = False
+                return castles_utility._castle_build(robot, constants.unit_pilgrim)
+        elif castles_utility._any_safe_fuel_in_enemy(robot):
+            if castles_utility.can_build_pilgrim(robot):
+                fuel_mine = castles_utility._get_closest_enemy_side_fuel(robot)
+                signal = communications.encode_msg_without_direction(fuel_mine[0], fuel_mine[1])
+                castles_utility.allot_fuel_mine_to_pilgrim(robot, fuel_mine)
+                robot.signal(signal, 2)
+                robot.last_built_fuel = True
+                return castles_utility._castle_build(robot, constants.unit_pilgrim)
         else:
             if castles_utility.can_build_crusader(robot):
                 robot.signal(1, 2)

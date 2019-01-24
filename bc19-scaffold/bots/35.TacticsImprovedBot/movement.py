@@ -48,14 +48,14 @@ def move_to_destination(robot):
 
         # Can't apply pathfinding if final location is visible and occupied
         if utility.is_cell_occupied(occupied_map, final_pos_x, final_pos_y):
-            robot.current_move_destination = None
-            utility.default_movement_variables(robot)
-            utility.default_movement_variables(robot)
+            # robot.current_move_destination = None
+            # utility.default_movement_variables(robot)
+            # utility.default_movement_variables(robot)
             return None
         # We already at the final location
         elif len(robot.mov_path_between_location_and_destination) == 1:
             robot.current_move_destination = None # Reached destination
-            utility.default_movement_variables(robot)
+            # utility.default_movement_variables(robot)
             utility.default_movement_variables(robot)
             return None
         # Another way to check the above
