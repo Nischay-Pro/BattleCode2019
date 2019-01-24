@@ -36,7 +36,7 @@ def main():
     totalrunning = 0
 
     morerun = 0
-    MAX_PROCESS = 10
+    MAX_PROCESS = 50
 
     clearScreen()
     cprint("Starting up", "red")
@@ -107,10 +107,19 @@ def runSimulation(bluepath, redpath, stats, intal, storereplay):
                 checktime = time.time()
         if "Game over, blue won " in data:
             stats["bluew"] += 1
+            dumpToDisk(stats["bluew"], stats["redw"])
         elif "Game over, red won " in data:
             stats["redw"] += 1
+            dumpToDisk(stats["bluew"], stats["redw"])
     del stats[intal]
     
+
+def dumpToDisk(bluewin, redwin):
+    try:
+        with open('stats.txt', mode='w+', encoding='utf-8') as shit:
+            shit.write('\nBlue win: %s \nRed win: %s' % (bluewin, redwin))
+    except:
+        pass
 
 if __name__ == "__main__":
     main()
