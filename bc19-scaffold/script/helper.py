@@ -24,6 +24,9 @@ def main():
     bluepath = str(args.blue)
     redpath = str(args.red)
     count = int(args.count)
+    redwin=0
+    bluewin=0
+    initerror=0
     stats = {
         "turn":"Preparing...",
         "bot": os.path.basename(os.path.normpath(redpath)),
@@ -77,7 +80,8 @@ def main():
                     stats["seed"][seed] = "Failed"
                 badman = True
                 errorman.append(data)
-                lprint("Seed %s Failed. Script Error" % seed, lessmoded, travis)
+                initerror+=1
+                lprint("Seed %s Failed. Script Error" % seed, lessmoded, travis, redwin, bluewin, initerror)
                 counter -= 1
             if "Robot is frozen due" in data:
                 if not lessmoded:
@@ -86,18 +90,16 @@ def main():
                 if not lessmoded:
                     if stats["seed"][seed] == "Time Failed":
                         stats["seed"][seed] = "Passed (Time Failed)"
-                lprint("Seed %s Passed" % seed, lessmoded, travis)
+                lprint("Seed %s Passed" % seed, lessmoded, travis, redwin, bluewin, initerror)
+                bluewin+=1
                 pretty_print(stats, seed, lessmode=lessmoded)
-                process.terminate()
-                break
             if "red won" in data:
                 if not lessmoded:
                     if stats["seed"][seed] == "Time Failed":
                         stats["seed"][seed] = "Passed (Time Failed)"
-                lprint("Seed %s Passed" % seed, lessmoded, travis)
+                lprint("Seed %s Passed" % seed, lessmoded, travis, redwin, bluewin, initerror)
+                redwin+=1
                 pretty_print(stats, seed, lessmode=lessmoded)
-                process.terminate()
-                break
             if "failed to initialize" in data:
                 if not lessmoded:
                     stats["seed"][seed] = data.strip()
@@ -125,17 +127,19 @@ def main():
                 searchFolder("TRAVIS BUILD CHECK %s" % datacor, bluepath)
 
     pretty_print(stats, 1000, done=True, lessmode=lessmoded)
-    lprint("Done", lessmoded, travis)
+    lprint("Done", lessmoded, travis, redwin, bluewin, initerror)
     if badman:
         print("Failed but meh. KP wants green ticks")
         exit()
 
 
-def lprint(whattoprint, lessmode, travis):
+def lprint(whattoprint, lessmode, travis, redwin=0, bluewin=0, initerror=0):
     if lessmode:
         print(whattoprint)
         with open('log.txt', mode='a+', encoding='utf-8') as myfile:
             myfile.write('\n%s' % whattoprint)
+    with open('result.txt', mode='w+', encoding='utf-8') as myshit:
+        myshit.write('\nBlue win: %s \nRed win: %s' % (bluewin, redwin))
 
 
 def pretty_print(stats, seed, done=False, lessmode=False):
