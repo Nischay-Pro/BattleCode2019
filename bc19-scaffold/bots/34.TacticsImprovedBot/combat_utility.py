@@ -315,7 +315,8 @@ def is_robot_the_oldest_crusader_in_range(robot, friendly_list):
     turn_number = robot.me.turn
     for unit in friendly_list:
         if unit['unit'] == constants.unit_crusader:
-            if unit['turn'] > turn_number:
+            if unit['turn'] > turn_number + 5:
+                # robot.log(" ID is " + str(robot.me.id) + " Old " + str(unit['turn']) + " New " + str(turn_number))
                 return 0
     robot.log('Oldest')
     return 1

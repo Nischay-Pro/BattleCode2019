@@ -20,7 +20,7 @@ def crusader_move(robot):
 def combat_channel(robot):
     unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)
     for friendly_unit in friendly_units:
-        if friendly_unit.unit == 3 and friendly_unit.signal > 0 and friendly_unit.id != robot.me.id:
+        if friendly_unit.unit == 3 and friendly_unit.signal > 0:
             if friendly_unit.signal == 65533:
                 # robot.log("Core is ready charge")
                 robot.core_is_ready = 1
