@@ -323,9 +323,10 @@ def is_robot_the_oldest_crusader_in_range(robot, friendly_list):
 def is_crusader_raiding_core_ready(friendly_list):
     crusader_count = give_crusader_number(friendly_list)
     if crusader_count > 6:
-        return True
+        # robot.log("Go charge")
+        return 1
     else:
-        return False
+        return 0
 
 
 def _give_castle_stats():
