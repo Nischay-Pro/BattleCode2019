@@ -215,7 +215,7 @@ class MyRobot(BCAbstractRobot):
 
         if self.step % 200 == 3 and unit_type == constants.unit_castle:
             # robot.log(str(self.me))
-            self.log("Total current karbonite is " + str(self.karbonite) + " turn " + (str(self.step)))
+            self.log("Total current karbonite is " + str(self.karbonite) + ", fuel is " + str(self.fuel) + " turn " + (str(self.step)))
 
         if unit_type == constants.unit_castle:
             return castles.castle(self)

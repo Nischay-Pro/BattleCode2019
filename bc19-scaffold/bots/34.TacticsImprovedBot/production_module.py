@@ -18,6 +18,9 @@ def _build_manager_castle(robot):
     friendly_units, enemy_units = castles_utility.castle_all_friendly_units(robot)
     total_karbonite = vision.all_karbonite(robot)
     total_fuel = vision.all_fuel(robot)
+    map_size = len(robot.get_passable_map())
+    friendly_castles_len = len(robot.friendly_castles)
+    skip_turn = int(friendly_castles_len * (40 ** 2) / (map_size ** 2))
 
     castles_utility._is_castle_under_attack(robot, enemy_units)
 
@@ -56,9 +59,12 @@ def _build_manager_castle(robot):
 
     # robot.log(str(robot.me.signal))
 
-    # if robot.step < 100 and robot.step > 10:
-    #     if robot.step % 4 == 0:
-    #         return None
+    if map_size > 50 and robot.step < 100 and robot.step > 10:
+        if robot.fuel <= 200 or robot.karbonite <= 50:
+            return None
+        if skip_turn > 1:
+            if robot.step % skip_turn == 0:
+                return None
 
     if robot.step >= constants.dark_age and robot.step < constants.age_one:
         if crusader_count < 4 and robot.karbonite > 40 and robot.fuel > 100:

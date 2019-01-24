@@ -468,4 +468,10 @@ def get_corner_friendly_influence(robot, grid_radius = 2):
     return influences_value, influences
 
 def get_farthest_enemy_mine(robot, castle_locations): #castle_locations is a list of tuples
+    farthest = (-1, -1)
+
+    #TODO
+
+    if farthest != (-1, -1):
+        return farthest
     return None
