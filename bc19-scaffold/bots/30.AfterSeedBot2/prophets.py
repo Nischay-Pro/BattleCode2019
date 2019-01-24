@@ -21,5 +21,5 @@ def prophet_move(robot):
     #     march_increment = (robot.step - 200) // 100
 
     if robot.current_move_destination != None and not movement.is_completely_surrounded(robot): #and tactics.should_combat_unit_be_at_battle_front(robot):
-        return tactics.send_combat_unit_to_battle_front(robot, 0.35, 0.15)
+        return tactics.send_combat_unit_to_battle_front(robot, 0.15, 0.5)
     return 0
