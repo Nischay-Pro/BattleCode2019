@@ -58,7 +58,7 @@ def give_or_mine(robot):
 
                     # Convoys
                     # robot.log("nearby is " + f_unit.unit + " at " + str((dx, dy)))
-                    if (robot.step < constants.convoy_age_end_round or (abs(dx) + abs(dy)) < constants.convoy_radius) and not (f_unit.unit == constants.unit_castle and robot.steps_to_mine > constants.convoy_step_limit):
+                    if (robot.step < constants.convoy_age_end_round or (abs(dx) + abs(dy)) < constants.convoy_radius or (robot.fuel < 200 or robot.karbonite < 50)) and not (f_unit.unit == constants.unit_castle and robot.steps_to_mine > constants.convoy_step_limit):
                         # robot.log("1")
 
                         robot.resource_depot = f_unit
