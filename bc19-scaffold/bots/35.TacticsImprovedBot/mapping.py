@@ -297,6 +297,36 @@ def get_enemy_fuel(castle):
 
     return final
 
+def get_on_the_ground_enemy_resources(robot, pos_x_on_our_side, pos_y_on_our_side):
+    fuel_map = robot.get_fuel_map()
+    karbonite_map = robot.get_karbonite_map()
+    hoz_symmetry = check_hoz_symmetry(karbonite_map)
+
+    side = len(karbonite_map)
+    mid = side // 2
+    init = 0
+    fin = mid
+    final = []
+
+    if hoz_symmetry:
+        if pos_y_on_our_side < mid:
+            init = mid + 1
+            fin = side
+        for i in range(init, fin):
+            for j in range(side):
+                if karbonite_map[i][j] == 1 or fuel_map[i][j] == 1:
+                    final.append((j, i))
+    else:
+        if pos_x_on_our_side < mid:
+            init = mid + 1
+            fin = side
+        for i in range(side):
+            for j in range(init, fin):
+                if karbonite_map[i][j] == 1 or fuel_map[i][j] == 1:
+                    final.append((j, i))
+
+    return final
+
 def get_enemy_resources(castle):
     fuel_map = castle.get_fuel_map()
     karbonite_map = castle.get_karbonite_map()
