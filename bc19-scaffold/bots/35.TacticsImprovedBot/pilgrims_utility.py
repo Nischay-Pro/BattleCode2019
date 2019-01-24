@@ -209,16 +209,11 @@ def _give_church_castle_location(robot):
 
 def detect_and_warn(robot):
     temp, visible = vision.sort_visible_enemies_by_distance(robot)
-    robot.pilgrim_warning_cooldown += 1
-    if len(visible) == 0:
-        if robot.pilgrim_warned == True:
-            if robot.pilgrim_warning_cooldown >= 5:
-                robot.pilgrim_warning_cooldown = 0
-                robot.pilgrim_warned = False
-                robot.piligrim_did_i_shout_my_x_cord = False
-                robot.piligrim_did_i_shout_my_y_cord = False
-    else:
+    if len(visible) > 0:
         if robot.pilgrim_warned == False:
-                robot.castle_talk(12)
-                robot.pilgrim_warned = True
-                robot.pilgrim_warning_cooldown = 0
+            robot.castle_talk(12)
+            robot.pilgrim_warned = True
+            robot.piligrim_did_i_shout_my_x_cord = False
+            robot.piligrim_did_i_shout_my_y_cord = False
+    else:
+        robot.pilgrim_warned = False
