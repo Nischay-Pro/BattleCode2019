@@ -64,7 +64,7 @@ def find_lattice_point(robot):
     coord = None
     for i in range(n):
         for j in range(n):
-            if not utility.is_out_of_bounds(n, j, i) and occupied_map[i][j] == 0 and (i+j)%2 == 0 and passable_map[i][j] == 1:
+            if not utility.is_out_of_bounds(n, j, i) and occupied_map[i][j] == 0 and (i+j)%2 == 0 and passable_map[i][j] == 1 and not fuel_map[i][j]:
                 cur_distance = utility.distance(robot, (pos_x, pos_y), (j, i))
                 if cur_distance < dist:
                     dist = cur_distance
@@ -124,7 +124,7 @@ def find_lattice_point_for_point(robot, dest):
     coord = None
     for i in range(n):
         for j in range(n):
-            if not utility.is_out_of_bounds(n, j, i) and occupied_map[i][j] == 0 and (i+j)%2 == 0 and passable_map[i][j] == 1:
+            if not utility.is_out_of_bounds(n, j, i) and occupied_map[i][j] == 0 and (i+j)%2 == 0 and passable_map[i][j] == 1 and not fuel_map[i][j]:
                 cur_distance = utility.distance(robot, (des_x, des_y), (j, i))
                 if cur_distance < dist:
                     dist = cur_distance
