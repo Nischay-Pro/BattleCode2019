@@ -57,7 +57,9 @@ def give_or_mine(robot):
                             return robot.give(dx, dy, carry_karb, carry_fuel)
 
                     # Convoys
-                    if (robot.step < constants.convoy_age_end_round or (dx + dy) < constants.convoy_radius) and robot.steps_to_mine < constants.convoy_step_limit:
+                    # robot.log("nearby is " + f_unit.unit + " at " + str((dx, dy)))
+                    if (robot.step < constants.convoy_age_end_round or (abs(dx) + abs(dy)) < constants.convoy_radius) and not (f_unit.unit == constants.unit_castle and robot.steps_to_mine < constants.convoy_step_limit):
+                        # robot.log("1")
 
                         robot.resource_depot = f_unit
                         dockspots = movement.find_dockspots(robot, robot.resource_depot)
@@ -71,19 +73,22 @@ def give_or_mine(robot):
                                         fin_dir = direction
                         if fin_dir[0] != 0 and fin_dir[1] != 0:
                             # TRAVIS MOVE CHECK 9
+                            # robot.log("2")
                             return check.move_check(robot, fin_dir[0], fin_dir[1], 9)
                         # Not near vicinity, do bug search
                         fin_dir = pathfinding.bug_walk_toward(robot, (robot.resource_depot.x, robot.resource_depot.y))
                         if fin_dir != 0:
                             # TRAVIS MOVE CHECK 10
+                            # robot.log("3")
                             return check.move_check(robot, fin_dir[0], fin_dir[1], 10)
                         else:
-
+                            # robot.log("4")
                             return 0
     else:
         for direction in directions:
             if pos_x == robot.resource_depot.x + direction[0] and pos_y == robot.resource_depot.y + direction[1]:
                 robot.current_move_destination = robot.pilgrim_mine_ownership
+                # robot.log("5")
                 return robot.give(-direction[0], -direction[1], carry_karb, carry_fuel)
         dockspots = movement.find_dockspots(robot, robot.resource_depot)
         fin_dir = (0, 0)
@@ -98,9 +103,12 @@ def give_or_mine(robot):
         fin_dir = pathfinding.bug_walk_toward(robot, (robot.resource_depot.x, robot.resource_depot.y))
         if fin_dir != 0:
             # TRAVIS MOVE CHECK 12
+            # robot.log("6")
             return check.move_check(robot, fin_dir[0], fin_dir[1], 12)
         else:
+            # robot.log("7")
             return 0
+    # robot.log("8")
     return 0
 
 def is_pilgrim_scavenging(robot):
@@ -151,7 +159,6 @@ def make_church(robot):
     directions = constants.directions
 
     if robot.pilgrim_has_built_a_church != 1:
-        # FIXME - Don't build churches next to each other
         potential_church_postitons = []
         for p_church_pos in directions:
             if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x + p_church_pos[1], pos_y + p_church_pos[0]):
