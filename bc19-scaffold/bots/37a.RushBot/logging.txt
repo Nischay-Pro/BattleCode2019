@@ -1,6 +1,0 @@
-Quick and dirty copying of logging
----------------------------------
-
-robot.log("The robot position is " + str(robot.me.x) + " " + str(robot.me.y))
-robot.log("The distance is " + str(distance))
-robot.log("Queue order is " + str(queue))

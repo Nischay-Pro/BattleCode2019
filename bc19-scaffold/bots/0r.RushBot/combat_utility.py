@@ -4,7 +4,6 @@ import mapping
 import pathfinding
 import utility
 import vision
-import communications
 
 def command_flow(robot):
     None

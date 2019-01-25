@@ -2,12 +2,9 @@ from battlecode import BCAbstractRobot
 import battlecode as bc
 import utility
 import constants
-import communications
 
 import castles
-import churches
 import crusaders
-import pilgrims
 import preachers
 import prophets
 
@@ -19,9 +16,6 @@ __pragma__('tconv')
 # don't try to use global variables!!
 
 # Helper Function
-
-def find_unit_type(self, map):
-    None
 
 class MyRobot(BCAbstractRobot):
 
@@ -221,15 +215,11 @@ class MyRobot(BCAbstractRobot):
 
         if unit_type == constants.unit_castle:
             return castles.castle(self)
-        elif unit_type == constants.unit_church:
-            return churches.church(self)
         elif unit_type == constants.unit_crusader:
             return crusaders.crusader(self)
         elif unit_type == constants.unit_preacher:
             return preachers.preacher(self)
         elif unit_type == constants.unit_prophet:
             return prophets.prophet(self)
-        elif unit_type == constants.unit_pilgrim:
-            return pilgrims.pilgrim(self)
 
 robot = MyRobot()
