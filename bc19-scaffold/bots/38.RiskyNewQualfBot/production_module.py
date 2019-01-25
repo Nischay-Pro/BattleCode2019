@@ -22,6 +22,8 @@ def _build_manager_castle(robot):
     map_size = len(robot.get_passable_map())
     friendly_castles_num = len(robot.friendly_castles)
     skip_turn = int(friendly_castles_num * (40 ** 2) / (map_size ** 2))
+    enemy_distances, enemy_units = vision.sort_visible_enemies_by_distance(robot)
+    enemies_num = len(enemy_units)
 
     enemy_distance = None
     opposite_enemy = mapping.find_symmetrical_point(robot, robot.me.x, robot.me.y, robot.map_symmetry)
@@ -59,7 +61,7 @@ def _build_manager_castle(robot):
             castles_utility._pilgrim_warned(robot, f_unit['id'])
         elif f_unit.castle_talk == 14:
             pilgrim_count += 1
-            if (robot.karbonite < 70 or robot.fuel < 250) and robot.step > 10 and enemy_distance_ratio > constants.critical_enemy_distance_ratio:
+            if (robot.karbonite < 70 or robot.fuel < 250) and robot.step > 10 and enemy_distance_ratio > constants.critical_enemy_distance_ratio and enemies_num == 0:
                 # robot.log("Waiting for karb and fuel stockpile to build church")
                 return None
 
@@ -73,7 +75,7 @@ def _build_manager_castle(robot):
 
     # robot.log(str(robot.me.signal))
 
-    if map_size > 50 and robot.step < 100 and robot.step > 10 and friendly_castles_num > 1 and enemy_distance_ratio > constants.critical_enemy_distance_ratio:
+    if map_size > 50 and robot.step < 100 and robot.step > 10 and friendly_castles_num > 1 and enemy_distance_ratio > constants.critical_enemy_distance_ratio and enemies_num == 0:
         if robot.fuel <= 200 or robot.karbonite <= 50:
             return None
         if skip_turn > 1:
