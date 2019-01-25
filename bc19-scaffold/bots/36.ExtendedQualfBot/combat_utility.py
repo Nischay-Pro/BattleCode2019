@@ -306,6 +306,7 @@ def give_crusader_number(friendly_list):
             crusader_count +=1
     return crusader_count
 
+
 def is_robot_the_oldest_crusader_in_range(robot, friendly_list):
     turn_number = robot.me.turn
     for unit in friendly_list:
@@ -336,6 +337,8 @@ def charge_to_nearest_enemy_mine(robot):
     return targeted_mine
 
 def bequeath_thee_mine_to_theeself(robot):
+    if robot.step < 4:
+        return None
     enemy_locations = mapping.get_on_the_ground_enemy_resources(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1])
     check_mine = 0
     for iter_i in range(len(enemy_locations)):
@@ -359,8 +362,94 @@ def bequeath_thee_mine_to_theeself(robot):
         robot.piligrim_did_i_shout_my_x_cord == False
         robot.piligrim_did_i_shout_my_y_cord == False
 
+def only_non_combat_enemy_units_are_seen(robot, visible_enemy_list):
+    count = 0
+    for unit in visible_enemy_list:
+        if unit['unit'] != constants.unit_prophet or unit['unit'] != constants.unit_preacher or unit['unit'] != constants.unit_crusader:
+            count += 1
+            # There should be atleast one crusader, in enemy list no?
+    if count == len(visible_enemy_list):
+        # robot.log("I see sacrifices for the lord")
+        return 1
+    else:
+        return 0
 
+def all_visible_enemy_combat_units_are_crusaders(robot, visible_enemy_list):
+    count = 0
+    is_crusader = 0
+    for unit in visible_enemy_list:
+        if unit['unit'] != constants.unit_prophet or unit['unit'] != constants.unit_preacher:
+            count += 1
+            # There should be atleast one crusader, in enemy list no?
+        if unit['unit'] == constants.unit_crusader:
+            is_crusader += 1
+    if count == len(visible_enemy_list) and is_crusader > 0:
+        # robot.log("I see a sea of steel")
+        return 1
+    else:
+        return 0
 
+def all_visible_enemy_combat_units_are_preachers(robot, visible_enemy_list):
+    count = 0
+    is_prophet = 0
+    for unit in visible_enemy_list:
+        if unit['unit'] != constants.unit_prophet or unit['unit'] != constants.unit_crusader:
+            count += 1
+        if unit['unit'] == constants.unit_preacher:
+            is_prophet += 1
+    if count == len(visible_enemy_list) and is_prophet > 0:
+        # robot.log("I feel a flock of followers")
+        return 1
+    else:
+        return 0
+
+def evade_vision_position(robot, visible_enemy_list):
+    vision_evasion_position_list = give_postions_where_unit_can_evade_all_enemy_vision(robot)
+    if len(vision_evasion_position_list) != 0:
+        max_distance = -99
+        new_position = None
+        for iter_i in range(len(vision_evasion_position_list)):
+            sum_of_distance = 0
+            for enemy_unit in visible_enemy_list:
+                enemy_loc = (enemy_unit['x'], enemy_unit['y'])
+                sum_of_distance += utility.distance(robot, enemy_loc, vision_evasion_position_list[iter_i])
+            if sum_of_distance > max_distance:
+                max_distance = sum_of_distance
+                new_position = vision_evasion_position_list[iter_i]
+        if new_position != None:
+            # TRAVIS MOVE CHECK 18
+            return check.move_check(robot, new_position[0] - robot.me.x, new_position[1] - robot.me.y, 18)
+    return None
+
+def evade_attack_position(robot, visible_enemy_list):
+    attack_evasion_position_list = give_postions_where_unit_can_evade_all_enemy_attack(robot)
+    if len(attack_evasion_position_list) != 0:
+        max_distance = -99
+        new_position = None
+        for iter_i in range(len(attack_evasion_position_list)):
+            sum_of_distance = 0
+            for enemy_unit in visible_enemy_list:
+                enemy_loc = (enemy_unit['x'], enemy_unit['y'])
+                sum_of_distance += utility.distance(robot, enemy_loc, attack_evasion_position_list[iter_i])
+            if sum_of_distance > max_distance:
+                max_distance = sum_of_distance
+                new_position = attack_evasion_position_list[iter_i]
+        if new_position != None:
+            # TRAVIS MOVE CHECK 19
+            return check.move_check(robot, new_position[0] - robot.me.x, new_position[1] - robot.me.y, 19)
+
+def is_non_combat_friendly_unit_in_vision(visible_friendly_list):
+    for unit in visible_friendly_list:
+        if unit['unit'] != constants.unit_castle or unit['unit'] != constants.unit_church or unit['unit'] != constants.unit_pilgrim:
+            return 1
+    return 0
+
+def set_guess_direction(robot):
+    if robot.delta_health_reduced != 0 and robot.step != 0:
+        robot.guessing_in_direction = (robot.me.x - robot.position_at_end_of_turn[0], robot.me.y - robot.position_at_end_of_turn[1])
+        robot.has_taken_a_hit = 2
+    elif robot.delta_health_reduced == 0 and robot.has_taken_a_hit != 0:
+        robot.has_taken_a_hit -= 1
 
 def give_stats(unit):
     if unit['unit'] == constants.unit_castle:
