@@ -56,15 +56,18 @@ def _build_manager_castle(robot):
         elif f_unit.castle_talk == 7:
             karb_miner_pilgrim += 1
             pilgrim_count += 1
+        elif f_unit.castle_talk == 8:
+            castle_count += 1
+            if len(robot.enemy_unit_locker) == 0:
+                return None
         elif f_unit.castle_talk == 12:
             pilgrim_count+= 1
-            castles_utility._pilgrim_warned(robot, f_unit['id'])
+            # castles_utility._pilgrim_warned(robot, f_unit['id'])
         elif f_unit.castle_talk == 14:
             pilgrim_count += 1
             if (robot.karbonite < 70 or robot.fuel < 250) and robot.step > 10 and enemy_distance_ratio > constants.critical_enemy_distance_ratio and enemies_num == 0:
                 # robot.log("Waiting for karb and fuel stockpile to build church")
                 return None
-
     # Pushing stuff into lockers
     castles_utility.nicely_push_into_storage_lockers(robot, robot.fuel, 2)
     castles_utility.nicely_push_into_storage_lockers(robot, robot.karbonite, 1)
@@ -74,6 +77,35 @@ def _build_manager_castle(robot):
     castles_utility.nicely_push_into_storage_lockers(robot, prophet_count, 6)
 
     # robot.log(str(robot.me.signal))
+    
+    if len(robot.enemy_unit_locker) != 0:
+        build_unit = robot.enemy_unit_locker[0]
+        if build_unit == constants.unit_crusader:
+            if castles_utility.can_build_crusader(robot):
+                castles_utility.build_counter_unit(robot, constants.unit_crusader)
+        elif build_unit == constants.unit_prophet:
+            if castles_utility.can_build_crusader(robot):
+                castles_utility.build_counter_unit(robot, constants.unit_crusader)
+        elif build_unit == constants.unit_preacher:
+            if castles_utility.can_build_prophet(robot):
+                castles_utility.build_counter_unit(robot, constants.unit_prophet)
+
+    # robot.log(pilgrim_count)
+
+    if pilgrim_count == 0 and robot.step > 10:
+        robot.pilgrim_wiped_out_counter += 1
+        if robot.pilgrim_wiped_out_counter == 3:
+            # robot.log("jai mata di " + robot.step)
+            robot.last_built_fuel = True
+            robot.pilgrim_wiped_out_counter = 0
+            castles_utility.reset_everything(robot)
+        else:
+            return None
+    else:
+        robot.pilgrim_wiped_out_counter = 0
+        
+
+    # robot.log(robot.fuel_manager)
 
     if map_size > 50 and robot.step < 100 and robot.step > 10 and friendly_castles_num > 1 and enemy_distance_ratio > constants.critical_enemy_distance_ratio and enemies_num == 0:
         if robot.fuel <= 200 or robot.karbonite <= 50:
@@ -81,11 +113,10 @@ def _build_manager_castle(robot):
         if skip_turn > 1:
             if robot.step % skip_turn == 0:
                 return None
-
-    if robot.step >= constants.dark_age and robot.step < constants.age_one:
-        if crusader_count < 4 and robot.karbonite > 40 and robot.fuel > 100:
+    if robot.step >= constants.dark_age and robot.step < constants.age_one and pilgrim_count <= 4:
+        if prophet_count < 2 and robot.karbonite > 40 and robot.fuel > 100:
             robot.signal(1, 2)
-            return castles_utility._castle_build(robot, constants.unit_crusader)
+            return castles_utility._castle_build(robot, constants.unit_prophet)
         elif castles_utility._any_unalloted_karbonite_in_castle_vision(robot) and robot.last_built_fuel == True:
             if castles_utility.can_build_pilgrim(robot):
                 karb_mine = castles_utility._get_closest_unassigned_karbonite_in_castle_vision(robot)
@@ -102,10 +133,10 @@ def _build_manager_castle(robot):
                 robot.signal(signal, 2)
                 robot.last_built_fuel = True
                 return castles_utility._castle_build(robot, constants.unit_pilgrim)
-        else:
-            if castles_utility.can_build_crusader(robot):
-                robot.signal(1, 2)
-                return castles_utility._castle_build(robot, robot.default_unit)
+        # else:
+        #     if castles_utility.can_build_crusader(robot):
+        #         robot.signal(1, 2)
+        #         return castles_utility._castle_build(robot, robot.default_unit)
 
     elif robot.step >= constants.age_one and robot.step < constants.age_two:
         if castles_utility._any_unalloted_karbonite_in_castle_vision(robot) and robot.last_built_fuel == True and robot.pilgrim_train_count < 2:

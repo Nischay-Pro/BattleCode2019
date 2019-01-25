@@ -38,7 +38,7 @@ def should_combat_unit_be_at_battle_front(robot) -> bool:
     The combat unit should be sent to battle front if and only if it is given
     birth by castle and it has a destination.
     '''
-    robot.log("Destination " + str(robot.current_move_destination))
+    # robot.log("Destination " + str(robot.current_move_destination))
     if not robot.current_move_destination: return False
     elif robot.built_by_a_church: return False
     else: return True

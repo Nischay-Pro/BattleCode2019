@@ -46,7 +46,7 @@ def mine_check(robot, flag):
         if robot.fuel >= 1:
             return robot.mine()
     else:
-        robot.log("Mine check failed " + str(flag))
+        # robot.log("Mine check failed " + str(flag))
         return None
 
 def attack_check(robot, dx, dy, flag):
@@ -61,28 +61,28 @@ def attack_check(robot, dx, dy, flag):
             if robot.fuel >= constants.prophet_attack_fuel_cost:
                 return robot.attack(dx, dy)
         else:
-            robot.log("Attack check failed " + str(flag))
+            # robot.log("Attack check failed " + str(flag))
             return None
     if robot.me.unit == constants.unit_preacher:
         if distance <= constants.preacher_max_attack_range and distance >= constants.preacher_min_attack_range:
             if robot.fuel >= constants.preacher_attack_fuel_cost:
                 return robot.attack(dx, dy)
         else:
-            robot.log("Attack check failed " + str(flag))
+            # robot.log("Attack check failed " + str(flag))
             return None
     if robot.me.unit == constants.unit_crusader:
         if distance <= constants.crusader_max_attack_range and distance >= constants.crusader_min_attack_range:
             if robot.fuel >= constants.crusader_attack_fuel_cost:
                 return robot.attack(dx, dy)
         else:
-            robot.log("Attack check failed " + str(flag))
+            # robot.log("Attack check failed " + str(flag))
             return None
     if robot.me.unit == constants.unit_castle:
         if distance <= constants.castle_max_attack_range and distance >= constants.castle_min_attack_range:
             if robot.fuel >= constants.castle_attack_fuel_cost:
                 return robot.attack(dx, dy)
         else:
-            robot.log("Attack check failed " + str(flag))
+            # robot.log("Attack check failed " + str(flag))
             return None
 
 def build_check(robot, build_unit_type, dx, dy, flag):
@@ -125,10 +125,10 @@ def build_check(robot, build_unit_type, dx, dy, flag):
                 dkarb = constants.crusader_construction_karbonite - current_karbonite
             dfuel = 0 if dfuel < 0 else dfuel
             dkarb = 0 if dkarb < 0 else dkarb
-            robot.log("Not enough fuel or karbonite to build unit " + str(flag) + ". Deficit of " + str(dfuel) + " fuel and " + str(dkarb) + " karbonite.")
+            # robot.log("Not enough fuel or karbonite to build unit " + str(flag) + ". Deficit of " + str(dfuel) + " fuel and " + str(dkarb) + " karbonite.")
             return None
     else:
-        robot.log("Build check failed " + str(flag))
+        # robot.log("Build check failed " + str(flag))
         return None
 
 def give_check(robot, dx, dy, karbonite, fuel, flag):

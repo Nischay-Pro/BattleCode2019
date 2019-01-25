@@ -20,10 +20,16 @@ def pilgrim(robot):
         # robot.log("Nearing capacity")
         return pilgrim_full(robot)
 
+    # Move Section
+    pilgrim_is_moving = pilgrim_move(robot)
+    if pilgrim_is_moving !=0 and robot.fuel > 30:
+        # robot.log(pilgrim_is_moving)
+        return pilgrim_is_moving
+
     # The pilgrim checks if it has a mine on it's current position
     pilgrim_is_mining = pilgrim_mine(robot)
     if pilgrim_is_mining !=0 and robot.fuel > 1 and robot.actual_round_number != None:
-        if robot.actual_round_number >= 6 and robot.pilgrim_warned == True:
+        if robot.actual_round_number >= 3 and robot.pilgrim_warned == False:
             if robot.piligrim_did_i_shout_my_x_cord == False:
                 robot.castle_talk(robot.me.x + 64)
                 robot.piligrim_did_i_shout_my_x_cord = True
@@ -36,12 +42,6 @@ def pilgrim(robot):
     # Receive signal from castle on which mine to go to
     if robot.step == 0:
         pilgrims_utility.receive_initial_signal(robot)
-
-    # Move Section
-    pilgrim_is_moving = pilgrim_move(robot)
-    if pilgrim_is_moving !=0 and robot.fuel > 30:
-        # robot.log(pilgrim_is_moving)
-        return pilgrim_is_moving
 
 
 def pilgrim_move(robot):

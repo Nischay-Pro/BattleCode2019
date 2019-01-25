@@ -43,9 +43,17 @@ def castle(robot):
 
     castles_utility._castle_monitor_mode(robot)
 
+    # friendly_units, enemy_units = castles_utility.castle_all_friendly_units(robot)
+    # for f_unit in friendly_units:
+    #     if f_unit.castle_talk == 12:
+    #         robot.log("CASTLE TALKING")
+    #         castles_utility._pilgrim_warned(robot, f_unit['id'])
+
     response = castles_utility._castle_attack_when_attack_range(robot)
     if response != None:
         return response
+
+    castles_utility.detect_and_push_counter(robot)
 
     a = production_module.default_production_order(robot)
     return a

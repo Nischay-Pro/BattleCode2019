@@ -101,12 +101,14 @@ class MyRobot(BCAbstractRobot):
     fuel_resource_locker = []
     karb_resource_locker = []
     enemy_unit_locker = []
+    enemy_unit_id_locker = []
     enemy_unit_locker_turn = 0
     pilgrim_unit_history = []
     crusader_unit_history = []
     prophet_unit_history = []
     preacher_unit_history = []
     default_unit = constants.unit_crusader
+    pilgrim_wiped_out_counter = 0
 
     pilgrim_train_count = 0
     multiplier = 1
@@ -190,6 +192,8 @@ class MyRobot(BCAbstractRobot):
                 self.castle_talk(7)
             elif self.karb_miner == False and self.fuel_miner == True:
                 self.castle_talk(6)
+        else:
+            self.castle_talk(self.me.unit)
 
         if self.delta_time_consumed > 100:
             self.burned_out = 1

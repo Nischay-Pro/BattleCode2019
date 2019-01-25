@@ -31,6 +31,9 @@ Reserved Castle Talk
     5 - Preacher Identification Signal                                      (Preacher)
     6 - Pilgrim Fuel Miner Signal                                           (Pilgrim)
     7 - Pilgrim Karbonite Miner Signal                                      (Pilgrim)
+    8 - Castle Pause Production for Castle Under threat                     (Castle)       
+    12 - Pilgrim Warning if enemy in it's vision                            (Pilgrim)       
+    14 - Pilgrim needs to build church pause production                     (Pilgrim)    
 
     64 - 127 - Reserved for positions                                      (All Units)
 
@@ -61,8 +64,9 @@ def get_initial_castle_position(robot):
                     robot.other_castle_2_co_ordinates.append(castle_talk_value - 64)
                     robot.number_castles += 1
                 else:
+                    None
                     # Huh 4 castles in a map
-                    robot.log("Weird Shit 4 castles?")
+                    # robot.log("Weird Shit 4 castles?")
 
 def broadcast_castle_position(robot):
     if robot.step == 1:

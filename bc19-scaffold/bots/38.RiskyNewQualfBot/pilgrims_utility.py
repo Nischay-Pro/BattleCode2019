@@ -22,6 +22,7 @@ def _pilgrims_initial_check(robot, friendly_unit):
         robot.current_move_destination = None
     else:
         robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
+        # robot.log(robot.current_move_destination)
 
     robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
     if robot.map_symmetry == None:
@@ -175,7 +176,7 @@ def make_church(robot):
             if pos[2] > max_resource_pos[2]:
                 max_resource_pos = pos
         # TODO - Build a church at a chokepoint so that enemy pilgrim cannot get into a research rich area
-        robot.log("Making a church at (" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
+        # robot.log("Making a church at (" + int(pos_x + max_resource_pos[1]) + ", " + int(pos_y + max_resource_pos[0]) + ")")
         temp_store = _give_church_castle_location(robot)
         if temp_store != 0:
             robot.signal(temp_store, 2)
