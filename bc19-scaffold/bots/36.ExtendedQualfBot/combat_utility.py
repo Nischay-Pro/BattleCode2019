@@ -306,6 +306,15 @@ def give_crusader_number(friendly_list):
             crusader_count +=1
     return crusader_count
 
+def give_crusaders_that_can_attack_nearest_enemy(robot, nearest_enemy, friendly_list):
+    nearest_enemy_location = (nearest_enemy['x'], nearest_enemy['y'])
+    crusader_count = 0
+    for unit in friendly_list:
+        if unit['unit'] == constants.unit_crusader:
+            friendly_unit_location = (friendly_list['x'], friendly_list['y'])
+            if utility.distance(robot, nearest_enemy_location, friendly_unit_location):
+                crusader_count +=1
+    return crusader_count
 
 def is_robot_the_oldest_crusader_in_range(robot, friendly_list):
     turn_number = robot.me.turn
