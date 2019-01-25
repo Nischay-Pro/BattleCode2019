@@ -17,4 +17,4 @@ def castle(robot):
             if utility.is_cell_occupiable_and_resourceless(occupied_map, passable_map, karb_map, fuel_map, pos_x + direction[1],  pos_y + direction[0]) and passable_map[pos_y + direction[0]][pos_x + direction[1]] == 1:
                 # robot.log("Building unit of type " + str(unit_type) + " at " + str(direction))
                 # TRAVIS BUILD CHECK 5
-                return check.build_check(robot, constants.unit_prophet, direction[1], direction[0], 5)
+                return check.build_check(robot, constants.unit_preacher, direction[1], direction[0], 5)
