@@ -79,6 +79,7 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
     if robot.lattice_dest and str((pos_x, pos_y)) == str(robot.current_move_destination):
         robot.current_move_destination = None
         utility.default_movement_variables(robot)
+        robot.bug_walk_c_w = None
         return None
 
     # Safety check
@@ -94,6 +95,7 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
             if (pos_x + pos_y)%2 == 0:
                 robot.current_move_destination = None
                 utility.default_movement_variables(robot)
+            robot.bug_walk_c_w = None
             return None # we have reached to battle front, don't move
         else:
             return _move(robot)
@@ -104,7 +106,6 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
                 x, y = coordinate
                 robot.current_move_destination = (x, y)
                 robot.lattice_dest = True
-                robot.bug_walk_c_w = None
                 return _move(robot)
         else:
             next_move = None
@@ -113,8 +114,8 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
                 if coordinate:
                     x, y = coordinate
                     robot.current_move_destination = (x, y)
-                    robot.bug_walk_c_w = None
                     return _move(robot)
+                robot.bug_walk_c_w = None
                 return None
             return _move(robot)
 
@@ -136,6 +137,7 @@ def find_lattice_point_for_point(robot, dest):
 def create_lattice_around_a_point(robot, destination=None):
     # robot.log("Test")
     if destination == None and robot.current_move_destination == None:
+        robot.bug_walk_c_w = None
         return None
     if destination != None and robot.current_move_destination == None:
         robot.current_move_destination = destination
@@ -148,6 +150,7 @@ def create_lattice_around_a_point(robot, destination=None):
     if str(robot.current_move_destination) == str((robot.me.x, robot.me.y)):
         robot.current_move_destination = None
         utility.default_movement_variables(robot)
+        robot.bug_walk_c_w = None
         return None
 
     if occupied_map[des_y][des_x] == -1 or occupied_map[des_y][des_x] == 0:
@@ -160,7 +163,6 @@ def create_lattice_around_a_point(robot, destination=None):
                 x, y = coordinate
                 robot.current_move_destination = (x, y)
                 robot.lattice_dest = True
-                robot.bug_walk_c_w = None
                 return _move(robot)
         else:
             if occupied_map[des_y][des_x] > 0:
@@ -168,7 +170,7 @@ def create_lattice_around_a_point(robot, destination=None):
                 if coordinate:
                     x, y = coordinate
                     robot.current_move_destination = (x, y)
-                    robot.bug_walk_c_w = None
                     return _move(robot)
+                robot.bug_walk_c_w = None
                 return None
             return _move(robot)

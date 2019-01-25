@@ -60,7 +60,7 @@ def _build_manager_castle(robot):
         elif f_unit.castle_talk == 14:
             pilgrim_count += 1
             if (robot.karbonite < 70 or robot.fuel < 250) and robot.step > 10 and enemy_distance_ratio > constants.critical_enemy_distance_ratio:
-                # robot.log("Waiting for karb and fuel stockpile to build church")
+                robot.log("Waiting for karb and fuel stockpile to build church")
                 return None
 
     # Pushing stuff into lockers

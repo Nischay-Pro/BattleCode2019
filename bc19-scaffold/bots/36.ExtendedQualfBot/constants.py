@@ -19,7 +19,7 @@ contested_delta = .05
 karbonite_modifier = .05
 fuel_modifier = .05
 
-critical_enemy_distance_ratio = .5
+critical_enemy_distance_ratio = .4
 
 anti_unit_build_factor = 1.2
 
