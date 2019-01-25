@@ -12,28 +12,28 @@ def move_check(robot, dx, dy, flag):
             if robot.fuel >= constants.pilgrim_move_fuel_cost * distance:
                 return robot.move(dx, dy)
         else:
-            robot.log("Move check failed " +  str(flag))
+            # robot.log("Move check failed " +  str(flag))
             return None
     if robot.me.unit == constants.unit_prophet:
         if distance <= constants.prophet_speed:
             if robot.fuel >= constants.prophet_move_fuel_cost * distance:
                 return robot.move(dx, dy)
         else:
-            robot.log("Move check failed " +  str(flag))
+            # robot.log("Move check failed " +  str(flag))
             return None
     if robot.me.unit == constants.unit_crusader:
         if distance <= constants.crusader_speed:
             if robot.fuel >= constants.prophet_move_fuel_cost * distance:
                 return robot.move(dx, dy)
         else:
-            robot.log("Move check failed " +  str(flag))
+            # robot.log("Move check failed " +  str(flag))
             return None
     if robot.me.unit == constants.unit_preacher:
         if distance <= constants.prophet_speed:
             if robot.fuel >= constants.preacher_move_fuel_cost * distance:
                 return robot.move(dx, dy)
         else:
-            robot.log("Move check failed " +  str(flag))
+            # robot.log("Move check failed " +  str(flag))
             return None
 
 def mine_check(robot, flag):

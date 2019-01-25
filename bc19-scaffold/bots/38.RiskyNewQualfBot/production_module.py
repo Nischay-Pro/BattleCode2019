@@ -60,7 +60,7 @@ def _build_manager_castle(robot):
         elif f_unit.castle_talk == 14:
             pilgrim_count += 1
             if (robot.karbonite < 70 or robot.fuel < 250) and robot.step > 10 and enemy_distance_ratio > constants.critical_enemy_distance_ratio:
-                robot.log("Waiting for karb and fuel stockpile to build church")
+                # robot.log("Waiting for karb and fuel stockpile to build church")
                 return None
 
     # Pushing stuff into lockers
@@ -290,10 +290,15 @@ def _build_manager_castle(robot):
                 robot.signal(1, 2)
                 return castles_utility._castle_build(robot, robot.default_unit)
 
-    elif robot.step >= constants.age_four:
+    elif robot.step >= constants.age_four and robot.step < 900:
         if robot.karbonite >= 50 and robot.fuel >= 100 and castles_utility.can_build_crusader(robot):
             robot.signal(1, 2)
             return castles_utility._castle_build(robot, robot.default_unit)
+
+    elif robot.step >= 900:
+        if robot.karbonite >= 50 and robot.fuel >= 100 and castles_utility.can_build_crusader(robot):
+            robot.signal(1, 2)
+            return castles_utility._castle_build(robot, constants.unit_preacher)
 
 
     # if robot.castle_under_attack > 0:

@@ -124,7 +124,7 @@ def _crusader_combat(robot):
             if robot.core_is_ready == 0 and attack_safety_check == 1:
                 number_of_friendly_combat_units = combat_utility.give_crusaders_that_can_attack_nearest_enemy(robot, visible_enemy_list[0], visible_friendly_list)
                 # Enemy greater than friends
-                if len(visible_enemy_list) > number_of_friendly_combat_units and combat_utility.is_non_combat_friendly_unit_in_vision(visible_friendly_list) == 0:
+                if len(visible_enemy_list) > 1 + number_of_friendly_combat_units and combat_utility.is_non_combat_friendly_unit_in_vision(visible_friendly_list) == 0:
                     attack_evasion_position_list = None
                     attack_evasion_position_list = combat_utility.evade_attack_position(robot, visible_enemy_list)
                     if attack_evasion_position_list != None:
