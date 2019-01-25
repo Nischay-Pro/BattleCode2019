@@ -173,6 +173,14 @@ def _crusader_combat(robot):
             # robot.log("*** Refurbish")
             robot.core_is_ready = 0
             robot.switch_core_off = 0
+
+    pos_x, pos_y = robot.me.x, robot.me.y
+    if utility.is_cell_resourceful(robot.get_karbonite_map(), robot.get_fuel_map(), pos_x, pos_y):
+        coordinates = tactics.find_lattice_point(robot)
+        if coordinates:
+            robot.current_move_destination = None
+            # TRAVIS MOVE CHECK 55
+            return check.move_check(robot, coordinates[0] - pos_x, coordinates[1] - pos_y, 55)
     return None
 
 def _preacher_combat(robot):
