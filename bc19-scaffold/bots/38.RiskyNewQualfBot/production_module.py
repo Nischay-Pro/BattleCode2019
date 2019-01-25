@@ -302,6 +302,15 @@ def _build_manager_castle(robot):
             robot.signal(1, 2)
             return castles_utility._castle_build(robot, constants.unit_preacher)
 
+    # Kamikaze Sensor
+    if robot.step >= 800 and robot.step % 50 == 0:
+        if len(robot.friendly_castles) >= castle_count:
+            map_length = len(robot.get_passable_map())
+            if robot.fuel >= map_length / 2:
+                robot.signal(65532, (map_length / 2) ** 2) 
+            else:
+                robot.signal(65532, (robot.fuel) ** 2)
+
 
     # if robot.castle_under_attack > 0:
     #     None

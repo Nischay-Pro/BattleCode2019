@@ -3,6 +3,7 @@ import check
 import mapping
 import constants
 import communications
+import combat_utility
 import vision
 
 def castle_all_friendly_units(robot):
@@ -589,11 +590,19 @@ def _get_closest_contested_side_fuel(robot):
 def _castle_attack_when_attack_range(robot):
     enemies_dist, enemies = vision.sort_visible_enemies_by_distance(robot)
     if len(enemies_dist) > 0:
-        distance = enemies_dist[0]
-        my_enemy = enemies[0]
-        if distance <= constants.castle_max_attack_range and distance >= constants.castle_min_attack_range:
-            # TRAVIS ATTACK CHECK 9
-            return check.attack_check(robot, my_enemy['x'] - robot.me['x'], my_enemy['y'] - robot.me['y'], 9)
+        if robot.is_targeting_robot_with_id != None:
+            for iter_i in range(len(enemies)):
+                enemy_unit = enemies[iter_i]
+                if enemies_dist[iter_i] <= constants.castle_max_attack_range and enemy_unit['id'] == robot.is_targeting_robot_with_id:
+                    # TRAVIS ATTACK CHECK 25
+                    return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 25, robot.fuel, enemy_unit)
+        else:
+            distance = enemies_dist[0]
+            my_enemy = enemies[0]
+            if distance <= constants.castle_max_attack_range and distance >= constants.castle_min_attack_range:
+                # TRAVIS ATTACK CHECK 9
+                robot.is_targeting_robot_with_id = my_enemy['id']
+                return check.attack_check(robot, my_enemy['x'] - robot.me['x'], my_enemy['y'] - robot.me['y'], 9)
     return None
 
 def am_i_the_nearest_castle_to_this(robot, xcord, ycord):
