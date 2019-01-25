@@ -64,7 +64,7 @@ def find_lattice_point(robot):
     coord = None
     for i in range(n):
         for j in range(n):
-            if not utility.is_out_of_bounds(n, j, i) and occupied_map[i][j] == 0 and (i+j)%2 == 0 and passable_map[i][j] == 1 and not fuel_map[i][j]:
+            if not utility.is_out_of_bounds(n, j, i) and occupied_map[i][j] == 0 and (i+j)%2 == 0 and passable_map[i][j] == 1 and not utility.is_cell_resourceful(karb_map, fuel_map, j, i):
                 cur_distance = utility.distance(robot, (pos_x, pos_y), (j, i))
                 if cur_distance < dist:
                     dist = cur_distance
@@ -104,6 +104,7 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
                 x, y = coordinate
                 robot.current_move_destination = (x, y)
                 robot.lattice_dest = True
+                robot.bug_walk_c_w = None
                 return _move(robot)
         else:
             next_move = None
@@ -112,6 +113,7 @@ def send_combat_unit_to_battle_front(robot, ratio: float, delta: float):
                 if coordinate:
                     x, y = coordinate
                     robot.current_move_destination = (x, y)
+                    robot.bug_walk_c_w = None
                     return _move(robot)
                 return None
             return _move(robot)
@@ -124,7 +126,7 @@ def find_lattice_point_for_point(robot, dest):
     coord = None
     for i in range(n):
         for j in range(n):
-            if not utility.is_out_of_bounds(n, j, i) and occupied_map[i][j] == 0 and (i+j)%2 == 0 and passable_map[i][j] == 1 and not fuel_map[i][j]:
+            if not utility.is_out_of_bounds(n, j, i) and occupied_map[i][j] == 0 and (i+j)%2 == 0 and passable_map[i][j] == 1 and not utility.is_cell_resourceful(karb_map, fuel_map, j, i):
                 cur_distance = utility.distance(robot, (des_x, des_y), (j, i))
                 if cur_distance < dist:
                     dist = cur_distance
@@ -133,7 +135,8 @@ def find_lattice_point_for_point(robot, dest):
 
 def create_lattice_around_a_point(robot, destination=None):
     # robot.log("Test")
-    if destination == None and robot.current_move_destination == None: return None
+    if destination == None and robot.current_move_destination == None:
+        return None
     if destination != None and robot.current_move_destination == None:
         robot.current_move_destination = destination
 
@@ -157,6 +160,7 @@ def create_lattice_around_a_point(robot, destination=None):
                 x, y = coordinate
                 robot.current_move_destination = (x, y)
                 robot.lattice_dest = True
+                robot.bug_walk_c_w = None
                 return _move(robot)
         else:
             if occupied_map[des_y][des_x] > 0:
@@ -164,6 +168,7 @@ def create_lattice_around_a_point(robot, destination=None):
                 if coordinate:
                     x, y = coordinate
                     robot.current_move_destination = (x, y)
+                    robot.bug_walk_c_w = None
                     return _move(robot)
                 return None
             return _move(robot)
