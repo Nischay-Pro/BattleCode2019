@@ -1,7 +1,7 @@
 import utility
 
-def message_to_castles(robot, mesg_type):
-    robot.castleTalk(mesg_type)
+# def message_to_castles(robot, mesg_type):
+#     robot.castleTalk(mesg_type)
     # # Position requesting for pilgrims
     # if mesg_type == 0:
     #     temp_store = ((robot.me.x * 1000) + robot.me.y) * 1000 + 0

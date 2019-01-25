@@ -54,37 +54,15 @@ def _prophet_combat(robot):
                 return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 14, fuel, enemy_unit)
 
         if attack_safety_check == 1 and combat_utility.does_enemy_contain_prophet_units(visible_enemy_list) == 0:
-            vision_evasion_position_list = combat_utility.give_postions_where_unit_can_evade_all_enemy_vision(robot)
-            if len(vision_evasion_position_list) != 0:
-                max_distance = -99
-                new_position = None
-                for iter_i in range(len(vision_evasion_position_list)):
-                    sum_of_distance = 0
-                    for enemy_unit in visible_enemy_list:
-                        enemy_loc = (enemy_unit['x'], enemy_unit['y'])
-                        sum_of_distance += utility.distance(robot, enemy_loc, vision_evasion_position_list[iter_i])
-                    if sum_of_distance > max_distance:
-                        max_distance = sum_of_distance
-                        new_position = vision_evasion_position_list[iter_i]
-                if new_position != None:
-                    # TRAVIS MOVE CHECK 18
-                    return check.move_check(robot, new_position[0] - robot.me.x, new_position[1] - robot.me.y, 18)
+            vision_evasion_position = None
+            vision_evasion_position = combat_utility.evade_vision_position(robot, visible_enemy_list)
+            if vision_evasion_position != None:
+                return vision_evasion_position
 
-            attack_evasion_position_list = combat_utility.give_postions_where_unit_can_evade_all_enemy_attack(robot)
-            if len(attack_evasion_position_list) != 0:
-                max_distance = -99
-                new_position = None
-                for iter_i in range(len(attack_evasion_position_list)):
-                    sum_of_distance = 0
-                    for enemy_unit in visible_enemy_list:
-                        enemy_loc = (enemy_unit['x'], enemy_unit['y'])
-                        sum_of_distance += utility.distance(robot, enemy_loc, attack_evasion_position_list[iter_i])
-                    if sum_of_distance > max_distance:
-                        max_distance = sum_of_distance
-                        new_position = attack_evasion_position_list[iter_i]
-                if new_position != None:
-                    # TRAVIS MOVE CHECK 19
-                    return check.move_check(robot, new_position[0] - robot.me.x, new_position[1] - robot.me.y, 19)
+            attack_evasion_position_list = None
+            attack_evasion_position_list = combat_utility.evade_attack_position(robot, visible_enemy_list)
+            if attack_evasion_position_list != None:
+                return attack_evasion_position_list
 
         # Fall through all the if cases
         enemy_unit = tactics.choose_target(robot, visible_enemy_list, visible_enemy_distance)
@@ -110,24 +88,25 @@ def _crusader_combat(robot):
     #     # Give resources to church/castle/pilgrim/unit via convoy
     #     return None
 
+    # Bequeath a mine
     if robot.bequeathed_mine != None:
         combat_utility.bequeath_thee_mine_to_theeself(robot)
 
-    if robot.delta_health_reduced != 0 and robot.step != 0:
-        robot.guessing_in_direction = (robot.me.x - robot.position_at_end_of_turn[0], robot.me.y - robot.position_at_end_of_turn[1])
-        robot.has_taken_a_hit = 2
-    elif robot.delta_health_reduced == 0 and robot.has_taken_a_hit != 0:
-        robot.has_taken_a_hit -= 1
+    # If hit by unit of out vision
+    # Guess direction via last turn movement
+    combat_utility.set_guess_direction(robot)
 
     # Attacked by out-of-vision enemy unit
     if len(visible_enemy_list) == 0 and robot.step != 0 and (robot.delta_health_reduced != 0 or robot.has_taken_a_hit != 0):
+        # Use influence map to calculate enemy directin
         if combat_utility.give_crusader_number(visible_friendly_list) > 1:
             guess_enemy_direction_and_move_via_friends = combat_utility.get_min_friendly_influence_direction(robot, visible_friendly_distance, visible_friendly_list)
             if guess_enemy_direction_and_move_via_friends != None:
                 return guess_enemy_direction_and_move_via_friends
-        guess_enemy_direction_and_move = combat_utility.enemy_direction_guess_and_move(robot, visible_friendly_distance, visible_friendly_list)
-        if guess_enemy_direction_and_move != None:
-            return guess_enemy_direction_and_move
+        else:
+            guess_enemy_direction_and_move = combat_utility.enemy_direction_guess_and_move(robot, visible_friendly_distance, visible_friendly_list)
+            if guess_enemy_direction_and_move != None:
+                return guess_enemy_direction_and_move
 
     # We see an enemy
     if len(visible_enemy_list) != 0:
@@ -138,6 +117,19 @@ def _crusader_combat(robot):
             enemy_pos_y = visible_enemy_list[0]['y']
             combat_utility.radio_friends_enemy_location(robot, enemy_pos_x, enemy_pos_y)
 
+        # All enemy combat units are crusaders
+        if combat_utility.all_visible_enemy_combat_units_are_crusaders(robot, visible_enemy_list):
+            # If we are in attack range and not charging
+            attack_safety_check = combat_utility.is_unit_in_any_enemy_attack_range(robot)
+            if robot.core_is_ready == 0 and attack_safety_check == 1:
+                number_of_friendly_combat_units = combat_utility.give_crusader_number
+                # Enemy greater than friends
+                if len(visible_enemy_list) > number_of_friendly_combat_units and combat_utility.is_non_combat_friendly_unit_in_vision(visible_friendly_list) == 0:
+                    attack_evasion_position_list = None
+                    attack_evasion_position_list = combat_utility.evade_attack_position(robot, visible_enemy_list)
+                    if attack_evasion_position_list != None:
+                        return attack_evasion_position_list
+
         # In attack range and attacked once
         if robot.is_targeting_robot_with_id != None:
             for iter_i in range(len(visible_enemy_list)):
@@ -146,7 +138,7 @@ def _crusader_combat(robot):
                     # TRAVIS ATTACK CHECK 15
                     return combat_utility.attack_location(robot, enemy_unit['x'], enemy_unit['y'], 15, fuel, enemy_unit)
 
-        # In attack range and attacked once
+        # In attack range and haven't attacked yet
         for iter_i in range(len(visible_enemy_list)):
             enemy_unit = visible_enemy_list[iter_i]
             if visible_enemy_distance[iter_i] <= constants.crusader_max_attack_range:
@@ -159,17 +151,19 @@ def _crusader_combat(robot):
             # TRAVIS MOVE CHECK 20
             return check.move_check(robot, closest_pos[0] - robot.me.x, closest_pos[1] - robot.me.y, 20)
 
-
+    # Core is ready to charge (Core == 7 units)
     if len(visible_friendly_list) != 0 and robot.core_is_ready!= 1 and robot.fuel > 8:
         if combat_utility.is_crusader_raiding_core_ready(visible_friendly_list) == 1 and combat_utility.is_robot_the_oldest_crusader_in_range(robot, visible_friendly_list):
             # robot.log("Charge at" + str(robot.current_move_destination))
             combat_utility.radio_friends_charge_order(robot)
+
+
     if len(visible_friendly_list) != 0 and robot.core_is_ready == 1 and robot.targeted_enemy_mine != None:
         # robot.log("888 Check")
         robot.switch_core_off +=1
         if robot.switch_core_off == 3:
             robot.bequeathed_mine = robot.targeted_enemy_mine
-        if utility.distance(robot, (robot.me.x, robot.me.y), robot.targeted_enemy_mine) < constants.crusader_vision_range and robot.switch_core_off > 4:
+        if utility.distance(robot, (robot.me.x, robot.me.y), robot.targeted_enemy_mine) < constants.crusader_vision_range and robot.switch_core_off >= 4:
             # robot.log("*** Refurbish")
             robot.core_is_ready = 0
             robot.switch_core_off = 0
