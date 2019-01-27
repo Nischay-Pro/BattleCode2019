@@ -77,7 +77,7 @@ def _build_manager_castle(robot):
     castles_utility.nicely_push_into_storage_lockers(robot, prophet_count, 6)
 
     # robot.log(str(robot.me.signal))
-    
+
     if len(robot.enemy_unit_locker) != 0:
         build_unit = robot.enemy_unit_locker[0]
         if build_unit == constants.unit_crusader:
@@ -103,7 +103,7 @@ def _build_manager_castle(robot):
             return None
     else:
         robot.pilgrim_wiped_out_counter = 0
-        
+
 
     # robot.log(robot.fuel_manager)
 
@@ -337,10 +337,11 @@ def _build_manager_castle(robot):
     if robot.step >= 800 and robot.step % 50 == 0:
         if len(robot.friendly_castles) >= castle_count:
             map_length = len(robot.get_passable_map())
+            # robot.log("puapuapuuuuaaaaaaaa")
             if robot.fuel >= map_length / 2:
-                robot.signal(65532, (map_length / 2) ** 2) 
+                robot.signal(65532, ((map_length / 2) ** 2) // 1)
             else:
-                robot.signal(65532, (robot.fuel) ** 2)
+                robot.signal(65532, ((robot.fuel) ** 2) // 1)
 
 
     # if robot.castle_under_attack > 0:

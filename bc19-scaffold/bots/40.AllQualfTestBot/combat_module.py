@@ -157,7 +157,6 @@ def _crusader_combat(robot):
             # robot.log("Charge at" + str(robot.current_move_destination))
             combat_utility.radio_friends_charge_order(robot)
 
-
     if len(visible_friendly_list) != 0 and robot.core_is_ready == 1 and robot.targeted_enemy_mine != None:
         # robot.log("888 Check")
         robot.switch_core_off +=1

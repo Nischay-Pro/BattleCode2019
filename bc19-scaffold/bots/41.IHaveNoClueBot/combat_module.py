@@ -130,6 +130,18 @@ def _crusader_combat(robot):
                     if attack_evasion_position_list != None:
                         return attack_evasion_position_list
 
+        # All enemy combat units are preachers
+        if combat_utility.all_visible_enemy_combat_units_are_preachers(robot, visible_enemy_list):
+            attack_safety_check = combat_utility.is_unit_in_any_enemy_attack_range(robot)
+            if attack_safety_check == 0:
+                reposition_position_list = combat_utility.repositioning_against_preachers(robot, visible_enemy_list, visible_friendly_list)
+                # Make space away from other units, tominimise splash damage
+                if reposition_position_list != None and len(reposition_position_list) != 0:
+                    # robot.log(reposition_position_list)
+                    return check.move_check(robot, reposition_position_list[0][0] - robot.me.x, reposition_position_list[0][1] - robot.me.y, 1313)
+                else:
+                    return check.move_check(robot, 0, 0, 1314)
+
         # In attack range and attacked once
         if robot.is_targeting_robot_with_id != None:
             for iter_i in range(len(visible_enemy_list)):

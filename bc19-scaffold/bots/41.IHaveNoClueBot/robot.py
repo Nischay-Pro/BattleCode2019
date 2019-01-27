@@ -126,6 +126,7 @@ class MyRobot(BCAbstractRobot):
     bequeathed_mine = None
 
     # Combat Units
+    has_repositioned_against_preachers = 0
     switch_core_off = 0
     is_rush_bot = 0
     has_taken_a_hit = 0

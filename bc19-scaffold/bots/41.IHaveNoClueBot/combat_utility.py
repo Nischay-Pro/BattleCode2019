@@ -400,17 +400,42 @@ def all_visible_enemy_combat_units_are_crusaders(robot, visible_enemy_list):
 
 def all_visible_enemy_combat_units_are_preachers(robot, visible_enemy_list):
     count = 0
-    is_prophet = 0
+    is_preacher = 0
     for unit in visible_enemy_list:
         if unit['unit'] != constants.unit_prophet or unit['unit'] != constants.unit_crusader:
             count += 1
         if unit['unit'] == constants.unit_preacher:
-            is_prophet += 1
-    if count == len(visible_enemy_list) and is_prophet > 0:
-        # robot.log("I feel a flock of followers")
+            is_preacher += 1
+    if count == len(visible_enemy_list) and is_preacher > 0:
+        robot.log("I feel a flock of followers")
         return 1
     else:
         return 0
+
+def repositioning_against_preachers(robot, visible_enemy_units, visible_friendly_list):
+    directions = None
+    reposition_position_list = []
+    pos_x = robot.me.x
+    pos_y = robot.me.y
+    passable_map, occupied_map, karb_map, fuel_map = utility.get_all_maps(robot)
+    if robot.me.unit != constants.unit_crusader:
+        directions = constants.non_crusader_move_directions
+    else:
+        directions = constants.crusader_move_directions
+    for direction in directions:
+        new_pos_x = pos_x + direction[0]
+        new_pos_y = pos_y + direction[1]
+        if utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y) or passable_map[new_pos_y][new_pos_x] != 1:
+            continue
+        if is_position_in_any_enemy_attack_range(robot, new_pos_x, new_pos_y) == 0:
+            flag = 1
+            for friendly_unit in visible_friendly_list:
+                if utility.distance(robot, (new_pos_x, new_pos_y), (friendly_unit['x'], friendly_unit['y'])) < 9:
+                    flag = 0
+                    break
+            if flag == 1:
+                reposition_position_list.append((new_pos_x, new_pos_y))
+    return reposition_position_list
 
 def evade_vision_position(robot, visible_enemy_list):
     vision_evasion_position_list = give_postions_where_unit_can_evade_all_enemy_vision(robot)
