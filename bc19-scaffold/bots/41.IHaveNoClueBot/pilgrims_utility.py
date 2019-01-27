@@ -25,6 +25,7 @@ def _pilgrims_initial_check(robot, friendly_unit):
         # robot.log(robot.current_move_destination)
 
     robot.our_castle_base_or_church_base = (friendly_unit['x'], friendly_unit['y'])
+    robot.our_castle_or_church = friendly_unit
     if robot.map_symmetry == None:
         mapping.return_map_symmetry(robot)
 

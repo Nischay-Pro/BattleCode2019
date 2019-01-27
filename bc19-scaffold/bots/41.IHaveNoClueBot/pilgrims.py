@@ -2,6 +2,7 @@ import constants
 import utility
 import pilgrims_utility
 import movement
+import pathfinding
 import check
 
 def pilgrim(robot):
@@ -110,6 +111,7 @@ def pilgrim_mine(robot):
         return 0
 
 def pilgrim_full(robot):
+
     # If we have adjacent castle/church or haven't reached the convoy age end
     pilgrim_give_or_convoy = pilgrims_utility.give_or_mine(robot)
     if pilgrim_give_or_convoy != 0 and robot.fuel > 4:
@@ -122,4 +124,13 @@ def pilgrim_full(robot):
     robot.pilgrim_full_and_idle += 1
     if robot.pilgrim_full_and_idle > 5:
         robot.castle_talk(14)
+
+    if robot.pilgrim_full_and_idle > 10:
+        robot.resource_depot = robot.our_castle_or_church
+        fin_dir = pathfinding.bug_walk_toward(robot, robot.our_castle_base_or_church_base)
+        if fin_dir != 0:
+            # TRAVIS MOVE CHECK 115
+            # robot.log("3")
+            return check.move_check(robot, fin_dir[0], fin_dir[1], 115)
+
     return None
