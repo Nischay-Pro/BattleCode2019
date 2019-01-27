@@ -92,8 +92,8 @@ def _build_manager_castle(robot):
 
     # robot.log(pilgrim_count)
 
-    robot.log(robot.fuel_manager)
-    robot.log(robot.karb_manager)
+    # robot.log(robot.fuel_manager)
+    # robot.log(robot.karb_manager)
 
     if pilgrim_count == 0 and robot.step > 10:
         robot.pilgrim_wiped_out_counter += 1
