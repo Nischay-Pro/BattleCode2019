@@ -78,7 +78,9 @@ class MyRobot(BCAbstractRobot):
     karb_miner = False
     fuel_miner = False
     pilgrim_full_and_idle = 0
-    # Castles
+    idle_karb_count = None
+
+     # Castles
     castle_unit_build_log = [] # Maintain the ids of robots, pop and push every turn
     fuel_mine_locations_from_this_castle = [] # Compute once and store forever
     fuel_mine_occupancy_from_this_castle = [] # When you assign a unit to mine , make that element id 0 or more else it is -1. TODO - Pilgrim retrun signal telling mine is occupied

@@ -127,22 +127,30 @@ def pilgrim_full(robot):
     # If we have adjacent castle/church or haven't reached the convoy age end
     pilgrim_give_or_convoy = pilgrims_utility.give_or_mine(robot)
     if pilgrim_give_or_convoy != 0 and robot.fuel > 4:
+        robot.idle_karb_count = None
         return pilgrim_give_or_convoy
 
     # FIXME - Make churches not be built if castle/other church is in reasonable travel range
     if robot.karbonite > 50 and robot.fuel > 200:
+        robot.idle_karb_count = None
         return pilgrims_utility.make_church(robot)
+
+    if robot.idle_karb_count == None:
+        robot.idle_karb_count = robot.karbonite
 
     robot.pilgrim_full_and_idle += 1
     if robot.pilgrim_full_and_idle > 5:
         robot.castle_talk(14)
 
-    if robot.pilgrim_full_and_idle > 10:
+    if robot.pilgrim_full_and_idle > 15 and robot.idle_karb_count ==  robot.karbonite:
         robot.resource_depot = robot.our_castle_or_church
-        fin_dir = pathfinding.bug_walk_toward(robot, robot.our_castle_base_or_church_base)
-        if fin_dir != 0:
-            # TRAVIS MOVE CHECK 115
-            # robot.log("3")
-            return check.move_check(robot, fin_dir[0], fin_dir[1], 115)
+        dist = (robot.our_castle_base_or_church_base[0] - robot.me.x) ** 2 + (robot.our_castle_base_or_church_base[1] - robot.me.y) ** 2
+        if dist < len(robot.get_passable_map()) ** 2:
+            fin_dir = pathfinding.bug_walk_toward(robot, robot.our_castle_base_or_church_base)
+            if fin_dir != 0:
+                # TRAVIS MOVE CHECK 115
+                # robot.log("3")
+                robot.idle_karb_count = None
+                return check.move_check(robot, fin_dir[0], fin_dir[1], 115)
 
     return None
