@@ -335,7 +335,7 @@ def is_crusader_raiding_core_ready(friendly_list):
         return 0
 
 def charge_to_nearest_enemy_mine(robot):
-    enemy_locations = mapping.get_on_the_ground_enemy_resources(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1])
+    enemy_locations = mapping.get_on_the_ground_enemy_resources(robot, robot.our_castle_base_or_church_base[0], robot.our_castle_base_or_church_base[1])
     min_distance = 999
     targeted_mine = None
     for iter_i in range(len(enemy_locations)):
@@ -348,7 +348,7 @@ def charge_to_nearest_enemy_mine(robot):
 def bequeath_thee_mine_to_theeself(robot):
     if robot.step < 4:
         return None
-    enemy_locations = mapping.get_on_the_ground_enemy_resources(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1])
+    enemy_locations = mapping.get_on_the_ground_enemy_resources(robot, robot.our_castle_base_or_church_base[0], robot.our_castle_base_or_church_base[1])
     check_mine = 0
     for iter_i in range(len(enemy_locations)):
         if str(robot.targeted_enemy_mine) == str(enemy_locations[iter_i]):

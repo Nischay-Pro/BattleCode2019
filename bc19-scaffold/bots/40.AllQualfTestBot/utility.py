@@ -176,7 +176,7 @@ def distance_ratio(robot, destination: tuple,
         expected_ratio: float, delta: float) -> bool:
     pos_x, pos_y = robot.me.x, robot.me.y
     # robot.log("Current position: " + str((pos_x, pos_y)))
-    start_to_cur = distance(robot, (pos_x, pos_y), robot.our_castle_or_church_base)
+    start_to_cur = distance(robot, (pos_x, pos_y), robot.our_castle_base_or_church_base)
     destination_to_cur = distance(robot, (pos_x, pos_y), destination)
     ratio = start_to_cur/(destination_to_cur + start_to_cur)
     ans = True if abs(ratio-expected_ratio) <= delta else False
@@ -197,3 +197,38 @@ def is_in_list(element, given_list):
         if str(element) == str(given_list[iter_i]):
             return True
     return False
+
+def give_to_adjacent_robot(robot):
+    carry_karb = robot.me.karbonite
+    carry_fuel = robot.me.fuel
+
+    if carry_fuel > 0 or carry_karb > 0:
+        des_x, des_y = robot.our_castle_base_or_church_base
+        pos_x, pos_y = robot.me.x, robot.me.y
+
+        diff_x = des_x - pos_x
+        diff_y = des_y - pos_y
+        dir_x = 0
+        dir_y = 0
+        if diff_x != 0:
+            dir_x = diff_x//abs(diff_x)
+        if diff_y != 0:
+            dir_y = diff_y//abs(diff_y)
+
+        occupied_map = robot.get_visible_robot_map()
+        directions = constants.directions
+        for direction in directions:
+            a_id = occupied_map[pos_y + direction[1]][pos_x + direction[0]]
+            if a_id > 0:
+                a_robot = robot.get_robot(a_id)
+                if a_robot.team == robot.me.team:
+                    if a_robot.unit == constants.unit_castle or a_robot.unit == constants.unit_castle:
+                        return direction
+                    if a_robot.unit == constants.unit_pilgrim:
+                        return direction
+                    if direction[0] == dir_x and direction[1] == dir_y:
+                        return direction
+                    if direction[0] == dir_x or direction[1] == dir_y:
+                        return direction
+
+    return None

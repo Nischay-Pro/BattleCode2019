@@ -24,7 +24,7 @@ def combat_channel(robot):
             if friendly_unit.signal == 65533:
                 # robot.log("Core is ready charge")
                 robot.core_is_ready = 1
-                robot.current_move_destination = mapping.find_symmetrical_point(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1], robot.map_symmetry)
+                robot.current_move_destination = mapping.find_symmetrical_point(robot, robot.our_castle_base_or_church_base[0], robot.our_castle_base_or_church_base[1], robot.map_symmetry)
             else:
                 robot.combat_broadcast_level = constants.combat_broadcast_cooldown
                 robot.following_crusader_command = 1
@@ -49,11 +49,11 @@ def receive_initial_signal(robot):
 def _preacher_initial_check(robot, friendly_unit):
 
     if robot.built_by_a_castle == 1:
-        robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
-        robot.friendly_castles.append(robot.our_castle_or_church_base)
+        robot.our_castle_base_or_church_base = (friendly_unit['x'], friendly_unit['y'])
+        robot.friendly_castles.append(robot.our_castle_base_or_church_base)
     else:
-        robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
-        robot.friendly_churches.append(robot.our_castle_or_church_base)
+        robot.our_castle_base_or_church_base = (friendly_unit['x'], friendly_unit['y'])
+        robot.friendly_churches.append(robot.our_castle_base_or_church_base)
 
     if robot.preacher_health == None:
         robot.preacher_health = constants.preacher_max_health
@@ -64,4 +64,4 @@ def _preacher_initial_check(robot, friendly_unit):
     if len(robot.enemy_castles) == 0 and robot.built_by_a_castle == 1:
         robot.enemy_castles.append(mapping.find_symmetrical_point(robot, friendly_unit['x'], friendly_unit['y'], robot.map_symmetry))
 
-    robot.current_move_destination = mapping.find_symmetrical_point(robot, robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1], robot.map_symmetry)
+    robot.current_move_destination = mapping.find_symmetrical_point(robot, robot.our_castle_base_or_church_base[0], robot.our_castle_base_or_church_base[1], robot.map_symmetry)

@@ -24,7 +24,7 @@ def _pilgrims_initial_check(robot, friendly_unit):
         robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
         # robot.log(robot.current_move_destination)
 
-    robot.our_castle_or_church_base = (friendly_unit['x'], friendly_unit['y'])
+    robot.our_castle_base_or_church_base = (friendly_unit['x'], friendly_unit['y'])
     if robot.map_symmetry == None:
         mapping.return_map_symmetry(robot)
 
@@ -204,8 +204,8 @@ def did_pilgrim_burn_out(robot):
         robot.burned_out_on_turn = -1
 
 def _give_church_castle_location(robot):
-    comms = communications.encode_msg_without_direction(robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1])
-    # robot.log("Comms is " + str((robot.our_castle_or_church_base[0], robot.our_castle_or_church_base[1])))
+    comms = communications.encode_msg_without_direction(robot.our_castle_base_or_church_base[0], robot.our_castle_base_or_church_base[1])
+    # robot.log("Comms is " + str((robot.our_castle_base_or_church_base[0], robot.our_castle_base_or_church_base[1])))
     return comms
 
 def detect_and_warn(robot):
