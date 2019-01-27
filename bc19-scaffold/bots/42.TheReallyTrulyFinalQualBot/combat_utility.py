@@ -354,10 +354,10 @@ def bequeath_thee_mine_to_theeself(robot):
         if str(robot.targeted_enemy_mine) == str(enemy_locations[iter_i]):
             check_mine = 1
             # robot.log("This is the mine **** " + str(robot.bequeathed_mine))
-    for iter_i in range(len(enemy_locations)):
-        if utility.distance(robot, (robot.me.x, robot.me.y), (enemy_locations[iter_i])) < utility.distance(robot, (robot.me.x, robot.me.y), robot.bequeathed_mine):
-            robot.bequeathed_mine = (enemy_locations[iter_i])
-            robot.log("This is the mine **** " + str(robot.bequeathed_mine))
+    # for iter_i in range(len(enemy_locations)):
+    #     if utility.distance(robot, (robot.me.x, robot.me.y), (enemy_locations[iter_i])) < utility.distance(robot, (robot.me.x, robot.me.y), robot.bequeathed_mine):
+    #         robot.bequeathed_mine = (enemy_locations[iter_i])
+    #         # robot.log("This is the mine **** " + str(robot.bequeathed_mine))
     if check_mine == 0:
         return None
     mine_location_x = robot.bequeathed_mine[0]

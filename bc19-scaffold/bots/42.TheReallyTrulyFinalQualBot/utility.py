@@ -218,17 +218,18 @@ def give_to_adjacent_robot(robot):
         occupied_map = robot.get_visible_robot_map()
         directions = constants.directions
         for direction in directions:
-            a_id = occupied_map[pos_y + direction[1]][pos_x + direction[0]]
-            if a_id > 0:
-                a_robot = robot.get_robot(a_id)
-                if a_robot.team == robot.me.team:
-                    if a_robot.unit == constants.unit_castle or a_robot.unit == constants.unit_castle:
-                        return direction
-                    if a_robot.unit == constants.unit_pilgrim:
-                        return direction
-                    if direction[0] == dir_x and direction[1] == dir_y:
-                        return direction
-                    if direction[0] == dir_x or direction[1] == dir_y:
-                        return direction
+            if not is_out_of_bounds(len(occupied_map), pos_x + direction[0], pos_y + direction[1]):
+                a_id = occupied_map[pos_y + direction[1]][pos_x + direction[0]]
+                if a_id > 0:
+                    a_robot = robot.get_robot(a_id)
+                    if a_robot.team == robot.me.team:
+                        if a_robot.unit == constants.unit_castle or a_robot.unit == constants.unit_castle:
+                            return direction
+                        if a_robot.unit == constants.unit_pilgrim:
+                            return direction
+                        if direction[0] == dir_x and direction[1] == dir_y:
+                            return direction
+                        if direction[0] == dir_x or direction[1] == dir_y:
+                            return direction
 
     return None
