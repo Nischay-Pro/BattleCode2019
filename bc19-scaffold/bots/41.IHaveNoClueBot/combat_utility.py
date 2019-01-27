@@ -407,13 +407,31 @@ def all_visible_enemy_combat_units_are_preachers(robot, visible_enemy_list):
         if unit['unit'] == constants.unit_preacher:
             is_preacher += 1
     if count == len(visible_enemy_list) and is_preacher > 0:
-        robot.log("I feel a flock of followers")
+        # robot.log("I feel a flock of followers")
         return 1
     else:
         return 0
 
-def repositioning_against_preachers(robot, visible_enemy_units, visible_friendly_list):
+def is_unit_in_position_against_preachers(robot, visible_friendly_list):
+    flag = 0
+    pos_x = robot.me.x
+    pos_y = robot.me.y
+    if is_position_in_any_enemy_attack_range(robot, pos_x, pos_y) == 0:
+        flag = 1
+        potential_distance = 0
+        for friendly_unit in visible_friendly_list:
+            if friendly_unit['unit'] == constants.unit_pilgrim or friendly_unit['unit'] == constants.unit_church:
+                continue
+            if utility.distance(robot, (pos_x, pos_y), (friendly_unit['x'], friendly_unit['y'])) < 8:
+                flag = 0
+                break
+            else:
+                potential_distance += utility.distance(robot, (pos_x, pos_y), (friendly_unit['x'], friendly_unit['y']))
+    return flag
+
+def repositioning_against_preachers(robot, visible_friendly_list):
     directions = None
+    distance_list = []
     reposition_position_list = []
     pos_x = robot.me.x
     pos_y = robot.me.y
@@ -423,19 +441,29 @@ def repositioning_against_preachers(robot, visible_enemy_units, visible_friendly
     else:
         directions = constants.crusader_move_directions
     for direction in directions:
+        # robot.log("------")
         new_pos_x = pos_x + direction[0]
         new_pos_y = pos_y + direction[1]
         if utility.is_cell_occupied(occupied_map, new_pos_x, new_pos_y) or passable_map[new_pos_y][new_pos_x] != 1:
+            # robot.log("11")
             continue
+        # robot.log("22")
         if is_position_in_any_enemy_attack_range(robot, new_pos_x, new_pos_y) == 0:
             flag = 1
+            potential_distance = 0
             for friendly_unit in visible_friendly_list:
-                if utility.distance(robot, (new_pos_x, new_pos_y), (friendly_unit['x'], friendly_unit['y'])) < 9:
+                if friendly_unit['unit'] == constants.unit_pilgrim or friendly_unit['unit'] == constants.unit_church:
+                    continue
+                if utility.distance(robot, (new_pos_x, new_pos_y), (friendly_unit['x'], friendly_unit['y'])) < 8:
                     flag = 0
                     break
+                else:
+                    potential_distance += utility.distance(robot, (new_pos_x, new_pos_y), (friendly_unit['x'], friendly_unit['y']))
             if flag == 1:
+                distance_list.append(potential_distance)
                 reposition_position_list.append((new_pos_x, new_pos_y))
-    return reposition_position_list
+    sorted_distance, sorted_reposition_position_list = utility.insertionSort(distance_list, reposition_position_list)
+    return sorted_reposition_position_list
 
 def evade_vision_position(robot, visible_enemy_list):
     vision_evasion_position_list = give_postions_where_unit_can_evade_all_enemy_vision(robot)

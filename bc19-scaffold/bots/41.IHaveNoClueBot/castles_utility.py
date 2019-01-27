@@ -868,7 +868,7 @@ def reset_everything(robot):
     robot.co_ordinate_storage_locker = {}
     robot.fuel_manager = {}
     robot.karb_manager = {}
-    
+
     if len(robot.fuel_mine_locations_from_this_castle) == 0:
         unused_store, robot.fuel_mine_locations_from_this_castle = utility.get_sorted_list_from_a_point(my_x, my_y, mapping.get_friendly_fuel(robot))
         robot.fuel_mine_occupancy_from_this_castle = [-1 for i in range(len(robot.fuel_mine_locations_from_this_castle))]
