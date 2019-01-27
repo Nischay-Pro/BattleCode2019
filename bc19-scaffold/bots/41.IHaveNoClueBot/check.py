@@ -89,7 +89,10 @@ def build_check(robot, build_unit_type, dx, dy, flag):
     distance = dx**2 + dy**2
     robot.position_at_end_of_turn = (robot.me.x, robot.me.y)
     current_fuel = robot.fuel
-    current_karbonite = robot.karbonite
+    if build_unit_type == constants.unit_pilgrim:
+        current_karbonite = robot.karbonite
+    else:
+        current_karbonite = robot.karbonite - 10
     robot.delta_karbonite_per_turn = robot.karbonite
     robot.delta_fuel_per_turn = robot.fuel
     robot.delta_time_consumed = robot.me.time
