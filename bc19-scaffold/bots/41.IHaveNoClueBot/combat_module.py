@@ -167,13 +167,13 @@ def _crusader_combat(robot):
             return check.move_check(robot, closest_pos[0] - robot.me.x, closest_pos[1] - robot.me.y, 20)
 
     # Core is ready to charge (Core == 7 units)
-    if len(visible_friendly_list) != 0 and robot.core_is_ready!= 1 and robot.fuel > 8:
+    if len(visible_friendly_list) > 0 and robot.core_is_ready!= 1 and robot.fuel > 8:
         if combat_utility.is_crusader_raiding_core_ready(visible_friendly_list) == 1 and combat_utility.is_robot_the_oldest_crusader_in_range(robot, visible_friendly_list):
             # robot.log("Charge at" + str(robot.current_move_destination))
             combat_utility.radio_friends_charge_order(robot)
 
 
-    if len(visible_friendly_list) != 0 and robot.core_is_ready == 1 and robot.targeted_enemy_mine != None:
+    if len(visible_friendly_list) > 0 and robot.core_is_ready == 1 and robot.targeted_enemy_mine != None:
         # robot.log("888 Check")
         robot.switch_core_off +=1
         if robot.switch_core_off == 3:

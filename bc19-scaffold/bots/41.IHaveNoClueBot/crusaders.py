@@ -1,7 +1,6 @@
 import combat_module
 import constants
 import crusaders_utility
-import utility
 
 def crusader(robot):
     if robot.step == 0:
@@ -21,10 +20,6 @@ def crusader(robot):
         return move_check
 
     if robot.step > 10:
-        give_direction = utility.give_to_adjacent_robot(robot)
-        if give_direction != None:
-            carry_karb = robot.me.karbonite
-            carry_fuel = robot.me.fuel
-            return robot.give(give_direction[0], give_direction[1], carry_karb, carry_fuel)
+        return crusaders_utility.crusader_give(robot)
 
     return None

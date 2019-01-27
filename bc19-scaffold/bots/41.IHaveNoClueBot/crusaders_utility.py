@@ -4,6 +4,7 @@ import constants
 import mapping
 import movement
 import tactics
+import utility
 import vision
 
 def crusader_move(robot):
@@ -31,6 +32,13 @@ def combat_channel(robot):
                 robot.current_move_destination = communications.decode_msg_without_direction(friendly_unit.signal)
                 # robot.log(str(robot.current_move_destination))
                 robot.targeted_enemy_mine = robot.current_move_destination
+
+def crusader_give(robot):
+    give_direction = utility.give_to_adjacent_robot(robot)
+    if give_direction != None:
+        carry_karb = robot.me.karbonite
+        carry_fuel = robot.me.fuel
+        return robot.give(give_direction[0], give_direction[1], carry_karb, carry_fuel)
 
 def receive_initial_signal(robot):
     unused_store, friendly_units = vision.sort_visible_friendlies_by_distance(robot)

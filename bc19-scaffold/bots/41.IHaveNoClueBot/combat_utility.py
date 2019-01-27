@@ -420,9 +420,10 @@ def is_unit_in_position_against_preachers(robot, visible_friendly_list):
         flag = 1
         potential_distance = 0
         for friendly_unit in visible_friendly_list:
-            if friendly_unit['unit'] == constants.unit_pilgrim or friendly_unit['unit'] == constants.unit_church:
+            if str((friendly_unit['x'], friendly_unit['y'])) == str((pos_x, pos_y)) or friendly_unit['unit'] == constants.unit_pilgrim or friendly_unit['unit'] == constants.unit_church:
                 continue
             if utility.distance(robot, (pos_x, pos_y), (friendly_unit['x'], friendly_unit['y'])) < 8:
+                # robot.log(str((friendly_unit['x'], friendly_unit['y'])) + " " + str((pos_x, pos_y)))
                 flag = 0
                 break
             else:
