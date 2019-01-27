@@ -215,7 +215,9 @@ def detect_and_warn(robot):
         if robot.pilgrim_warned == False:
             robot.castle_talk(12)
             robot.pilgrim_warned = True
+            robot.pilgrim_warning_sent = False
             robot.piligrim_did_i_shout_my_x_cord = False
             robot.piligrim_did_i_shout_my_y_cord = False
+            return None
     else:
         robot.pilgrim_warned = False

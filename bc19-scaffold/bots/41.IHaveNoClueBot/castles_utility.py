@@ -904,3 +904,13 @@ def reset_everything(robot):
     # if len(robot.enemy_castles) == 0:
     #     robot.enemy_castles.append(mapping.find_symmetrical_point(robot, robot.me.x, robot.me.y, robot.map_symmetry))
         # robot.log(str(robot.enemy_castles))
+
+
+# def sanitize_mines(robot):
+#     friends, enemies = castle_all_friendly_units(robot)
+#     fuel_keys = robot.fuel_manager.keys()
+#     karb_keys = robot.karb_manager.keys()
+#     if len(enemies) == 0:
+#         for i in range(len(fuel_keys)):
+
+    

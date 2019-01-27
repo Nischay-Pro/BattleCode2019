@@ -38,6 +38,13 @@ def pilgrim(robot):
                 if robot.piligrim_did_i_shout_my_y_cord == False:
                     robot.castle_talk(robot.me.y + 64)
                     robot.piligrim_did_i_shout_my_y_cord = True
+        # if robot.pilgrim_warned == False:
+        #     return pilgrim_is_mining
+        # else:
+        #     if robot.pilgrim_warning_sent == False:
+        #         robot.castle_talk(12)
+        #         robot.pilgrim_warning_sent = True
+        #     pass
         return pilgrim_is_mining
 
     # Receive signal from castle on which mine to go to
@@ -93,19 +100,24 @@ def pilgrim_mine(robot):
 
     karb_map = robot.get_karbonite_map()
     fuel_map = robot.get_fuel_map()
-
+    castle_talk_value = 0
+    if robot.pilgrim_warned == True and robot.pilgrim_warning_sent == False:
+        castle_talk_value = 12
     if utility.is_cell_resourceful(karb_map, fuel_map, pos_x, pos_y):
         robot.signal(0, 0)
         if utility.is_cell_fuel(fuel_map, pos_x, pos_y):
             robot.karb_miner = False
             robot.fuel_miner = True
-            robot.castle_talk(6)
+            if castle_talk_value == 0:
+                castle_talk_value = 6
         elif utility.is_cell_karbonite(karb_map, pos_x, pos_y):
             robot.karb_miner = True
             robot.fuel_miner = False
-            robot.castle_talk(7)
+            if castle_talk_value == 0:
+                castle_talk_value = 7
         # TRAVIS CHECK MINE 1
         robot.pilgrim_mine_ownership = (pos_x, pos_y)
+        robot.castle_talk(castle_talk_value)
         return check.mine_check(robot, 1)
     else:
         return 0

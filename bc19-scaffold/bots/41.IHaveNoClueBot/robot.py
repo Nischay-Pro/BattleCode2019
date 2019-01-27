@@ -73,6 +73,7 @@ class MyRobot(BCAbstractRobot):
     piligrim_did_i_shout_my_x_cord = False
     piligrim_did_i_shout_my_y_cord = False
     pilgrim_warned = False
+    pilgrim_warning_sent = False
     pilgrim_warning_cooldown = 0
     karb_miner = False
     fuel_miner = False
