@@ -4,6 +4,7 @@ import movement
 import pathfinding
 import prophet_utility
 import tactics
+import utility
 
 def prophet(robot):
     if robot.step == 0:
@@ -17,8 +18,6 @@ def prophet(robot):
 
     if robot.step > 40 and robot.step < 50:
         move_check = prophet_move(robot)
-
-    move_check = crusaders_utility.crusader_move(robot)
 
     if move_check != 0 and move_check != None:
         return move_check
