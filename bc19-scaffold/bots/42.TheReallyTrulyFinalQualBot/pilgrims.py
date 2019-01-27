@@ -142,10 +142,10 @@ def pilgrim_full(robot):
     if robot.pilgrim_full_and_idle > 5:
         robot.castle_talk(14)
 
-    if robot.pilgrim_full_and_idle > 15 and robot.idle_karb_count ==  robot.karbonite:
+    if robot.pilgrim_full_and_idle > 15 and robot.idle_karb_count >= robot.karbonite:
         robot.resource_depot = robot.our_castle_or_church
-        dist = (robot.our_castle_base_or_church_base[0] - robot.me.x) ** 2 + (robot.our_castle_base_or_church_base[1] - robot.me.y) ** 2
-        if dist < len(robot.get_passable_map()) ** 2:
+        dist = utility.distance(robot, (robot.me.x, robot.me.y), robot.our_castle_base_or_church_base)
+        if dist < (len(robot.get_passable_map()) // 2) ** 2:
             fin_dir = pathfinding.bug_walk_toward(robot, robot.our_castle_base_or_church_base)
             if fin_dir != 0:
                 # TRAVIS MOVE CHECK 115
